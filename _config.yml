@@ -1,0 +1,12 @@
+title: "Econometría Avanzada"
+description: "Materiales del curso de Econometría Avanzada en la Universidad de los Andes."
+url: "https://man-fern.github.io"
+baseurl: "/uniandes-ec-av"
+theme: jekyll-theme-minimal
+markdown: GFM
+lang: es
+show_downloads: false
+
+exclude:
+  - README.md
+
