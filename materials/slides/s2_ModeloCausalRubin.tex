@@ -1,0 +1,502 @@
+\documentclass[10pt, xcolor=dvipsnames]{beamer}
+\input{preambulo/preambulo-magistral}
+
+% Ajustes locales de esta clase (preservados del original):
+\setbeamercolor{button}{bg=black,fg=white}
+\setbeamercovered{invisible}
+\renewcommand{\Prob}[1]{\text{Pr}\left(#1\right)} % esta clase usaba paréntesis
+
+\subtitle{Contrafactuales y modelo causal de Rubin}
+
+\begin{document}
+\beamertemplatenavigationsymbolsempty	
+
+\begin{frame}[plain]%Title Page%
+	\titlepage
+	\vspace{-0.4cm}
+\textbf{Temas de la Clase:} \\ \vspace{0.3cm}
+	\tableofcontents
+\end{frame}
+
+\begin{frame}\frametitle{Temas de la clase:}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%INTRODUCCIÓN
+\section{Causalidad en estudios observacionales}
+
+\begin{frame}{Preguntas causales}
+\begin{itemize}\setlength{\itemsep}{1.0em}
+    \item La mayoría de preguntas que nos interesan en economía son de tipo \textcolor{blue}{causal}.%\pause
+    \begin{enumerate}\setlength{\itemsep}{0.5em}
+        \item ¿Cuál es el \textit{efecto} de aumentar el impuesto de renta sobre la inversión?%\pause
+        \item ¿Cuál es el \textit{efecto} de incrementar el salario mínimo sobre la informalidad laboral?%\pause
+        \item ¿Cuál es el \textit{efecto} de leer los capítulos asignados en el programa sobre la nota final del curso?%\pause
+    \end{enumerate}
+    \item ¿Cómo podemos responder este tipo de preguntas?
+    \item ¿Cómo \textbf{plantearlas formalmente}?
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{El caso del consumo de tabaco}
+\begin{itemize}
+    \item En las décadas de 1950 y 1960 hubo un debate intenso en EE.UU. sobre si el cigarrillo \textcolor{blue}{causaba} cáncer de pulmón. \vspace{0.4cm}    
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm]{Figuras/debate-medicos-tabaco-cancer.png}
+\end{figure}		
+   %\pause
+    \item No es viable hacer ensayos clínicos tradicionales $\implies$ no hay acceso a \textcolor{blue}{evidencia experimental}. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Correlación y causalidad}
+\begin{itemize}
+    \item \textbf{Evidencia sugestiva}:
+    \begin{itemize}
+        \item En 1900, el número de cigarrillos consumidos per cápita al año $\approx 0$. En 1950 $\approx 3.500$ ($\approx$ 10 por día).
+        \item La tasa de mortalidad $\times$ 100.000 habitantes asociada a cáncer de pulmón se multiplicó por 4 (de 5 a 20) en ese periodo. \vspace{0.1cm}	
+    \end{itemize}
+   %\pause
+    \item Pero...%\pause
+    \begin{itemize}
+        \item \textcolor{blue}{La relación no es determinística}: hay personas que fuman y no les da cáncer de pulmón, y hay personas que no fuman y les da cáncer de pulmón.%\pause
+        \item \textcolor{blue}{Todo lo demás no se mantiene constante}: muchas cosas cambiaron entre 1900-1950.	 
+    \end{itemize} 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{¿Podemos hablar de causalidad?}
+    \begin{tcolorbox}[colback=gray!10, title=\citet{Holand86}, breakable]
+        ``\textit{The reaction of many statisticians when confronted with the possibility that their profession might contribute to a \textbf{discussion of causation} is immediately to \textbf{deny that there is any such possibility}. `That \textbf{correlation is not causation} is perhaps the first thing that must be said}''.
+    \end{tcolorbox}
+\end{frame}
+
+
+\begin{frame}{Factores de confusión (\textit{confounders})}
+\begin{itemize}
+    \item \textcolor{red}{\textbf{Problema}:} es posible que \textit{factores no observados} (\textit{e.g.}, un gen, $\textcolor{brown}{G}$) determinen conjuntamente el deseo de fumar $(\textcolor{brown}{F})$ y el cáncer de pulmón ($\textcolor{brown}{C}$). \\
+    \begin{figure}	
+        \begin{subfigure}[b]{0.40\textwidth}
+            \caption{\textbf{F causa C}}    	
+            \centering
+            \begin{tikzpicture}[scale=2]	
+            \draw [->] (0.7,0) -- (1.2,0);
+            \draw[fill] (0.7,0) circle [radius =0.02];	
+            \node [left] at (0.7,0) {$\textcolor{brown}{F}$};	
+            \node [right] at (1.2,0) {$\textcolor{brown}{C}$};		
+            \node [below] at (0.95,-0.35) {$\textcolor{brown}{G}$};
+            \end{tikzpicture}	
+        \end{subfigure}	
+        \begin{subfigure}[b]{0.40\textwidth}
+            \caption{\textbf{G causa F y C}}    	
+            \centering		
+            \begin{tikzpicture}[scale=2]	
+            \node [left] at (0.7,0) {$\textcolor{brown}{F}$};	
+            \node [right] at (1.2,0) {$\textcolor{brown}{C}$};		
+            \node [below] at (0.95,-0.35) {$\textcolor{brown}{G}$};
+            \draw [->] (0.9,-0.35) -- (0.65,-0.1);				
+            \draw[fill] (0.9,-0.35) circle [radius =0.02];	
+            \draw [->] (1.0,-0.35) -- (1.25,-0.1);	
+            \draw[fill] (1.0,-0.35) circle [radius =0.02];			
+            \end{tikzpicture}	
+        \end{subfigure}	
+    \end{figure}
+   %\pause
+    \item En el diagrama (b), la variable $\textcolor{brown}{G}$ es un factor de confusión: la \textcolor{blue}{correlación es espuria}. 
+    % Este tipo de diagramas se conocen como \textit{Directed Acyclic Graph (DAG)}. 
+\end{itemize}	
+\end{frame}
+
+
+\begin{frame}{Parece que el cigarrillo sí causa cáncer}
+\begin{columns}
+\begin{column}{0.7\textwidth}
+    \begin{itemize}
+        \item En 1950, Richard Doll y Bradford Hill, dos \textcolor{red}{\textbf{epidemiólogos}}, publican los resultados de un \textcolor{blue}{estudio observacional}.%\pause
+        \vspace{0.5em}
+        \begin{itemize}
+            \item Entrevistaron a pacientes con cáncer de pulmón: de 649 pacientes, \textbf{solo dos reportaron que no habían sido fumadores}.%\pause  
+            \vspace{0.5em}
+            \item Estimaron que la probabilidad de que esta relación se debiera al azar (\textcolor{blue}{correlación espuria}) era de \textbf{1,5 millones a 1}.    
+            \vspace{0.5em}
+            \item Otros investigadores replican estos resultados.
+        \end{itemize}   
+    \end{itemize}
+\end{column}
+\begin{column}{0.3\textwidth}
+    \begin{figure}
+    \centering
+    \vspace*{\fill} % Adds space at the top
+    \includegraphics[width=3cm]{Figuras/richard-doll-retrato.png}
+    \caption*{Richard Doll (1912–2005)}
+    \vspace*{\fill} % Adds space at the bottom
+    \end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}{Que el comité decida}
+\begin{itemize}
+    \item Ante la epidemia de cáncer de pulmón, el gobierno de EE.UU. crea un comité para estudiar el tema en 1962.
+    \begin{itemize}
+        \item 10 expertos: 5 fumadores y 5 no fumadores, con 2 personas sugeridas por la industria del tabaco.%\pause
+    \end{itemize} 
+    \item El reporte determina que la evidencia indica una \textcolor{red}{\textbf{\textit{posible} relación causal}}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Consumo de cigarrillo y prevalencia de cáncer de pulmón}
+\begin{figure}[H]
+\centering
+    %\caption*{\textbf{Consumo de cigarrillo y prevalencia de cáncer de pulmón}}\vspace{-0.3cm}
+    \includegraphics[width=10cm]{Figuras/consumo-cigarrillo-cancer-pulmon-pearl.png}
+    \caption*{Fuente: \citet{pearl2018book}}	
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{El modelo causal de Rubin}
+
+\begin{frame}{El problema del lenguaje}\setlength{\itemsep}{1.0em}
+\begin{itemize}
+    \item Se necesita un \textcolor{blue}{lenguaje} para pensar \textbf{formalmente} problemas de \textcolor{blue}{causalidad} en el contexto de \textcolor{blue}{estudios observacionales}.%\pause \vspace{0.1cm}    
+    \item ¿Cómo podemos \textbf{plantear el problema} de una manera precisa?
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Preguntas causales y contrafactuales}
+\begin{itemize}\setlength{\itemsep}{1.5em}
+    \item Para responder preguntas \textcolor{blue}{causales}:
+    \begin{enumerate}
+    \fontvid
+        \item ¿Cuál es el \textit{efecto} de $\uparrow$ el impuesto de renta sobre la inversión?
+        \item ¿Cuál es el \textit{efecto} de $\uparrow$ el salario mínimo sobre la informalidad?
+        \item ¿Cuál es el \textit{efecto} de leer los capítulos sobre la nota final del curso?
+    \end{enumerate}
+   %\pause
+    \item Necesitamos saber el \textcolor{blue}{contrafactual:}
+    \begin{enumerate}
+    \fontvid
+        \item ¿\textcolor{red}{\textbf{Qué hubiera pasado}} con la inversión si no hubiera aumentado el impuesto? 
+        \item ¿\textcolor{red}{\textbf{Qué hubiera pasado}} con la informalidad si no hubiera subido el salario mínimo?
+        \item ¿\textcolor{red}{\textbf{Qué hubiera pasado}} con la nota si el estudiante no hubiera leído los capítulos?
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{\textit{The Road Not Taken}, Robert Frost (1915)}
+    \begin{itemize}
+        \item Un ejercicio de imaginación: pensar en \textbf{``universos paralelos''}.
+    \end{itemize}
+    \begin{columns}
+    \begin{column}{0.5\textwidth}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\textwidth]{Figuras/road-not-taken-frost-poema.png}
+    \end{figure}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{Figuras/road-not-taken-frost-ilustracion.png}
+    \end{figure}
+    \end{column}
+    \end{columns}
+\end{frame}
+
+
+\begin{frame}{Resultados potenciales (modelo causal de Rubin)}
+\begin{itemize}\setlength{\itemsep}{1.5em}
+    \item Sea $Y_i$ una variable de resultado \textbf{observada}, \textit{e.g.}, la nota de un estudiante $i$ al final de semestre.
+    \item Sea $D_i$ una variable indicadora: 
+    \begin{align*}
+        D_i = 
+        \begin{cases}
+            1 &\hspace{0.5pt} \text{si $i$ lee la bibliografía}\\
+            0 &\hspace{0.5pt} \text{si $i$ no lee la bibliografía}.
+        \end{cases}
+    \end{align*}
+   %\pause
+    \item Dos \text{\textcolor{blue}{resultados potenciales}:}
+    \begin{align*}
+        Y_i(d) = 
+        \begin{cases}
+            Y_i(1) &\hspace{0.5pt} \text{si $i$ leyera la bibliografía } (d=1)\\
+            Y_i(0) &\hspace{0.5pt} \text{si $i$ no leyera la bibliografía } (d=0).
+        \end{cases}
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{El problema fundamental de la inferencia causal}
+\begin{itemize}\setlength{\itemsep}{1.5em}
+    \item El \textcolor{blue}{efecto causal} de leer la bibliografía para el estudiante $i$ es la \textbf{diferencia de sus resultados potenciales}:
+    \begin{align*}
+        \textcolor{brown}{\tau_i} = Y_i(1) - Y_i(0).
+    \end{align*}
+   %\pause
+    \item \textcolor{red}{\textbf{Problema fundamental de la inferencia causal}}: no podemos observar al mismo estudiante en ambos estados posibles. \textbf{Uno de los dos resultados es} \textcolor{blue}{contrafactual}.	
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{¿Qué observamos?}
+\begin{itemize}\setlength{\itemsep}{1.5em}
+    \item Para un estudiante $i$, \textbf{lo que observamos} es:
+    \begin{align*}
+    \begin{split}
+        Y_i = Y_i(1) D_i + Y_i(0) (1-D_i).
+    \end{split}
+    \end{align*}
+   %\pause
+    Reorganizando,
+    \begin{align*}
+    \begin{split}
+        Y_i &= Y_i(0) + \Big(Y_i(1)-Y_i(0)\Big) D_i \\
+            &= Y_i(0) + \textcolor{brown}{\tau_i} D_i,
+    \end{split}
+    \end{align*}
+    donde \(\textcolor{brown}{\tau_i}\) es el efecto causal.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{El problema de identificación}
+\begin{itemize}
+    \item Suponga que tenemos una \textcolor{blue}{muestra aleatoria} de la población de estudiantes: \(\{(Y_i,D_{i}): i = 1, \ldots, N\}\).
+    \vspace{1.5em}
+    \begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{cccc c}
+    \toprule
+    i & $D_i$ & $Y_i(1)$ & $Y_i(0)$ & $Y_i$ \\
+    \midrule
+    1 & 1 & 5,00 &   -    & 5,00 \\
+    2 & 1 & 4,20 &   -    & 4,20 \\
+    3 & 1 & 4,07 &   -    & 4,07 \\
+    4 & 1 & 4,00 &   -    & 4,00 \\
+    5 & 1 & 4,79 &   -    & 4,79 \\
+    6 & 0 & -    & 4,19  & 4,19 \\
+    7 & 0 & -    & 3,98  & 3,98 \\
+    8 & 0 & -    & 4,23  & 4,23 \\
+    9 & 0 & -    & 4,36  & 4,36 \\
+    10 & 0 & -    & 4,28  & 4,28 \\
+    \midrule
+    Promedio & 0,5 & 4,41 & 4,21 & 4,31 \\
+    \bottomrule
+    \end{tabular}
+    \end{table}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Efecto promedio del tratamiento (ATE)}
+\begin{itemize}
+    \item \textbf{Nunca observamos al mismo estudiante en los dos estados posibles}, pero quizá podemos aprender algo si tenemos información sobre un grupo de estudiantes.
+    \vspace{0.5em}
+   %\pause
+    \item Definamos el \textcolor{blue}{efecto causal promedio del tratamiento en la población (ATE)} como:
+    \begin{align*}
+    \begin{split}
+        \textcolor{brown}{\tau_{ATE}} &\equiv \EX[\textcolor{brown}{\tau_i}] \\ &= \EX[Y_i(1)-Y_i(0)] \\ &= \EX[Y_i(1)]-\EX[Y_i(0)]
+    \end{split}	
+    \end{align*}
+    \vspace{0.0em}
+   %\pause
+    \item  \(\textcolor{brown}{\tau_{ATE}}\) es el \textcolor{blue}{estimando}: la cantidad o parámetro \textbf{poblacional} que queremos conocer.%\pause
+    \item ¿Bajo qué condiciones podemos estimar $\textcolor{brown}{\tau_{ATE}}$? Este es el \textcolor{blue}{problema de identificación}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Comparaciones ingenuas}
+\begin{itemize}
+    \item Considere comparar de manera ``\textcolor{red}{ingenua}'' la diferencia promedio de la nota entre los estudiantes que leen y los que no lo hacen.
+    \begin{align*}
+        \textcolor{brown}{\tau_{ING}} = \underbrace{\EX[Y_i|D_i=1]}_{\text{Promedio dado que leen}} - \underbrace{\EX[Y_i|D_i=0]}_{\text{Promedio dado que no leen}}
+    \end{align*}
+   %\pause
+    \vspace{-0.25em}
+    \item Dado que \(Y_i = Y_i(1)\) si \(D_i=1\) y \(Y_i = Y_i(0)\) si \(D_i=0\):
+    \begin{align*}
+        \textcolor{brown}{\tau_{ING}} = \EX[Y_i(1)|D_i=1] - \EX[Y_i(0)|D_i=0].  
+    \end{align*}
+   %\pause
+    \vspace{-0.75em}
+    \item Un \textcolor{blue}{estimador} ``natural'' usaría los \textcolor{red}{promedios muestrales} de cada grupo: %%\pause
+    \vspace{0.0em}
+    \begin{itemize}
+        \item Tratados: \(\Bar{Y}_1 = 4{,}41\) 
+        \item No tratados: \(\Bar{Y}_0 = 4{,}21\) 
+    \end{itemize}
+    \vspace{0.0em}
+    \(\implies\) \(\textcolor{brown}{\hat{\tau}_{ING}} = \Bar{Y}_1 - \Bar{Y}_0 = 4{,}41 - 4{,}21  = 0{,}20\) (o \(\uparrow\) 4,75\% sobre la media del grupo de control).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{El problema con las comparaciones ingenuas}
+\begin{itemize}	
+    \item \textbf{Preguntas:} 
+    \begin{enumerate}
+        \item ¿$\textcolor{brown}{\tau_{ATE}}=\textcolor{brown}{\tau_{ING}}$?
+        \item ¿La media muestral es un buen estimador de la media poblacional?%\pause
+    \end{enumerate}
+    \vspace{1em}
+    \item Desarrollemos un poco la expresión para $\textcolor{brown}{\tau_{ING}}$. Sumando y restando el \textcolor{blue}{contrafactual}, $\textcolor{gray}{\EX[Y_i(0)|D_i=1]}$,
+\end{itemize}	
+\begin{align*}
+    %\fontvid
+    \begin{split}
+        \textcolor{brown}{\tau_{ING}} =& \EX[Y_i(1)|D_i=1] - \EX[Y_i(0)|D_i=0]  \\ &+ \Big(\textcolor{gray}{\EX[Y_i(0)|D_i=1]} - \textcolor{gray}{\EX[Y_i(0)|D_i=1]}\Big).
+    \end{split}  
+\end{align*}
+   %\pause
+Reorganizando
+\begin{align}\label{EQ:CFT}
+    %\fontvid
+    \begin{split}
+        \textcolor{brown}{\tau_{ING}} =& \underbrace{\EX\Big[Y_i(1)-\textcolor{gray}{Y_i(0)}|D_i=1\Big]}_{\text{¿Intuición?}} + \underbrace{\textcolor{gray}{\EX[Y_i(0)|D_i=1]} - \EX[Y_i(0)|D_i=0]}_{\text{¿Intuición?}}
+    \end{split}
+\end{align}
+\end{frame}
+
+
+\begin{frame}{Definiciones: ATE, ATT y ATU}	
+	\begin{itemize}
+		\item \textbf{\textit{Average treatment effect (ATE)}}
+		\begin{align}
+			\begin{split}
+				\textcolor{brown}{\tau_{ATE}} \equiv \EX[\underbrace{Y_i(1) - Y_i(0)}_{\textcolor{brown}{\equiv \tau_i}}].
+			\end{split}
+		\end{align}	
+		\pause
+		\item \textbf{\textit{Average treatment effect on the treated (ATT)}}
+		\begin{align}
+			\begin{split}
+				\textcolor{brown}{\tau_{ATT}} \equiv \EX[\underbrace{Y_i(1) - Y_i(0)}_{\textcolor{brown}{\equiv \tau_i}}|D_i=1].
+			\end{split}
+		\end{align}		
+		\pause
+		\item \textbf{\textit{Average treatment effect on the untreated (ATU)}}
+		\begin{align}
+			\begin{split}
+				\textcolor{brown}{\tau_{ATU}} \equiv \EX[\underbrace{Y_i(1) - Y_i(0)}_{\textcolor{brown}{\equiv \tau_i}}|D_i=0].
+			\end{split}
+		\end{align}	 	
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Comparaciones ingenuas, ATT y sesgo de selección}
+\begin{itemize}
+    \item Reemplazando la definición de \textcolor{brown}{ATT} en (\ref{EQ:CFT}),
+    \begin{align}
+        \textcolor{brown}{\tau_{ING}} = \textcolor{brown}{\tau_{ATT}} + \underbrace{\textcolor{gray}{\EX[Y_i(0)|D_i =1]} - \EX[Y_i(0)|D_i =0]}_{\textcolor{blue}{\text{Sesgo de selección}}}
+    \end{align}
+  %\pause
+    \item La diferencia de medias ingenua combina dos efectos:
+    \begin{enumerate}
+	\item Efecto causal promedio sobre los tratados ($\textcolor{brown}{\tau_{ATT}}$).
+	\item \textcolor{blue}{Sesgo de selección}.
+    \end{enumerate}
+        \vspace{0.2cm}
+      %\pause
+        \item Si no hay \textcolor{blue}{sesgo de selección}, la comparación ingenua identifica $\textcolor{brown}{\tau_{ATT}}$.%\pause
+         \vspace{0.2cm}
+        \item Dado que no observamos $\textcolor{gray}{\EX[Y_i(0)|D_i =1]}$, \textbf{no es posible determinar la magnitud del} \textcolor{blue}{sesgo de selección} (ni su signo).
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Sesgo de selección}
+\begin{itemize}\setlength{\itemsep}{1.5em}
+	\item El \textcolor{blue}{sesgo de selección} es el principal \textcolor{blue}{problema de identificación} al que nos enfrentamos en el trabajo empírico. \\
+	\pause
+	\item En esencia, este problema radica en que si no tenemos cuidado vamos a terminar \textbf{comparando grupos que son diferentes de una forma sistemática y relevante} (peras vs. manzanas). \\
+	\pause
+	\item Estrechamente ligado con la idea de \textcolor{blue}{todo lo demás constante (o igual)} (\textit{ceteris paribus}). \\ \vspace{0.1cm}
+	\begin{itemize}
+		\item Comparamos las notas de los estudiantes que leen y los que no leen la bibliografía de la clase. \textcolor{blue}{Todo lo demás constante} implica que lo único que los diferencia (en promedio) es haber leído.
+	\end{itemize}
+\end{itemize} 
+\end{frame}
+
+\begin{frame}{El experimento ideal}
+    \begin{itemize}\setlength{\itemsep}{0.0em}
+    	\item Para recuperar el efecto causal promedio sobre los tratados (\textcolor{brown}{ATT}) necesitamos
+    \begin{align}
+    \textcolor{gray}{\EX[Y_i(0)|D_i =1]} = \EX[Y_i(0)|D_i =0].
+    \end{align} 
+  %\pause
+    \item Esto es análogo a encontrar un grupo de comparación (control) ``adecuado'', en el sentido de que \textbf{aproxima bien el \textcolor{blue}{contrafactual} no observado}. \\ \vspace{0.1cm}
+  %\pause
+    \item \textcolor{red}{\textbf{Experimento ideal:}} suponga que los resultados potenciales son \textcolor{blue}{independientes} de la asignación al tratamiento: $Y_i(0), Y_i(1) \indep D_i$.%\pause
+    \item En ese caso particular, no hay un \textcolor{blue}{sesgo de selección} $\implies$
+    \begin{align*}
+    	\EX[Y_i(d)|D_i] = \EX[Y_i(d)] \hspace{0.2cm} \text{para} \hspace{0.2cm} d \in \{0,1\}.
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{La ``revolución de credibilidad'' en econometría}
+
+\begin{frame}{La ``revolución de credibilidad'' en econometría}
+\begin{itemize}\setlength{\itemsep}{1.5em}
+    \item Para responder muchas preguntas en Economía tenemos que recurrir a \textcolor{blue}{estudios observacionales}.%\pause \vspace{0.2cm}
+    \item Antes de los 90s, el enfoque predominante era basar el trabajo econométrico en la modelación teórica (econometría estructural). \vspace{0.2cm}
+  %\pause
+    \begin{itemize}	
+    \item Modelar explícitamente el \textcolor{blue}{proceso generador de los datos}.
+    \item Estimar los parámetros \textit{primitivos} (preferencias y tecnología). \vspace{0.3cm}
+    \end{itemize}
+\end{itemize}
+    \begin{tcolorbox}[colback=gray!10, title=\citet{leamer1983let}, breakable]
+    ``Hardly anyone takes data analysis seriously. Or perhaps more accurately, hardly anyone takes anyone else’s data analysis seriously''.
+    \end{tcolorbox}
+\end{frame}
+
+
+\begin{frame}{La ``revolución de credibilidad'' en econometría}
+\begin{itemize}
+    \item A partir de los 90s hay un movimiento hacia \textbf{técnicas experimentales y cuasi-experimentales}. Menor énfasis en la teoría.  
+    \vspace{0.3cm}
+    \item Parte importante de esta revolución fue el desarrollo de un \textbf{lenguaje} preciso para pensar en preguntas causales en trabajos empíricos.
+    \vspace{0.3cm}
+    \item El objetivo de las diferentes \textcolor{blue}{estrategias de identificación} es acercarse lo más posible al experimento ideal (\textcolor{brown}{Angrist and Krueger, 1999}).
+    \vspace{0.3cm}
+  %\pause
+    \item Aun en \textcolor{blue}{estudios observacionales} podemos estimar efectos causales en la medida que logremos construir \textcolor{blue}{contrafactuales} válidos.	
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Premio Nobel 2021}
+	\begin{figure}[H]
+		\includegraphics[width=9cm, height=9cm, keepaspectratio]{Figuras/nobel-2021-card-angrist-imbens.png}
+	\end{figure} 
+\begin{itemize}
+    \item \textbf{David Card} ``\textit{for his empirical contributions to labour economics}''.
+    \item \textbf{Joshua D. Angrist and Guido W. Imbens} ``\textit{for their methodological contributions to the analysis of causal relationships}''. 
+\end{itemize}
+\end{frame}
+
+%BIBLIOGRAPHY
+\nobibliography{references}
+
+\end{document}
+

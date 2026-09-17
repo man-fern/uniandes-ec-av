@@ -1,0 +1,852 @@
+\documentclass[10pt, xcolor=dvipsnames]{beamer}
+\input{preambulo/preambulo-magistral}
+
+% Ajustes locales de esta clase (preservados del original):
+\setbeamercolor{button}{bg=black,fg=white}
+\setbeamercovered{invisible}
+\AtBeginSubsection[]
+{
+    \begin{frame}
+        \frametitle{Subsección}
+        \tableofcontents[currentsection, currentsubsection, subsectionstyle=show/shaded/hide]
+    \end{frame}
+}
+
+\subtitle{Propiedades del Estimador de Mínimos Cuadrados Ordinarios (MCO)}
+
+\begin{document}
+	\beamertemplatenavigationsymbolsempty	
+\begin{frame}[plain]%Title Page%
+	\titlepage
+	\vspace{-0.4cm}
+\textbf{Temas de la Clase:} \\ \vspace{0.3cm}
+	\tableofcontents
+\end{frame}
+
+\begin{frame}{Temas de la clase:}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Propiedades asintóticas del estimador de MCO}
+
+\begin{frame}{Teoría asintótica}
+\begin{itemize}
+    \item \textcolor{blue}{Teoría asintótica} (\textit{en nuestro contexto}): tipos de \textcolor{blue}{convergencia} de \textbf{secuencias de estimadores} cuando el tamaño muestral crece (\textit{i.e.}, $N \to \infty$). \\ \vspace{0.3cm}
+    %\pause
+    \item ¿Por qué es importante? \\ \vspace{0.1cm}
+    %\pause
+\begin{enumerate}
+    \item Permite establecer \textbf{propiedades deseables} de los estimadores en muestras grandes. ¿El estimador ``mejora'' a medida que aumenta el tamaño de la muestra? \\ \vspace{0.2cm}
+    %\pause
+    \item Facilita aproximar la \textbf{distribución de los estimadores}, lo que resulta esencial para la inferencia estadística (\textit{e.g.}, pruebas de hipótesis, intervalos de confianza).
+\end{enumerate}
+\end{itemize}	
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{- Consistencia}
+
+\begin{frame}[plain]
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=Definición: Convergencia en probabilidad (débil), breakable]	
+    Una secuencia de variables aleatorias $\{X_N: N=1, 2, \ldots\},$ \textcolor{blue}{converge en probabilidad} a una \textbf{constante $c$} si, para todo $\epsilon>0$,
+    \begin{align*}	
+        \lim_{N \rightarrow \infty} \Prob{|X_N-c|>\epsilon}=0.
+    \end{align*}
+\end{tcolorbox}
+    %\pause
+\begin{itemize}    
+    \item \textbf{Intuición:} La masa de probabilidad se concentra en $c$ a medida que $N \to \infty$.
+    \item \textbf{Notación:} $\plim X_N = c$ o $X_N \xrightarrow{p} c$. %\pause
+    \item \textbf{Nota:} La definición se extiende elemento por elemento a \textbf{vectores y matrices aleatorias}. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[plain]
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=Definición: Consistencia de un estimador, breakable]
+    Sea $\{\hat{\thetaB}_N:N=1,2,\ldots\}$ una secuencia de estimadores del vector $\thetaB$ de $K\times 1$, donde $N$ denota el tamaño de la muestra. Decimos que $\hat{\thetaB}_N$ es un \textcolor{blue}{estimador consistente} de $\thetaB$ si
+    \begin{align*}
+        \hat{\thetaB}_N \xrightarrow{p} \thetaB.
+    \end{align*}
+\end{tcolorbox}
+\begin{itemize}
+    %\pause
+    \item \textbf{Intuición:} A medida que aumenta el tamaño de la muestra, la probabilidad de que el estimador difiera del parámetro poblacional tiende a cero.
+    \item \textbf{Nota:} Esta propiedad se evalúa independientemente de si el parámetro poblacional \(\thetaB\) tiene o no una interpretación causal.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Consistencia}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm]{Figuras/convergencia-insesgamiento-estimador.png}	
+\end{figure}	
+\end{frame}
+
+
+\begin{frame}[plain]
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=Teorema del mapeo continuo (convergencia en probabilidad), breakable]	
+    Sea $\textbf{g}:\RK{K} \rightarrow \RK{J}$ una función continua. Sea $\{\hat{\thetaB}_N: N=1,2,\ldots\}$ una secuencia de vectores aleatorios de $K \times 1$ tal que $\hat{\thetaB}_N \xrightarrow{p}\thetaB$, entonces $\textbf{g}(\hat{\thetaB}_N)\xrightarrow{p} \textbf{g}(\thetaB)$. \vspace{0.3cm}
+\end{tcolorbox}
+    %\pause
+\begin{itemize}
+    \item \textbf{Intuición}: Las convergencias se preservan al aplicar funciones continuas, lineales y no lineales: 
+    \[
+    \plim \textbf{g}(\hat{\thetaB}_N) = \textbf{g}(\plim \hat{\thetaB}_N) = \textbf{g}(\thetaB).
+    \]
+    %\pause
+    \item \begin{Ejemplo}
+    Suponga que $\hat{\theta}_N \xrightarrow{p}\theta \in \RK{+}$, y que estamos interesados en $\plim  \exp ( \hat{\theta}_N)$:
+    \begin{equation*}
+        \plim  \exp ( \hat{\theta}_N) =  \exp ( \plim \hat{\theta}_N) = \exp ( \theta).
+    \end{equation*}        
+    \end{Ejemplo}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[plain]
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=Ley débil de los grandes números (WLLN), breakable]	
+    Sea $\{\XB_i: i=1,2,\ldots, N\}$ una secuencia de vectores aleatorios de $K\times 1$ que son independientes e idénticamente distribuidos (i.i.d.) tal que $\EX \lVert \XB_i \rVert < \infty$. Entonces, se cumple la \textcolor{blue}{ley débil de los grandes números}:
+    \begin{align*}
+        \bar{\XB}_N = \frac{1}{N}\sum_{i=1}^{N} \XB_i \xrightarrow{p} \EX[\XB_i].
+    \end{align*}
+\end{tcolorbox}	
+    %\pause
+\begin{itemize}	
+    \item \textbf{Intuición:} La media muestral converge a la media poblacional cuando $N \to \infty$. 
+    \item \textbf{Nota:} Existen versiones más generales del teorema que relajan el supuesto de i.i.d. 
+\end{itemize}	  
+\end{frame}
+
+
+\begin{frame}{Ejemplo de la ley débil de los grandes números}
+\begin{itemize}
+    \item Queremos estimar la \textbf{favorabilidad promedio} de un candidato antes de una elección. Seleccionamos una muestra aleatoria de \(N\) individuos y les preguntamos si apoyan al candidato (\(Y_i \in \{0, 1\}\)). %\pause 
+    \vspace{0.75em}
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=9.5cm]{Figuras/ley-debil-grandes-numeros-encuesta.png}	
+    \end{figure}	
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Consistencia del estimador de MCO}
+\begin{itemize}
+    \item Modelo lineal (proyección poblacional):
+    \begin{align}\label{EQ:MODELO-LINEAL}
+        Y_i = \XB'_i \textcolor{brown}{\betaB} + e_i, \quad \text{donde} \quad  \textcolor{brown}{\betaB} = \EX[\XB_i\XB'_i]^{-1} \EX[\XB_iY_i]     
+    \end{align}
+    \item Con una muestra aleatoria \(\{(Y_i, \XB_i): i=1,\ldots,N\}\), el estimador de MCO es:
+    \vspace{-1em}
+    \begin{align}\label{EQ:ESTIMADOR-MCO}
+        \textcolor{brown}{\hat{\betaB}_{mco}} = \left(\frac{1}{N} \sum_i \XB_i \XB'_i \right)^{-1} \left(\frac{1}{N} \sum_i  \XB_i Y_i\right).
+    \end{align}
+    %\pause
+    \item \textbf{Probabilidad límite}:
+	\begin{align*}
+	\begin{split}
+	\plim \brown{\betaBH_{mco}} &= \plim \left(\textcolor{blue}{\left(\frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \right)^{-1}} \textcolor{red}{\left(\frac{1}{N}\sum_{i=1}^{N}\XB_i Y_i \right)}\right) \\
+	&= \plim \textcolor{blue}{\left(\frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \right)^{-1}} \plim \textcolor{red}{\left(\frac{1}{N}\sum_{i=1}^{N}\XB_i Y_i \right) \quad \text{\small \color{brown} (mapeo cont.)}}
+	\end{split}
+	\end{align*} 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Consistencia del estimador de MCO II}
+\begin{itemize}
+    \item \textbf{Primer término:} 
+    \begin{align*}
+    \begin{split}
+        \plim \textcolor{blue}{\left(\frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \right)^{-1}} &= \textcolor{blue}{\left(\textcolor{black}{\plim} \frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \right)^{-1}} \quad \quad \text{\color{brown} (mapeo continuo)} \\ &= \EX\left[\XB_i \XB'_i\right]^{-1} \hspace{2.3cm} \text{\color{brown} (WLLN)} 
+    \end{split}
+    \end{align*}
+    %\pause
+    \item \textbf{Segundo término:}    
+    \begin{align*}
+    \begin{split}
+        \plim \textcolor{red}{\left(\frac{1}{N}\sum_{i=1}^{N}\XB_i Y_i \right)} = \EX\left[\XB_i Y_i\right] \hspace{3cm} \text{\color{brown} (WLLN)}
+    \end{split}
+    \end{align*}
+    %\pause
+    \item \textbf{Combinando:}
+    \begin{align*}
+        \plim \brown{\betaBH_{mco}} = \EX[\XB_i\XB'_i]^{-1} \EX[\XB_iY_i] = \textcolor{brown}{\betaB} 
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{- Distribución asintótica}
+
+\begin{frame}[plain]
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=Definición: Convergencia en distribución, breakable]
+    Una secuencia de variables aleatorias 
+    \(\{X_N : N=1,2,\ldots\}\) 
+    \textcolor{blue}{converge en distribución} a una \textbf{variable aleatoria} \(Z\) si, para todo \(x \in \mathbb{R}\) en los puntos de continuidad de la CDF de \(Z\),
+    \[
+        \lim_{N \to \infty} \textbf{F}_N(x) = \textbf{G}(x),
+    \]
+    donde 
+    \[
+        \textbf{F}_N(x) = \Prob{X_N \leq x} \quad \text{es la CDF de } X_N,
+    \]
+    y 
+    \[
+        \textbf{G}(x) = \Prob{Z \leq x} \quad \text{es la CDF de } Z.
+    \]
+\end{tcolorbox}
+    %\pause
+\begin{itemize}
+    \item \textbf{Notación:} $X_N \xrightarrow{d} Z$ (distribución límite).	
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[plain]
+\begin{itemize}
+    \item \textbf{Vectores:} La convergencia marginal de $\mathbf{X}_N$ \textcolor{red}{no implica} convergencia conjunta; la \textbf{dependencia} entre componentes importa. %\pause
+    \vspace{0.75em}
+\begin{tcolorbox}[colback=white, arc=0mm, boxrule=0.5pt, 
+    title=\textbf{Definición: Convergencia en distribución (vectores)}, breakable]
+    Una secuencia de \textbf{vectores aleatorios} 
+    \(\{\XB_N : N=1,2,\ldots\}\), con dimensión \(K \times 1\), 
+    \textcolor{blue}{converge en distribución} a un vector aleatorio \(\ZB \in \mathbb{R}^{K}\) si, 
+    para todo vector determinístico \(\mathbf{c} \in \mathbb{R}^K\),
+    \[
+        \mathbf{c}' \XB_N \xrightarrow{d} \mathbf{c}' \ZB.
+    \]
+\end{tcolorbox}
+    %\pause
+    \item \textbf{Intuición:} toda combinación lineal de \(\XB_N\) converge en distribución 
+    a la combinación lineal correspondiente de \(\ZB\). Esta caracterización se conoce como el \textcolor{blue}{dispositivo de Cramér--Wold}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[plain]
+\begin{tcolorbox}[colback=white, arc=0mm, boxrule=0.5pt, 
+    title=\textbf{Teorema del mapeo continuo (convergencia en distribución)}, breakable]
+    Sea \(\{\hat{\thetaB}_N : N=1,2,\ldots\}\) una secuencia de vectores aleatorios 
+    de dimensión \(K \times 1\) tal que 
+    \vspace{-1em}
+    \[
+        \hat{\thetaB}_N \xrightarrow{d} \ZB.
+    \]
+    
+    \vspace{-0.75em}
+    Si \(\mathbf{g}: \mathbb{R}^K \to \mathbb{R}^J\) es una función continua, entonces
+    \vspace{-0.75em}
+    \[
+        \mathbf{g}(\hat{\thetaB}_N) \xrightarrow{d} \mathbf{g}(\ZB).
+    \]
+\end{tcolorbox}
+    %\pause
+\begin{itemize}
+    \item \textbf{Intuición:} Si conocemos la distribución límite de \(\hat{\thetaB}_N\), también conocemos la distribución límite de cualquier función continua de \(\hat{\thetaB}_N\).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[plain]
+\begin{tcolorbox}[colback=white, arc=0mm, boxrule=0.5pt, 
+    title=\textbf{Teorema del límite central (CLT) – Lindeberg–Lévy}, breakable]
+    Sea \(\{\XB_i : i=1,2,\ldots,N\}\) una secuencia de vectores aleatorios 
+    de dimensión \(K \times 1\), independientes e idénticamente distribuidos (i.i.d.), 
+    con media finita \(\EX[\XB_i] = \boldsymbol{\mu}\) y matriz de covarianza finita 
+    \(\Sigma = \EX[(\XB_i - \boldsymbol{\mu})(\XB_i - \boldsymbol{\mu})']\). Entonces,
+    \[
+        \sqrt{N}\,(\bar{\XB}_N - \boldsymbol{\mu}) \xrightarrow{d} \mathcal{N}(\textbf{0},\Sigma),
+    \]
+    donde \(\bar{\XB}_N = \tfrac{1}{N}\sum_{i=1}^{N}\XB_i\).
+\end{tcolorbox}
+ %\pause
+\begin{itemize}
+    \item \textbf{Nota:} Existen versiones más generales del teorema que relajan el supuesto de i.i.d. (e.g., dependencia débil, heterogeneidad limitada). %\pause
+    \item No se asume normalidad de $\mathbf{X}_i$; la normalidad emerge en el promedio. %\pause
+    \item Un estimador tiene una \textcolor{blue}{tasa de convergencia} a raíz-$N$ si el error estándar del estimador disminuye proporcionalmente a $1/\sqrt{N}$.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Simulación del teorema del límite central}
+\begin{itemize}
+    \item \textbf{Distribuciones consideradas:}
+    \vspace{0.5em}
+    \begin{itemize}
+        \item[i.] \(\textbf{f}(x) = \lambda \exp(-\lambda x)\), con \(\lambda=1\) \hfill (\textcolor{brown}{Exponencial})
+              \vspace{0.2cm}
+        \item[ii.] \(\textbf{f}(x) = 1/(b-a)\), con \(a=0, b=1\) \hfill (\textcolor{brown}{Uniforme}) 
+              \vspace{0.2cm}
+        \item[iii.] \(X \sim \text{\textbf{Bernoulli}}(p)\), con \(p=0.5\) \hfill (\textcolor{brown}{Bernoulli})
+              \vspace{0.3cm}
+    \end{itemize}    
+    %\pause
+    \item \textbf{Algoritmo (repetido 10,000 veces):}
+    \begin{enumerate}
+        \item Extraer una muestra i.i.d. de tamaño \(N=10^5\) de cada distribución.
+        \item Calcular el promedio muestral \(\bar{X}_N\).
+        \item Estandarizar:  
+              \[
+                  Z_N = \frac{\sqrt{N}\,(\bar{X}_N - \mu)}{\sigma}.
+              \]
+        \item Guardar \(\bar{X}_N\) y \(Z_N\) para cada muestra y distribución.
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Resultados simulación: distribución de $Z_N$}
+\vspace{-0.3cm}				
+\begin{figure}[H]
+	\begin{subfigure}{.49\textwidth}
+		\caption{Exponencial}	
+		\includegraphics[width=4.5cm, height=4.5cm, keepaspectratio]{Figuras/clt-simulacion-zn-exponencial.png}
+	\end{subfigure}
+	\begin{subfigure}{.49\textwidth}
+		\caption{Uniforme}
+		\includegraphics[width=4.5cm, height=4.5cm, keepaspectratio]{Figuras/clt-simulacion-zn-uniforme.png}
+	\end{subfigure}	
+    \begin{subfigure}{.49\textwidth}
+        \caption{Bernoulli}	
+		\includegraphics[width=4.5cm, height=4.5cm, keepaspectratio]{Figuras/clt-simulacion-zn-bernoulli.png}
+	\end{subfigure}		
+\end{figure}	
+\end{frame}
+
+\begin{frame}{Convergencia en distribución y convergencia en probabilidad}
+\begin{itemize}
+    \item Queremos estimar la \textbf{favorabilidad promedio} de un candidato antes de una elección. Seleccionamos una muestra aleatoria de \(N\) individuos y les preguntamos si apoyan al candidato (\(Y_i \in \{0, 1\}\)).  
+    \vspace{0.5cm}
+       %\pause
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=9cm]{Figuras/teorema-central-limite-encuesta.png}	
+\end{figure}	
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Distribución asintótica del estimador de MCO}
+\begin{itemize}
+    \item Muestra aleatoria: \(\{(Y_i, \XB_i): i=1,\ldots,N\}\).
+    \[
+        \brown{\betaBH_{mco}} 
+        = \Bigg(\frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \Bigg)^{-1} 
+          \Bigg(\frac{1}{N}\sum_{i=1}^{N}\XB_i Y_i \Bigg).
+    \]
+    
+    %\pause
+    \item Sustituyendo \(Y_i = \XB'_i \textcolor{brown}{\betaB} + e_i\):
+    \[
+        \brown{\betaBH_{mco}} 
+        = \brown{\betaB} 
+          + \Bigg(\frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \Bigg)^{-1} 
+            \Bigg(\frac{1}{N}\sum_{i=1}^{N}\XB_i e_i \Bigg).
+    \]
+    
+    %\pause
+    \item Reorganizando y multiplicando por \(\sqrt{N}\):
+    \[
+        \sqrt{N}\,\big(\brown{\betaBH_{mco}} - \brown{\betaB}\big) 
+        = \Bigg(\frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \Bigg)^{-1}
+        \underbrace{\Bigg(\frac{1}{\sqrt{N}}\sum_{i=1}^{N}\XB_i e_i \Bigg)}_{\textcolor{olive}{\text{término estocástico}}}.
+    \]
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Distribución del término estocástico}
+\begin{itemize}
+    \item Definamos \(\WB_i \equiv \XB_i e_i\) y su promedio muestral \(\bar{\WB}_N = \frac{1}{N}\sum_{i=1}^N \WB_i\).    
+    %\pause
+    \vspace{0.5em}
+    \item Por la \textcolor{blue}{ley de los grandes números}:
+    \[
+        \plim \bar{\WB}_N = \EX[\WB_i] = \EX[\XB_i e_i] = \textbf{0}.
+    \]   
+    %\pause
+    \item Consideremos la suma:
+    \(
+        \frac{1}{\sqrt{N}}\sum_{i=1}^{N}\WB_i 
+        = \sqrt{N}\,\bar{\WB}_N.
+    \)
+    \vspace{0.5em}
+    %\pause
+    \item Por el \textcolor{blue}{teorema del límite central (CLT)}:
+    \[
+        \sqrt{N}\,\bar{\WB}_N \xrightarrow{d} \mathcal{N}(\textbf{0},\Sigma),
+    \]
+    donde \(\Sigma = \Var(\WB_i) = \EX[\WB_i \WB_i'] = \EX\Big[(\XB_i e_i) (\XB_i e_i)'\Big] = \EX[\XB_i \XB'_i e^2_i]\).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[plain]
+\begin{tcolorbox}[colback=white, arc=0mm, boxrule=0.5pt, 
+    title=\textbf{Teorema de Slutsky (corolario)}, breakable]
+
+    Si 
+    \[
+        \sqrt{N}\,\bar{\WB}_N \xrightarrow{d} \mathcal{N}(\textbf{0}, \Sigma),
+    \]
+    y 
+    \[
+        \AB_N \xrightarrow{p} \AB,
+    \]
+    entonces
+    \[
+        \AB_N \,\sqrt{N}\,\bar{\WB}_N \xrightarrow{d} \mathcal{N}\!\left(\textbf{0},\, \AB \Sigma \AB' \right).
+    \]
+\end{tcolorbox}	
+\begin{itemize}
+    %\pause
+    \item En nuestro caso particular:
+    \[
+        \textbf{A}_N \equiv \Bigg(\frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \Bigg)^{-1} \xrightarrow{p} \EX\left[\XB_i \XB'_i\right]^{-1} \equiv \textbf{A}. \hspace{0.75cm} \text{\color{brown} (WLLN)} 
+    \]
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Distribución límite de $\sqrt{N}\,\big(\brown{\betaBH_{mco}} - \brown{\betaB}\big)$}
+\begin{itemize}
+    \item En resumen, hemos mostrado que:
+    \begin{align}\label{EQ:CONVDIST-MCO}
+    \begin{split}
+    \sqrt{N}\,\big(\brown{\betaBH_{mco}} - \brown{\betaB}\big) = \AB_N \,\sqrt{N}\,\bar{\WB}_N \xrightarrow{d} \mathcal{N}\!\left(\textbf{0},\, \AB \Sigma \AB' \right)       
+    \end{split}
+    \end{align}
+     donde:
+    \begin{itemize}
+        \item \(\AB = \EX[\XB_i \XB_i']^{-1}\),
+        \item \(\Sigma = \EX[\XB_i \XB_i' e_i^2]\).
+    \end{itemize}
+    %\pause
+    \vspace{1em}
+    \item Por lo tanto, la \textbf{matriz de varianza-covarianza} de \(K \times K\) es
+    \begin{align}\label{EQ:VARCOV}     
+    \AB \Sigma \AB' 
+    = \EX[\XB_i \XB_i']^{-1} 
+      \,\EX[\XB_i \XB_i' e_i^2]\,
+      \EX[\XB_i \XB_i']^{-1}.
+    \end{align}
+    %\pause
+    Los errores estándar teóricos utilizados para construir los estadísticos de prueba son las raíces cuadradas de los elementos diagonales de \(\tfrac{1}{N}\AB \Sigma \AB'\), es decir, de la ecuación \eqref{EQ:VARCOV} dividida por \(N\).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Distribución asintótica del estimador de MCO}
+\begin{itemize}
+    \item Para obtener la distribución (aproximada) del estimador, dividimos por $\sqrt{N}$ y sumamos $\brown{\betaB}$. \vspace{-1em}
+    \begin{align*}
+    \begin{split}
+        \brown{\betaBH_{mco}} \distras{a} \mathcal{N}(\brown{\betaB}, \frac{1}{N} \AB \Sigma \AB').
+    \end{split}
+    \end{align*}	
+ %\pause
+    La llamamos \textcolor{blue}{distribución asintótica}. Esta es una \textcolor{red}{aproximación para muestras finitas pero ``suficientemente'' grandes}. \vspace{1em}
+ %\pause
+    \item Recordar que $\brown{\betaBH_{mco}} \xrightarrow{p} \brown{\betaB}$, y el parámetro $\brown{\betaB}$ no es estocástico, así que la distribución límite de $\brown{\betaBH_{mco}}$ es degenerada.     
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{- Errores estándar del estimador de MCO}
+
+\begin{frame}{Estimadores de la matriz de varianza--covarianza ($\AB \Sigma \AB'$)}
+\begin{itemize}
+    \item La matriz de varianza--covarianza depende de momentos poblacionales que en la práctica debemos \textcolor{blue}{estimar}. \pause
+    \vspace{1em}
+    \item La elección del estimador depende de los \textcolor{blue}{supuestos} que hagamos sobre el término de error \(e_i\) en el modelo. \pause
+    \vspace{1em}
+    \item Tres casos frecuentes en econometría aplicada:
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item \textbf{Homoscedasticidad y no autocorrelación}: Supuesto clásico de MCO, pero \textcolor{red}{MUY} restrictivo. \pause
+        \item \textbf{Heteroscedasticidad y no autocorrelación}: Errores estándar \textit{robustos} de White. \pause
+        \item \textbf{Heteroscedasticidad con autocorrelación en grupos}:  Errores estándar agrupados o \emph{clustered}. \pause
+    \end{enumerate}
+    \vspace{0.5em}
+    \item En cada caso, usamos los residuos estimados: \(\hat{e}_i = Y_i - \XB'_i \brown{\betaBH_{mco}}\).
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Homoscedasticidad y no autocorrelación}\label{DIAP:estVarCons}
+\begin{itemize}
+    \item \textbf{Supuestos:}
+    \vspace{-0.75em}
+    \[
+    \EX[e_i^2 \mid \XB] = \brown{\sigma^2} \;\; \forall i, \quad \text{y} \quad \EX[e_i e_j \mid \XB] = 0 \;\; \text{para} \;\; i \neq j.
+    \]
+    \pause
+    \item En este caso,
+    \vspace{-0.75em}
+    \begin{align*}
+    \begin{split}
+        \AB \Sigma \AB' &= \EX[\XB_i \XB_i']^{-1} \EX\Big[\XB_i \XB_i' \EX[e_i^2 \mid \XB_i]\Big] \EX[\XB_i \XB_i']^{-1} \quad \quad (\textcolor{brown}{\text{LEI}}) \\
+        &= \brown{\sigma^2} \EX[\XB_i \XB_i']^{-1}
+    \end{split}
+    \end{align*}
+    \pause
+    \item Si definimos \(\brown{\hat{\sigma}^2} = \frac{\sum_{i}\hat{e}^2_i}{N-K}\), se puede \hyperlink{ANEX:estVarCons}{{\beamerreturnbutton{demostrar}}} que
+    \vspace{-0.5em}
+    \begin{align*}
+    \begin{split}
+        \plim \brown{\hat{\sigma}^2} = \brown{\sigma^2}.
+    \end{split}
+    \end{align*}
+    \pause
+    \vspace{-0.75em}
+    Así, se cumple: 
+    \[
+        \plim \brown{\hat{\sigma}^2} \left(\frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \right)^{-1} = \AB \Sigma \AB'.
+    \]
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Heteroscedasticidad y no autocorrelación}
+\begin{itemize}
+    \item \textbf{Supuestos:}
+    \vspace{-0.75em}
+    \[
+    \EX[e_i^2 \mid \XB] = \brown{\sigma^2_i}, \quad \text{y} \quad \EX[e_i e_j \mid \XB] = 0 \;\; \text{para} \;\; i \neq j.
+    \]
+    \pause
+    \item \citet{white1980} demuestra que
+    \begin{align*}
+    \begin{split}
+        \plim \frac{1}{N} \sum_{i=1}^{N} \XB_i \XB'_i \hat{e}^2_i = \EX[\XB_i \XB_i' e_i^2].
+    \end{split}
+    \end{align*}
+    \vspace{0.5em}
+    \pause
+    Por consiguiente, se cumple:
+    \begin{align*}
+        \plim \underbrace{\left(\frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \right)^{-1}}_{\textbf{A}_N} \underbrace{\frac{1}{N} \sum_{i=1}^{N} \XB_i \XB'_i \hat{e}^2_i}_{\hat{\Sigma}} \underbrace{\left(\frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \right)^{-1}}_{\textbf{A}_N}  = \AB \Sigma \AB'        
+    \end{align*}
+ \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Modelo con heteroscedasticidad}
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=8.5cm]{Figuras/modelo-regresion-heterocedasticidad.png}	
+\end{figure}    
+\end{frame}
+
+
+\begin{frame}{Heteroscedasticidad con autocorrelación en grupos}
+\begin{itemize}
+    \item Dividimos las \(N\) observaciones en grupos \(g \in \{1, \ldots, G\}\). \pause
+    \vspace{0.5em}
+    \item \textbf{Supuestos:}
+    \vspace{-1.3em}
+    \begin{align*}
+    \footnotesize
+    \begin{split}
+    \EX[e_{gi}^2 \mid \XB] &= \sigma^2_{gi}, \\
+    \EX[e_{gi} e_{gj} \mid \XB] &\;\;\text{no se restringe} \quad \text{si } i \neq j, \\
+    \EX[e_{gi} e_{hj} \mid \XB] &= 0 \quad \text{si } g \neq h.
+    \end{split}
+    \end{align*}
+    Es decir, se permite \textbf{heteroscedasticidad y correlación arbitraria dentro de cada grupo}, pero independencia entre grupos. \pause
+    \vspace{0.5em}
+    \item Si definimos:
+    \vspace{-1em}
+    \begin{align*}    
+    \footnotesize
+        \hat{\Sigma} \equiv \frac{1}{N} \sum_{g=1}^{G} \left( \sum_{i \in g} \XB_{gi}\hat{e}_{gi} \right)
+        \left( \sum_{i \in g} \XB_{gi}\hat{e}_{gi} \right)',
+    \end{align*}
+    \vspace{-0.25em}
+    \pause
+    se cumple:
+    \vspace{-1em}
+    \begin{align*}
+    \footnotesize
+        \plim \underbrace{\left(\frac{1}{N}\sum_{i=1}^{N} \XB_i \XB'_i \right)^{-1}}_{\textbf{A}_N}
+        \hat{\Sigma}
+        \underbrace{\left(\frac{1}{N}\sum_{i=1}^{N} \XB_i \XB'_i \right)^{-1}}_{\textbf{A}_N} = \AB \Sigma \AB'.
+    \end{align*}
+    \vspace{-0.5em}
+    \item \textbf{Nota:} La consistencia de este estimador requiere que el número de grupos \(G \to \infty\).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Resumiendo}
+\begin{itemize}
+    \item La distribución asintótica del estimador MCO es:
+    \vspace{-0.5em}
+    \[
+        \brown{\betaBH_{mco}} \distras{a} 
+        \mathcal{N}\!\left(\brown{\betaB}, \tfrac{1}{N}\AB \Sigma \AB'\right),
+    \]
+    donde \(\AB \Sigma \AB'\) es la matriz de varianza--covarianza que debemos estimar.
+    \vspace{-0.0em}
+    \pause
+    \item Según los supuestos sobre el término de error, obtenemos distintos estimadores consistentes:
+    \[
+        \plim \, \AB_N \hat{\Sigma} \AB_N' = \AB \Sigma \AB',
+    \]
+    \vspace{-0.0em}    
+    donde \(\AB_N\) es un estimador consistente de \(\AB\) y \(\hat{\Sigma}\) es un estimador consistente de \(\Sigma\). \pause
+    \vspace{0.5em}
+    \item Los errores estándar para construir los estadísticos de prueba son las raíces cuadradas de los elementos diagonales de \(\tfrac{1}{N}\AB_N \hat{\Sigma} \AB_N'\).
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Anexos}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{- Insesgamiento}
+
+\begin{frame}{Propiedades de los estimadores en muestras finitas}
+\begin{itemize}
+    \item Consideraremos dos propiedades de los estimadores en \textbf{muestras finitas}:
+    \begin{enumerate}
+        \item \textcolor{blue}{Insesgamiento:} Un estimador \(\textcolor{brown}{\hat{\theta}}\) del parámetro \(\textcolor{brown}{\theta}\) es insesgado si \(\EX [\textcolor{brown}{\hat{\theta}}] = \textcolor{brown}{\theta}\). 
+        % %%%%%%%%\pause
+        \vspace{0.2cm}        
+        \item \textcolor{blue}{Eficiencia:} Sean \(\textcolor{brown}{\hat{\theta}}\) y \(\textcolor{brown}{\tilde{\theta}}\) dos estimadores insesgados del parámetro \(\textcolor{brown}{\theta}\). Decimos que \(\textcolor{brown}{\hat{\theta}}\) es más eficiente que \(\textcolor{brown}{\tilde{\theta}}\) si \( \Var[\textcolor{brown}{\hat{\theta}}] < \Var[\textcolor{brown}{\tilde{\theta}}]\).
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Insesgamiento del estimador de MCO I}
+\begin{itemize}
+    \item Modelo lineal (proyección poblacional):
+    \begin{align}\label{EQ:MODELO-LINEAL-B}
+        Y_i = \XB'_i \textcolor{brown}{\betaB} + e_i, \quad \text{donde} \quad  \textcolor{brown}{\betaB} = \EX[\XB_i\XB'_i]^{-1} \EX[\XB_iY_i]        
+    \end{align}
+    \item Para demostrar \textcolor{blue}{insesgamiento} y \textcolor{blue}{eficiencia}, necesitamos un supuesto más fuerte: \(\EX[e_i \mid \XB_i] = 0\) (i.e., la CEF es lineal) 
+    \vspace{0.5em}
+    \item Con una muestra aleatoria \(\{(Y_i, \XB_i): i=1,\ldots,N\}\), el estimador de MCO es:
+    \vspace{-0.5em}
+    \begin{align}\label{EQ:ESTIMADOR-MCO-B}
+        \textcolor{brown}{\hat{\betaB}_{mco}} = \left(\sum_i \XB_i \XB'_i \right)^{-1} \left(\sum_i  \XB_i Y_i\right).
+    \end{align}
+    \vspace{-0.5em}
+    % %%%%%%%%\pause
+    Sustituyendo \eqref{EQ:MODELO-LINEAL-B} en \eqref{EQ:ESTIMADOR-MCO-B}:
+    \begin{align*}
+    \begin{split}
+        \textcolor{brown}{\hat{\betaB}_{mco}} = \textcolor{brown}{\betaB} + \left(\sum_i \XB_i \XB'_i \right)^{-1} \left(\sum_i  \XB_i e_i\right)
+    \end{split}
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Insesgamiento del estimador de MCO II}
+\begin{itemize}
+    \item Tomando el \textbf{valor esperado condicional en la muestra \(\XB\)}:
+    \begin{align*}
+        \EX[\textcolor{brown}{\hat{\betaB}_{mco}}|\XB] 
+        &= \textcolor{brown}{\betaB} 
+           + \EX\!\left[ 
+             \Bigg(\sum_i \XB_i \XB'_i \Bigg)^{-1} 
+             \Bigg(\sum_i \XB_i e_i\Bigg) \;\Bigg|\; \XB
+             \right] \\
+        &= \textcolor{brown}{\betaB} 
+           + \Bigg(\sum_i \XB_i \XB'_i \Bigg)^{-1} 
+             \Bigg(\sum_i \XB_i \EX[e_i \mid \XB]\Bigg) \\
+        &= \textcolor{brown}{\betaB}.
+    \end{align*}
+    % %%%%%%%%\pause
+    \item Usando la \textbf{ley de la esperanza iterada}:
+    \begin{align*}
+        \EX[\textcolor{brown}{\hat{\betaB}_{mco}}] &= \EX\left[\EX[\textcolor{brown}{\hat{\betaB}_{mco}}|\XB]\right] \\
+        &= \textcolor{brown}{\betaB}.
+    \end{align*}
+    % %%%%%%%%\pause
+    $\implies$ El \textcolor{blue}{estimador de MCO} es \textcolor{blue}{insesgado}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Ejemplo de insesgamiento en datos simulados}
+\begin{itemize}
+    \item \textbf{Modelo Poblacional:}
+    \begin{align*}
+        Y_i = \textcolor{brown}{\beta_0} + \textcolor{brown}{\beta_1} X_i + e_i
+    \end{align*}
+    \item \textbf{Supuestos:}
+    \begin{itemize}
+        \item[i.] \(\textcolor{brown}{\beta_0} = 10\), \(\textcolor{brown}{\beta_1} = 5\)
+        \vspace{0.1cm}
+        \item[ii.] \(X_i \sim \mathcal{N}(8, 16)\), \(e_i \sim \mathcal{N}(0, 9)\), independientes \(\Rightarrow \EX[e_i \mid X_i] = 0\)
+    \end{itemize}
+    \vspace{1em}
+    % %%%%%%%%\pause
+    \item \textbf{Algoritmo (se repite 10,000 veces):}
+    \begin{enumerate}
+        \item Generar una muestra aleatoria (iid) de tamaño \textcolor{red}{\(N = 100\)} para \(X_i\) y \(e_i\).
+        \item Calcular \(Y_i\) usando los parámetros del modelo poblacional.
+        \item Estimar los parámetros por MCO, dada la muestra: 
+        \begin{align*}
+            \textcolor{brown}{\hat{\betaB}_{mco}} = \left(\XB' \XB \right)^{-1} \XB' \YB
+        \end{align*}
+        \item Guardar los valores estimados de \(\textcolor{brown}{\hat{\beta}_0}\) y \(\textcolor{brown}{\hat{\beta}_1}\).
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Distribución de $\textcolor{brown}{\hat{\beta}_0}$, $\textcolor{brown}{\hat{\beta}_1}$ en las 10,000 simulaciones}
+\begin{figure}[H]
+	\begin{subfigure}{.49\textwidth}
+		\caption{$\textcolor{brown}{\hat{\beta}_0}$  (promedio = 10.00)}	
+		\includegraphics[width=5.5cm, height=5.5cm, keepaspectratio]{Figuras/simulacion-distribucion-beta0.png}
+	\end{subfigure}
+	\begin{subfigure}{.49\textwidth}
+		\caption{$\textcolor{brown}{\hat{\beta}_1}$ (promedio = 4.99)}
+		\includegraphics[width=5.5cm, height=5.5cm, keepaspectratio]{Figuras/simulacion-distribucion-beta1.png}
+	\end{subfigure}	
+\end{figure}	
+\begin{itemize}
+    \item La distribución está centrada en el valor poblacional.
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{- Teorema de Gauss-Markov}
+
+\begin{frame}{Teorema de Gauss-Markov}\label{DIAP:Gauss-Markov}
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=Teorema de Gauss-Markov, breakable]	
+    Bajo los siguientes supuestos, el estimador MCO de \(\brown{\betaB}\) es el \textbf{mejor estimador lineal insesgado} (BLUE):
+    \begin{enumerate}
+        \item Linealidad del modelo: \(Y_i = \XB_i'\betaB + e_i\).
+        \item Exogeneidad: \(\EX[e_i \mid \XB] = 0\).
+        \item No multicolinealidad perfecta: \(\XB'\XB\) es invertible (\(\XB\) de rango completo).
+        \item Homoscedasticidad: \(\Var(e_i \mid \XB) = \brown{\sigma^2}\).
+        \item No autocorrelación: \(\EX[e_i e_j \mid \XB] = 0 \;\; (i \neq j)\).
+    \end{enumerate}    
+\end{tcolorbox}
+\begin{itemize}
+    \item \textbf{Intuición:} Entre todos los estimadores lineales insesgados, el de MCO tiene la varianza más baja; es decir, es el más eficiente.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Demostración del teorema de Gauss-Markov}\label{ANEX:Gauss-Markov}
+\begin{itemize}
+    \item Estimador de MCO: 
+    \begin{align*}
+    \begin{split}
+        \textcolor{brown}{\hat{\betaB}_{mco}} = \boldsymbol{A} \YB; \quad \EX\left[\textcolor{brown}{\hat{\betaB}_{mco}}|\XB\right]=\brown{\betaB}; \quad \Var\left[\textcolor{brown}{\hat{\betaB}_{mco}}|\XB\right]=\textcolor{brown}{\sigma^2} (\XB'\XB)^{-1},
+    \end{split}
+    \end{align*}		
+    donde $\boldsymbol{A} \equiv (\XB'\XB)^{-1}\XB'$. \vspace{0.3cm}
+    \item Sea $\textcolor{brown}{\boldsymbol{\tilde{\beta}}}$ otro estimador de $\textcolor{brown}{\betaB}$ tal que
+    \begin{align*}
+    \begin{split}
+        \textcolor{brown}{\boldsymbol{\tilde{\beta}}} = \boldsymbol{B} \YB; \quad \EX\left[\textcolor{brown}{\boldsymbol{\tilde{\beta}}}|\XB\right]=\brown{\betaB}.
+    \end{split}
+    \end{align*}
+    \item[i.] $\EX\left[\textcolor{brown}{\boldsymbol{\tilde{\beta}}}|\XB\right] = \EX\left[\boldsymbol{B} \YB|\XB\right]=\EX\left[\boldsymbol{B}\XB \textcolor{brown}{\betaB}+ \boldsymbol{B}\boldsymbol{e}|\XB\right]= \textcolor{brown}{\betaB} \implies \boldsymbol{B}\XB = \boldsymbol{\mathbb{I}}_{K}.$
+    \item[ii.] $\Var[\textcolor{brown}{\boldsymbol{\tilde{\beta}}}|\XB] = \textcolor{brown}{\sigma^2} \boldsymbol{B}\boldsymbol{B}'$ (mismo procedimiento que para el estimador de MCO). \vspace{0.3cm}
+    \item Sea $\boldsymbol{C} \equiv \boldsymbol{B}-\boldsymbol{A}$. Notar que $\boldsymbol{C}\XB=\boldsymbol{0}$ porque $\boldsymbol{B}\XB=\boldsymbol{A}\XB=\boldsymbol{\mathbb{I}}_{K}$.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Demostración del teorema de Gauss-Markov}
+	\begin{itemize}
+		\item De (ii)
+	\begin{align*}
+		\begin{split}
+		\Var[\textcolor{brown}{\boldsymbol{\tilde{\beta}}}|\XB] &= \textcolor{brown}{\sigma^2} \left((\boldsymbol{C}+\boldsymbol{A})(\boldsymbol{C}+\boldsymbol{A})'\right) \\
+		&= \textcolor{brown}{\sigma^2} \left(\boldsymbol{C} \boldsymbol{C}'+\boldsymbol{C}\boldsymbol{A}'+ \boldsymbol{A}\boldsymbol{C}'+\boldsymbol{A}\boldsymbol{A}'\right) \\	
+		&= \textcolor{brown}{\sigma^2} \left(\boldsymbol{C} \boldsymbol{C}'+\boldsymbol{A}\boldsymbol{A}'\right) \quad \text{\color{brown}(pues $\boldsymbol{C}\boldsymbol{A}' = \boldsymbol{C}\XB(\XB'\XB)^{-1} = \boldsymbol{0}$)} \\				
+		&= \textcolor{brown}{\sigma^2} \left(\boldsymbol{C} \boldsymbol{C}'\right)+ \Var\left[\textcolor{brown}{\hat{\betaB}_{mco}}|\XB\right]\\		
+		\end{split}	
+	\end{align*}	
+\item Pero $\boldsymbol{C} \boldsymbol{C}'$ es una matriz semidefinida positiva. Por lo tanto, en el sentido matricial,
+\begin{align*}
+	\begin{split}
+		\Var\left[\textcolor{brown}{\betaBH_{mco}}|\XB\right] \leq \Var\left[\textcolor{brown}{\boldsymbol{\tilde{\beta}}}|\XB\right].
+	\end{split}
+\end{align*}
+	\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection*{- Consistencia del estimador de la matriz de varianza–covarianza}
+
+\begin{frame}{Demostración: estimador $\textcolor{brown}{\hat{\sigma}^2}$ de $\textcolor{brown}{\sigma^2}$ es consistente}\label{ANEX:estVarCons}
+\begin{itemize}
+\item Sea $\textbf{M} \equiv \left(\boldsymbol{\mathbb{I}_N} - \XB \textbf{A}\right)$, donde $\boldsymbol{A} \equiv (\XB'\XB)^{-1}\XB'$ y \(\XB\) es una matriz de \(N \times K\). 
+\item Algunas propiedades útiles de $\textbf{M}$: \vspace{0.2cm}
+		\begin{itemize}
+	\item[i.] $\hat{\boldsymbol{e}} = \textbf{M} \yB$ \hspace{0.37cm} (\textit{``residual maker''}).
+	\item[ii.] $\textbf{M} = \textbf{M}'$ \hspace{0.3cm} (simétrica).
+	\item[iii.] $\textbf{M} = \textbf{M}^2$ \hspace{0.3cm} (idempotente).	
+	\item[iv.] $\textbf{M}\XB = \textbf{0}$.
+	\item[v.] $\hat{\boldsymbol{e}} = \textbf{M}\boldsymbol{e}$ \hspace{0.37cm} (usando $i$ y $iv$) \vspace{0.3cm}
+\end{itemize} 
+\item $\hat{\boldsymbol{e}}'\hat{\boldsymbol{e}}= \boldsymbol{e}'\textbf{M}\boldsymbol{e}$, así que nos interesa
+\begin{align*}
+\begin{split}
+	\plim \frac{\hat{\boldsymbol{e}}'\hat{\boldsymbol{e}}}{N-K}&= \plim \dfrac{\boldsymbol{e}'\textbf{M}\boldsymbol{e}}{N-K}
+\end{split}
+\end{align*}	
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Demostración: estimador $\textcolor{brown}{\hat{\sigma}^2}$ de $\textcolor{brown}{\sigma^2}$ es consistente}
+\begin{itemize}
+	\item Expandiendo $\textbf{M}$ y multiplicando y dividiendo por $N$
+{\fontvid
+\begin{align*}
+\begin{split}
+    \plim \frac{\hat{\boldsymbol{e}}'\hat{\boldsymbol{e}}}{N-K} &= \plim \frac{N}{N-K} \left(\frac{\boldsymbol{e}'\left(\boldsymbol{\mathbb{I}_N} - \XB \left(\XB' \XB \right)^{-1} \XB'\right)\boldsymbol{e}}{N}\right) \\
+    &= \plim \frac{N}{N-K} \left(\dfrac{\boldsymbol{e}'\boldsymbol{e}}{N}-\dfrac{\boldsymbol{e}'\XB}{N}\left(\dfrac{\XB' \XB }{N}\right)^{-1}\dfrac{\XB'\boldsymbol{e}}{N}\right). \\
+\end{split}
+\end{align*}
+}
+\item Aplicando la WLLN y el teorema del mapeo continuo	
+\begin{enumerate}
+	\item $\plim \frac{N}{N-K} = 1$
+	\item $\plim \frac{\boldsymbol{e}'\boldsymbol{e}}{N} = \plim \frac{1}{N} \sum_{i} e^2_i = \EX[e^2_i] = \sigma^2$
+	\item $\plim \frac{\XB'\boldsymbol{e}}{N} = \plim \frac{1}{N} \sum_{i} \XB_i e_i =  \EX[\XB_i e_i] = \textbf{0}$			
+	\item $\plim \left(\frac{\XB' \XB}{N}\right)^{-1} = \plim \left(\frac{1}{N}\sum_{i=1}^{N}\XB_i \XB'_i \right)^{-1} =  \EX[\XB_i \XB'_i]^{-1}$.				
+\end{enumerate}
+\vspace{0.2cm}
+\item Juntando 1-4
+\begin{align*}
+\begin{split}
+\plim  \brown{\hat{\sigma}^2} = \plim \frac{\hat{\boldsymbol{e}}'\hat{\boldsymbol{e}}}{N-K} = \brown{\sigma^2} 
+\end{split}
+\end{align*}
+\end{itemize}
+\hyperlink{DIAP:estVarCons}{{\beamerreturnbutton{Regresar}}}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%BIBLIOGRAPHY
+\nobibliography{references}
+
+\end{document}

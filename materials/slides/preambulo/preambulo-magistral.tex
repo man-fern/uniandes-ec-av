@@ -1,0 +1,335 @@
+% =====================================================================
+% Preámbulo común — Diapositivas Magistrales, Econometría Avanzada
+% =====================================================================
+% Se incluye con \input{preambulo/preambulo-magistral} DESPUÉS de
+% \documentclass[<tam>pt, xcolor=dvipsnames]{beamer} en cada archivo.
+%
+% Lo único que debe quedar en cada .tex individual es:
+%   1) \documentclass[...]{beamer}      (el tamaño de fuente puede variar)
+%   2) \input{preambulo/preambulo-magistral}
+%   3) \subtitle{...}                   (título de la clase puntual)
+% Todo lo demás (paquetes, macros, tema, título, autor, hypersetup, etc.)
+% vive aquí para poder hacer cambios globales en un solo lugar.
+% =====================================================================
+
+% ---------------------------------------------------------------------
+% 1. Codificación, idioma y fuentes
+% ---------------------------------------------------------------------
+\usepackage{etex}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{lmodern}
+\usepackage{type1cm}
+\usepackage{textcomp}
+
+% ---------------------------------------------------------------------
+% 2. Matemáticas y símbolos
+% ---------------------------------------------------------------------
+\usepackage{amsmath,amssymb,amsthm,amsfonts}
+\usepackage{bbm}
+\usepackage{bm}
+
+% ---------------------------------------------------------------------
+% 3. Bibliografía y citas
+% ---------------------------------------------------------------------
+\usepackage[round]{natbib}
+\bibliographystyle{erae}
+\usepackage{bibentry}
+\usepackage{url}
+\let\htmlstyloaded=\relax
+
+% Las citas se muestran en marrón para distinguirlas del contenido.
+\let\oldcitet=\citet
+\renewcommand{\citet}[1]{\textcolor{brown}{\oldcitet{#1}}}
+\let\oldcitep=\citep
+\renewcommand{\citep}[1]{\textcolor{brown}{\oldcitep{#1}}}
+\let\oldcite=\cite
+\renewcommand{\cite}[1]{\textcolor{brown}{\oldcite{#1}}}
+
+% ---------------------------------------------------------------------
+% 4. Figuras, tablas y colores
+% ---------------------------------------------------------------------
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage[font={footnotesize}]{caption}
+\usepackage{lscape}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage[flushleft]{threeparttable}
+\usepackage{color, colortbl}
+\usepackage{eso-pic}
+\usepackage{chngcntr}
+\usepackage{adjustbox}
+\usepackage{pdfpages}
+\usepackage{media9}
+
+% siunitx: usado para alinear/formatear números en tablas
+\usepackage{siunitx}
+\sisetup{
+	detect-mode,
+	tight-spacing		= true,
+	group-digits		= false ,
+	input-signs		= ,
+	input-symbols		= ( ) [ ] - + *,
+	input-open-uncertainty	= ,
+	input-close-uncertainty	= ,
+	table-align-text-post	= false
+}
+
+% ---------------------------------------------------------------------
+% 5. TikZ / PGFPlots
+% ---------------------------------------------------------------------
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+\usetikzlibrary{arrows,calc, patterns, positioning, shapes.geometric, decorations.pathreplacing,decorations.markings}
+
+% ---------------------------------------------------------------------
+% 6. Misceláneos de formato
+% ---------------------------------------------------------------------
+\usepackage{setspace}
+\usepackage{lipsum}
+\usepackage{framed}
+\usepackage{mdframed}
+\usepackage{fancyhdr}
+\usepackage{beamerfoils}
+\usepackage{pifont}
+\usepackage{ragged2e}
+\usepackage{xspace}
+\usepackage{appendixnumberbeamer}
+\usepackage[scale=2]{ccicons}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\setbeamertemplate{note page}[plain]
+
+% ---------------------------------------------------------------------
+% 7. Hyperref (debe cargarse después de la mayoría de paquetes)
+% ---------------------------------------------------------------------
+\usepackage{hyperref}
+\hypersetup {
+	pdftitle={General},
+	pdfauthor={Manuel Fern\'{a}ndez},
+	colorlinks=true,
+	citecolor=brown,
+	linkcolor=black,
+	urlcolor=blue
+}
+\makeatletter
+\renewcommand{\hyper@natlinkstart}[1]{}
+\renewcommand{\hyper@natlinkend}{}
+\renewcommand{\hyper@natlinkbreak}[2]{#1}
+\makeatother
+
+% =====================================================================
+% 8. Tema Beamer (metropolis)
+% =====================================================================
+\usetheme{metropolis}
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+\metroset{sectionpage=none}
+
+\setbeamerfont{citep}{family=\rm}
+\setbeamerfont{caption}{size=\scriptsize}
+\setbeamerfont{normal text}{size=7pt}
+
+%\setcounter{tocdepth}{1}
+\setbeamertemplate{section in toc}[sections numbered]
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+% NOTA: \setbeamercolor{button}, \setbeamercovered{invisible} y
+% \AtBeginSubsection NO están aquí porque sólo algunas clases los usaban
+% en el original (afectan botones de hipervínculo, el efecto de \pause,
+% y los separadores de \subsection). Se preservan como "ajustes locales"
+% en los .tex que ya los tenían, justo después de \input{preambulo}.
+
+% =====================================================================
+% 9. Macros de Estout (tablas de resultados)
+% =====================================================================
+\newcommand{\sym}[1]{\rlap{#1}}% Thanks to David Carlisle
+\let\estinput=\input% define a new input command so that we can still flatten the document
+\newcommand{\estwide}[3]{
+	\vspace{.75ex}{
+		\begin{tabular*}
+			{\textwidth}{@{\hskip\tabcolsep\extracolsep\fill}l*{#2}{#3}}
+			\toprule
+			\estinput{#1}
+			\bottomrule
+			\addlinespace[.75ex]
+		\end{tabular*}
+	}
+}
+\newcommand{\estauto}[3]{
+	\vspace{.75ex}{
+		\begin{tabular}{l*{#2}{#3}}
+			\toprule
+			\estinput{#1}
+			\bottomrule
+			\addlinespace[.75ex]
+		\end{tabular}
+	}
+}
+% Allow line breaks with \\ in specialcells
+\newcommand{\specialcell}[2][c]{%
+	\begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+
+% =====================================================================
+% 10. Notas y fuentes al pie de figuras/tablas
+% =====================================================================
+% Note/Source/Text after Tables
+\newcommand{\figtext}[1]{
+	\vspace{-1.9ex}
+	\captionsetup{justification=justified,font=footnotesize}
+	\caption*{\hspace{6pt}\hangindent=1.5em #1}
+}
+\newcommand{\fignote}[1]{\figtext{\emph{Note:~}~#1}}
+\newcommand{\figsource}[1]{\figtext{\emph{Source:~}~#1}}
+% Add significance note with \starnote
+\newcommand{\starnote}{\figtext{* p $<$ 0.10 ** p $<$ 0.05 *** p $<$ 0.01. }}
+
+% =====================================================================
+% 11. Entornos tipo teorema (en español)
+% =====================================================================
+\newtheorem{Prop}{Proposition}[section]
+\newtheorem{Def}{Definition}
+%\newtheorem{Assum}{Assumption}
+%\newtheorem{Question}{Question}
+%\newtheorem{Comment}{Comment}
+%\theoremstyle{plain}
+%\numberwithin{Assum}{section}
+%\numberwithin{figure}{section}
+%\numberwithin{equation}{section}
+%\numberwithin{Def}{section}
+
+\newenvironment{Teorema}[1][Teorema.]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{Corolario}[1][Corolario.]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{Definicion}[1][Definición.]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{Lema}[1][Lema.]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{Ejemplo}[1][Ejemplo.]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newenvironment{myindentpar}[1]%
+{\begin{list}{}%
+		{\setlength{\leftmargin}{#1}}%
+		\item[]%
+	}
+	{\end{list}}
+
+% =====================================================================
+% 12. Notación matemática y econométrica
+% =====================================================================
+\newcommand{\plim}{\operatornamewithlimits{plim}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\pderiv}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\spderiv}[2]{\frac{\partial^2 #1}{\partial #2^2}}
+\newcommand{\xderiv}[3]{\frac{\partial^2 #1}{\partial #2 \partial #3}}
+\newcommand{\argmin}{\operatornamewithlimits{arg\,min}}
+\newcommand{\argmax}{\operatornamewithlimits{arg\,max}}
+\newcommand{\amax}{\operatornamewithlimits{max}}
+\newcommand{\amin}{\operatornamewithlimits{min}}
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{\node[shape=circle,draw,inner sep=1pt] (char) {#1};}}
+\newcommand{\indep}{\perp \!\!\! \perp}
+\makeatletter
+\newcommand{\distas}[1]{\mathbin{\overset{#1}{\kern\z@\sim}}}%
+\newsavebox{\mybox}\newsavebox{\mysim}
+\newcommand{\distras}[1]{%
+	\savebox{\mybox}{\hbox{\kern3pt$\scriptstyle#1$\kern3pt}}%
+	\savebox{\mysim}{\hbox{$\sim$}}%
+	\mathbin{\overset{#1}{\kern\z@\resizebox{\wd\mybox}{\ht\mysim}{$\sim$}}}%
+}
+\makeatother
+
+\DeclareMathOperator{\EX}{\mathbb{E}}% expected value
+\newcommand{\Prob}[1]{\text{Pr}\left[#1\right]}
+\newcommand{\RK}[1]{\mathbb{R}^{#1}}
+\newcommand{\HT}[1]{\mathbb{H}_{#1}}
+
+% Vectores y matrices en negrilla (romana)
+\newcommand{\xB}{\textbf{x}}
+\newcommand{\yB}{\textbf{y}}
+\newcommand{\zB}{\textbf{z}}
+\newcommand{\wB}{\textbf{w}}
+\newcommand{\eB}{\textbf{e}}
+\newcommand{\vB}{\textbf{v}}
+\newcommand{\AB}{\textbf{A}}
+\newcommand{\XB}{\textbf{X}}
+\newcommand{\YB}{\textbf{Y}}
+\newcommand{\ZB}{\textbf{Z}}
+\newcommand{\QB}{\textbf{Q}}
+\newcommand{\WB}{\textbf{W}}
+
+% Vectores griegos en negrilla
+\newcommand{\betaB}{\boldsymbol{\beta}}
+\newcommand{\gammaB}{\boldsymbol{\gamma}}
+\newcommand{\alphaB}{\boldsymbol{\alpha}}
+\newcommand{\thetaB}{\boldsymbol{\theta}}
+\newcommand{\deltaB}{\boldsymbol{\delta}}
+\newcommand{\phiB}{\boldsymbol{\phi}}
+\newcommand{\epsilonB}{\boldsymbol{\epsilon}}
+\newcommand{\etaB}{\boldsymbol{\eta}}
+\newcommand{\betaBH}{\boldsymbol{\hat{\beta}}}
+\newcommand{\betaH}{\hat{\beta}}
+
+% Colores de énfasis
+\newcommand{\brown}[1]{\textcolor{brown}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+% Espaciados usados en itemize/enumerate
+\newcommand{\smallspace}{\vspace{0.1cm}}
+\newcommand{\mediumspace}{\vspace{0.3cm}}
+\newcommand{\largespace}{\vspace{6cm}}
+
+% Tamaños de fuente auxiliares
+\newcommand\fontvia{\fontsize{4}{6}\selectfont}
+\newcommand\fontvib{\fontsize{5}{8}\selectfont}
+\newcommand\fontvic{\fontsize{7}{10}\selectfont}
+\newcommand\fontvid{\fontsize{8}{11}\selectfont}
+\newcommand\fontvie{\fontsize{10}{11}\selectfont}
+
+% Celdas de mapa de calor estilizado para la intuición de shift-share
+% Monotone (brown) cell: value 0..100 -> brown intensity
+\newcommand{\sharecell}[3]{%
+  \pgfmathtruncatemacro{\vv}{#3}%
+  \fill[brown!\vv!white] (#1,#2) rectangle ({#1+1},{#2+1});%
+  \draw[gray!40] (#1,#2) rectangle ({#1+1},{#2+1});%
+}
+% Diverging (blue/red) cell: value -50..50 -> blue (neg) or red (pos)
+\newcommand{\divcell}[3]{%
+  \pgfmathtruncatemacro{\absvv}{abs(#3)*2}%
+  \pgfmathtruncatemacro{\negflag}{(#3)<0 ? 1 : 0}%
+  \ifnum\negflag=1
+    \fill[blue!\absvv!white] (#1,#2) rectangle ({#1+1},{#2+1});%
+  \else
+    \fill[red!\absvv!white] (#1,#2) rectangle ({#1+1},{#2+1});%
+  \fi
+  \draw[gray!40] (#1,#2) rectangle ({#1+1},{#2+1});%
+}
+% Uniform cell: same color regardless of (col,row)
+\newcommand{\unifcell}[3]{%
+  \pgfmathtruncatemacro{\vv}{#3}%
+  \fill[red!\vv!white] (#1,#2) rectangle ({#1+1},{#2+1});%
+  \draw[gray!40] (#1,#2) rectangle ({#1+1},{#2+1});%
+}
+
+% =====================================================================
+% 13. Datos de portada (comunes a todas las clases)
+% =====================================================================
+\title{Econometría Avanzada}
+\author{Manuel Fernández}
+\date{\today}
+%\titlegraphic{\hfill\includegraphics[height=1.5cm]{logo.pdf}}

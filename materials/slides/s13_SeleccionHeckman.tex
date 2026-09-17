@@ -1,0 +1,573 @@
+\documentclass[10pt, xcolor=dvipsnames]{beamer}
+\input{preambulo/preambulo-magistral}
+
+% Ajustes locales de esta clase (preservados del original):
+\setbeamercolor{button}{bg=black,fg=white}
+\setbeamercovered{invisible}
+\AtBeginSubsection[]
+{
+    \begin{frame}
+        {Subsección}
+        \tableofcontents[currentsection, currentsubsection, subsectionstyle=show/shaded/hide]
+    \end{frame}
+}
+
+\subtitle{Modelo de Selección de Heckman}
+
+\begin{document}
+	\beamertemplatenavigationsymbolsempty	
+\begin{frame}[plain]%Title Page%
+	\titlepage
+	\vspace{-0.4cm}
+\textbf{Temas de la Clase:} \\ \vspace{0.3cm}
+	\tableofcontents
+\end{frame}
+
+\begin{frame}{Temas de la clase:}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Modelos de selección}
+
+\begin{frame}{Autoselección en la muestra}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item Estudiar situaciones en las que \textcolor{red}{\textbf{la muestra está seleccionada}}, y la \textcolor{red}{\textbf{selección depende de decisiones}} que toman las unidades.
+    %%\pause
+    \vspace{0.5em}
+    \begin{itemize}\setlength{\itemsep}{0.3em}
+        \item Observamos los resultados laborales únicamente de las personas que \textcolor{blue}{participan en el mercado laboral}. %%\pause
+        \item Observamos los resultados de un RCT únicamente para las personas que \textcolor{blue}{participan en el experimento}. %%\pause
+        \item Observamos los resultados de una encuesta solo para las \textcolor{blue}{personas que la contestan}.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Sesgo de supervivencia: ¿Dónde poner el blindaje?}
+\begin{figure}[H]
+	\includegraphics[width=9cm, height=9cm, keepaspectratio]{Figuras/sesgo-supervivencia-blindaje.png}
+\end{figure}
+%Abraham Wald
+\end{frame}
+
+
+\begin{frame}{Sesgo en la muestra}
+\begin{figure}[H]
+	\includegraphics[width=9cm, height=9cm, keepaspectratio]{Figuras/sesgo-muestreo-abraham-wald.png}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Truncamiento incidental}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item Queremos estimar los parámetros del modelo
+    \begin{align*}\label{EQ:Wage}
+        Y^*_i = \XB'_i\betaB + \epsilon_i,
+    \end{align*}
+    donde $\EX[\epsilon_i|\XB_i]=0$. Sin embargo, solo observamos $Y^*_i$ para un \textbf{subconjunto de la población}. 
+    %%\pause
+    \item Por ejemplo, si $Y^*_i$ es la nota de la evaluación docente, tenemos:
+    \begin{align*}
+        Y_i = 
+        \begin{cases}
+        Y^*_i &\hspace{0.2cm} \text{si $i$ responde la encuesta}\\
+        - &\hspace{0.2cm} \text{si $i$ no responde la encuesta}.
+        \end{cases}
+    \end{align*}
+    %%\pause
+    \item \textbf{Problema:} responder la encuesta es un \textbf{decisión}.
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Modelos de utilidad aleatoria}
+
+\begin{frame}{Modelos de utilidad aleatoria (lineal)}
+\begin{itemize}\setlength{\itemsep}{1em}
+	\item Una posibilidad es pensar la selección en términos de \textbf{decisiones óptimas de los agentes}. 
+    \vspace{0.5em}
+	%%\pause
+	\begin{enumerate}\setlength{\itemsep}{0.4em}
+		\item Cada individuo deriva una \textcolor{blue}{utilidad}, $U^j_{i}$, de cada alternativa $j\in\{0,1\}$ (e.g., responder o no la encuesta).
+		\smallspace
+		%%\pause
+		\item Si la función de utilidad es lineal en los parámetros:
+		\begin{align*}
+			U^j_i = \ZB'_i\gammaB^j + \eta^j_i \;\;\; \text{para} \;\;\; j=0,1,
+		\end{align*}
+		donde $\eta^j_i$ son todos los factores no observados que afectan la utilidad.
+		%%\pause
+		\item \textcolor{red}{Regla de decisión}: el individuo elige la opción que le genera la mayor utilidad:   
+		\begin{align*}
+			D_i =\begin{cases}
+				1 \hspace{0.3cm} \text{si} \;\;\; U^1_i \geq U^0_i, \\			
+				0 \hspace{0.3cm} \text{si} \;\;\; U^1_i < U^0_i.\\
+			\end{cases}
+		\end{align*}
+	\end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Normalización de las utilidades}
+\begin{itemize}\setlength{\itemsep}{1em}
+	\item Las funciones de utilidad tienen una \textbf{interpretación ordinal} (en la mayoría de los casos). Podemos \textbf{simplificar} el problema:
+	\begin{align*}
+		\begin{split}
+			U^{*}_i \equiv U^{1}_i - U^{0}_i &= \ZB'_i \underbrace{(\gammaB^1-\gammaB^0)}_{\gammaB} + \underbrace{(\eta^1_i - \eta^0_i)}_{\eta_i} \\
+			&= \ZB'_i \gammaB + \eta_i
+		\end{split}
+	\end{align*}
+	%%\pause
+    \item $U^{*}_i$ es una variable latente: no se puede observar o medir directamente. Aún así, podemos usar esta estructura. %%\pause
+	\item La \textcolor{red}{regla de decisión} ahora es
+	\begin{align*}
+		D_i =\begin{cases}
+			1 \hspace{0.3cm} \text{si} \;\;\; U^{*}_i \geq 0,\\		
+			0 \hspace{0.3cm} \text{si} \;\;\; U^{*}_i < 0.\\
+		\end{cases}
+	\end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Especificación de las probabilidades}
+\begin{itemize}\setlength{\itemsep}{1em}
+	\item Suponga que $\eta_i|\ZB_i$ tiene una función de densidad de probabilidad condicional que es simétrica y está centrada en cero.
+	%%\pause
+	\item Dada la \textcolor{red}{regla de decisión}:
+	\begin{align*}
+		\begin{split}
+			\Pr[D_i=1|\ZB_i] &= \Pr[U^{*}_i\geq0|\ZB_i] \\
+			&= \Pr[\ZB'_i\gammaB + \eta_i\geq0|\ZB_i] \\
+			&= \Pr[\eta_i \geq -\ZB'_i\gammaB |\ZB_i] \\
+			&= 1-F(-\ZB'_i\gammaB), \\
+			&= F(\ZB'_i\gammaB)
+		\end{split}
+	\end{align*}
+	donde $F$ es la \textcolor{blue}{función de distribución acumulada (CDF)} de $\eta_i|\ZB_i$. 
+\end{itemize}	
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Ecuación de selección en el modelo de Heckman}
+
+\begin{frame}{Ecuación de selección}
+\begin{itemize}\setlength{\itemsep}{0.75em}
+    \item Supongamos que el estudiante decide responder la encuesta si la utilidad de hacerlo supera la utilidad de no responder:
+    \begin{align*}
+        U^*_i = \ZB'_i \gammaB + \eta_i, \vspace{-1em}
+    \end{align*}
+    donde \( \XB_i \subseteq \ZB_i \) y ambas incluyen una constante.
+    %%\pause    
+    \item Variable indicadora de participación: \( D_i = \mathbf{1}\{U^*_i \geq 0\} \), es decir:
+    \begin{align*}
+        D_i = 
+        \begin{cases}
+            1 & \text{si } \ZB'_i \gammaB + \eta_i \geq 0, \\
+            0 & \text{si } \ZB'_i \gammaB + \eta_i < 0.
+        \end{cases}
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Problema de selección}
+    \begin{align*}
+    \begin{split}
+        Y^*_i &= \XB'_i\betaB + \epsilon_i \hspace{1.5cm} \text{(\textbf{ecuación de interés})} \\
+        U^*_i &= \ZB'_i\gammaB + \eta_i \hspace{1.5cm} \text{(\textbf{ecuación de selección})}.
+    \end{split}	
+    \end{align*}
+    %%\pause
+    \begin{itemize}\setlength{\itemsep}{0.75em}
+        \item \textcolor{red}{\textbf{Problema}}: puede que $\epsilon_i$ y $\eta_i$ no sean independientes. 
+    \begin{align*}
+    \begin{split}
+        \EX[Y_i|\XB_i] &= \EX[Y^*_i|\XB_i, D_i = 1] \\ 
+    &= \XB'_i\betaB + \EX[\epsilon_i|\XB_i, \eta_i \geq -\ZB'_i\gammaB].
+    \end{split}
+\end{align*}
+    %%\pause
+    El estimador por MCO es (generalmente) sesgado e inconsistente. \vspace{0.1cm}
+    %%\pause
+    \item \citet{Heckman} propone pensar en el último término \textbf{como si fuera una variable omitida}: controlar por esa variable sería análogo a controlar por el \textcolor{blue}{sesgo de selección}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{James J. Heckman}
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=4cm]{Figuras/nobel-2000-heckman.png}		
+    \end{figure}	
+\begin{itemize}
+    \item Nobel en 2000 ``\textit{for his development of theory and methods for analyzing \textbf{selective samples}.}'' 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Razón de Mills inversa (IMR)}\label{DIAP:IMR}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item Sea \( W \) una variable aleatoria con una \textbf{distribución normal estándar}, y sea \( k \) una constante. Entonces (ver \hyperlink{ANEX:IMR}{{\beamerreturnbutton{anexo}}}):   
+    \vspace{0.5em}
+    \begin{enumerate}
+        \item \( \mathbb{E}[W \mid W < k] = -\dfrac{\phi(k)}{\Phi(k)} \), \\ \vspace{0.1cm}
+        \item \( \mathbb{E}[W \mid W > k] = \dfrac{\phi(k)}{1 - \Phi(k)} \), \\ \vspace{0.3cm}
+    \end{enumerate}    
+    donde \( \phi(\cdot) \) y \( \Phi(\cdot) \) denotan, respectivamente, la función de densidad (pdf) y la función de distribución acumulada (cdf) de la normal estándar.
+    %\pause
+    \item La función \( \lambda(k) \equiv \dfrac{\phi(k)}{\Phi(k)} \) se conoce como la \textcolor{blue}{\textit{razón de Mills inversa (IMR)}}. \\ También se define la versión complementaria \( \lambda^*(k) = \dfrac{\phi(k)}{1 - \Phi(k)} \).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Ejemplo del valor esperado de $W$ si $W > 0$ (i.e., $k=0$)}
+\begin{figure}
+        \centering
+        \includegraphics[width=0.85\linewidth]{Figuras/imr-razon-mills-inversa.png}        
+    \end{figure}        
+    \begin{itemize}
+        \item $\phi(0) \approx 0.4$
+        \item $\Phi(0) = 0.5$
+        \item $\lambda^*(0) \approx 0.4 / 0.5 \approx 0.8$
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Propiedades útiles de la normal bivariada}
+\begin{itemize}
+	\item Suponga que tiene dos variables aleatorias, $Z$ y $W$, tal que
+    \begin{align*}
+        \begin{pmatrix}
+            Z \\
+            W\\
+        \end{pmatrix} 
+        \sim \mathcal{N}
+        \left(
+        \begin{pmatrix}
+            \mu_z \\
+            \mu_w\\
+        \end{pmatrix}, 
+        \begin{pmatrix}
+            \sigma^2_z & \rho \cdot \sigma_w \cdot \sigma_z\\
+            \rho \cdot \sigma_w \cdot \sigma_z & \sigma^2_w\\
+        \end{pmatrix}
+        \right). 
+    \end{align*}
+    %\pause
+        \item Entonces
+        \vspace{0.5em}
+        \begin{enumerate}
+            \item \textbf{Marginal de $W$}:
+            \vspace{-1em}        
+            \begin{align*}
+                W \sim \mathcal{N} \left(\mu_w,\sigma^2_w\right)
+            \end{align*}
+            \vspace{-1em}
+            %\pause
+            \item \textbf{Condicional de $Z$}:
+            \begin{align*}
+                Z|W \sim \mathcal{N} \left(\mu_z + \rho \frac{\sigma_z}{\sigma_w}(W - \mu_w), (1-\rho^2) \sigma^2_z\right). 
+            \end{align*}
+        \end{enumerate}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Modelo Heckit}
+
+\begin{frame}{Supuesto distribucional}
+\begin{align*}
+	\begin{split}
+		Y^*_i &= \XB'_i\betaB + \epsilon_i \hspace{1.5cm} \text{(\textbf{ecuación de interés})} \\
+		U^*_i &= \ZB'_i\gammaB + \eta_i \hspace{1.5cm} \text{(\textbf{ecuación de selección})}.
+	\end{split}	
+\end{align*}
+\begin{itemize}\setlength{\itemsep}{1em}
+    %\pause
+    \item Suponemos que $\epsilon_i$ y $\eta_i$ tienen una \textbf{distribución normal bivariada}:
+\begin{align*}
+    \begin{pmatrix}
+        \epsilon_i \\
+        \eta_i\\
+        \end{pmatrix} 
+            \vline \XB_i,\ZB_i
+            \sim \mathcal{N}
+            \left(
+            \begin{pmatrix}
+                0 \\
+                0\\
+            \end{pmatrix}, 
+        \begin{pmatrix}
+    \sigma^2 & \rho \cdot \sigma\\
+    \rho \cdot \sigma & 1\\
+    \end{pmatrix}
+    \right). 
+\end{align*}
+    donde $\rho$ es la correlación entre las dos variables. \vspace{0.1cm}
+    %\pause
+    \item La varianza del término de error en la ecuación de participación se normaliza a uno: fija la escala de la variable latente \(U^*_i\).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Aplicando las propiedades}
+\begin{itemize}
+	\item En el contexto del modelo
+\begin{align*}
+    \begin{pmatrix}
+        \epsilon_i \\
+        \eta_i\\
+    \end{pmatrix} 
+        \vline \XB_i,\ZB_i
+        \sim \mathcal{N}
+        \left(
+    \begin{pmatrix}
+        0 \\
+        0\\
+    \end{pmatrix}, 
+    \begin{pmatrix}
+        \sigma^2 & \rho \cdot \sigma\\
+        \rho \cdot \sigma & 1\\
+    \end{pmatrix}
+    \right), 
+\end{align*}
+    %\pause
+    entonces, omitiendo los condicionales para simplificar la notación,
+    \vspace{1em}
+    \begin{enumerate}
+            \item \textcolor{blue}{Marginal de $\eta_i$}:
+    \begin{align*}
+        \eta_i \sim \mathcal{N} \left(0,1\right)
+    \end{align*}
+    %\pause
+    \item \textcolor{blue}{Condicional de $\epsilon_i$}:
+    \begin{align*}
+        \epsilon_i|\eta_i \sim \mathcal{N} \Big(\rho\sigma \eta_i, (1-\rho^2) \sigma^2\Big)
+    \end{align*}
+    %\pause
+    En particular: $\EX[\epsilon_i|\eta_i] = \rho\sigma\eta_i$.
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Modelo Heckit}
+\begin{itemize}
+    \item Retomando, tenemos que
+    \begin{align*}
+    \begin{split}
+        \EX[Y_i|\XB_i,\ZB_i] &= \EX[Y^*_i|\XB_i,\ZB_i, D_i = 1] \\ 
+        &= \XB'_i\betaB + \EX[\epsilon_i|\XB_i, \ZB_i, \eta_i \geq -\ZB'_i\gamma].
+    \end{split}
+    \end{align*}
+    %\pause
+    \item Pero $\EX[\epsilon_i|\eta_i] = \rho\sigma\eta_i$, así que 
+    \begin{align*}
+    \begin{split}
+        \EX[Y_i|\XB_i,\ZB_i] &= \XB'_i\betaB + \rho\sigma \EX[\eta_i|\XB_i,\ZB_i, \eta_i \geq -\ZB'_i\gammaB] \\
+        &= \XB'_i\betaB - \rho\sigma \EX[-\eta_i|\XB_i,\ZB_i, -\eta_i \leq \ZB'_i\gammaB] \\
+        &= \XB'_i\betaB + \rho\sigma \frac{\phi(\ZB'_i\gammaB)}{\Phi(\ZB'_i\gammaB)} \\
+        &= \XB'_i\betaB + \rho\sigma \lambda(\ZB'_i\gammaB) \\
+    \end{split}
+    \end{align*}
+    donde $\lambda(\cdot)$ es el \textit{\textcolor{blue}{IMR}}.
+\end{itemize} 
+\end{frame}
+
+
+\begin{frame}{Modelo Heckit}
+\begin{align*}
+    \EX[Y_i|\XB_i,\ZB_i] = \XB'_i\betaB + \rho\sigma \lambda(\ZB'_i\gammaB).
+\end{align*}	
+    %\pause
+\begin{itemize}
+    \item Definamos  $\beta_{\lambda}\equiv \rho\sigma$ y $\lambda_i \equiv \lambda(\ZB'_i\gammaB)$. El valor esperado condicional (CEF) queda  
+\begin{align*}
+ 	\EX[Y_i|\XB_i,\ZB_i] = \XB'_i\betaB + \beta_{\lambda} \lambda_i
+ \end{align*}	
+    %\pause 
+    \item Si tuviéramos la variable $\lambda_i$, podríamos plantear el modelo lineal   		
+\begin{align*}
+    Y_i = \XB'_i\betaB + \beta_{\lambda} \lambda_i  + \zeta_i,
+\end{align*}
+    donde, por las propiedades de la CEF, $\EX[\zeta_i|\XB_i,\ZB_i] = 0$. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estimador de Heckman en dos etapas}
+	\begin{itemize}\setlength{\itemsep}{1em}
+		\item Recordemos la forma como modelamos la decisión de participación:
+		\begin{align*}
+			D_i = 
+			\begin{cases}
+				1 & \text{si} \hspace{0.2cm} \ZB'_i\gammaB + \eta_i \geq 0 \\		
+				0 & \text{si} \hspace{0.2cm} \ZB'_i\gammaB + \eta_i < 0,
+			\end{cases}
+		\end{align*}
+	%\pause	
+	\item Por el supuesto distribucional, $\eta_i \sim \mathcal{N} \left(0,1\right)$. Entonces
+		\begin{align*}
+			\begin{split}
+				\Pr[D_i = 1|\ZB_i] &= \Pr[\eta_i\geq-\ZB'_i\gammaB] \\
+				&= \Phi(\ZB'_i\gammaB)
+			\end{split}
+		\end{align*}
+        %\pause
+		Podemos estimar los parámetros $\gammaB$ usando un modelo \textbf{probit}. 
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estimador de Heckman en dos etapas}
+\begin{itemize}
+	\item Las dos etapas: \vspace{0.1cm}
+\begin{enumerate}
+	\item Estimar los parámetros $\gammaB$ usando un modelo \textbf{Probit}. \\ \vspace{0.1cm}
+    %\pause
+	\item Con los parámetros estimados, calcular 
+\end{enumerate}
+    \begin{align*}
+        \hat{\lambda}_i = \frac{\phi(\ZB'_i\hat{\gammaB})}{\Phi(\ZB'_i\hat{\gammaB})},
+    \end{align*}
+    y estimar 
+    \begin{align*}
+        Y_i = \XB'_i\betaB + \beta_{\lambda} \hat{\lambda}_i  + \zeta_i,
+    \end{align*}
+    por MCO. \\ \vspace{0.1cm}
+    %\pause
+    \item \citet{Heckman} Sample selection bias as a \textbf{specification error}. \textit{Econometrica}, 47(1): 153-161. 
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Algunas anotaciones}
+\begin{enumerate}\setlength{\itemsep}{0.5em}
+	\item Hay heterocedasticidad y el estimador de White-Huber no resuelve el problema. Se puede usar \textbf{bootstrap} u otras correcciones.\\ \vspace{0.2cm}
+	%\pause
+	\item El modelo se puede estimar por máxima verosimilitud.
+    \vspace{0.3em}
+	\begin{itemize}\setlength{\itemsep}{0.3em}
+		\item Más eficiente.
+		\item Los errores estándar estimados se pueden usar directamente.
+		\item Menos \textit{robusto} al ser más dependiente de los supuestos de identificación: esperanza condicional (dos etapas) vs. distribución conjunta (máxima verosimilitud). \\ \vspace{0.2cm}
+	\end{itemize}
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}{Problema de identificación}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item Suponga que $\ZB_i=\XB_i$, i.e., el vector de variables en la \textcolor{blue}{ecuación de interés} es el mismo de la \textcolor{blue}{ecuación de selección}. Tenemos
+    \begin{align*}
+        \EX[Y_i|\XB_i] = \XB'_i\betaB + \beta_{\lambda} \lambda_i; \qquad \lambda_i \equiv \lambda(\XB'_i\gammaB).
+    \end{align*}
+    %\pause
+    \vspace{-1.5em}
+    \item \textcolor{red}{\textbf{Problema}}: La \textcolor{blue}{\textit{IMR}} es casi lineal en rangos centrales:
+    \vspace{0.5em}
+\begin{figure}
+        \centering
+        \includegraphics[width=0.75\linewidth]{Figuras/imr-casi-lineal-rangos-centrales.png}        
+    \end{figure}       
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Problema de identificación 2}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item Esto implica que   
+    \begin{align*}
+        \lambda_i \approx \alpha_0 + \alpha_1 \XB'_i\gammaB, 
+    \end{align*}
+    %\pause
+    y que 
+    \begin{align*}
+    \begin{split}
+        \EX[Y_i|\XB_i] &\approx \XB'_i\betaB + \beta_{\lambda} \left(\alpha_0 + \alpha_1 \XB'_i\gammaB\right) \\
+                       &= \alpha_0 + \XB'_i\betaB^*
+    \end{split}
+    \end{align*}
+    donde \(\betaB^* = \betaB + \beta_{\lambda} \alpha_1 \gammaB\). %\pause
+    \item \textcolor{red}{\textbf{Implicación}}: No podríamos estimar de forma separada \(\beta_{\lambda}\) y \(\beta\) a menos que el valor del índice capture parte de la no linealidad de la \textcolor{blue}{\textit{IMR}}. La identificación viene de la \textbf{forma funcional}!    
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Heckman y variables instrumentales}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item Las exclusiones \( \XB_i \subset \ZB_i \) facilitan la identificación; en particular, requerimos covariables en \( \ZB_i \) que no estén en \( \XB_i \). %\pause
+    \item  Una exclusión implica contar con una variable observada que afecta la probabilidad de responder (selección), pero no afecta directamente la nota que el estudiante reporta (resultado). En la práctica, \textcolor{blue}{necesitamos un instrumento} que cumpla relevancia y validez (recordar criterios de una buena VI). %\pause
+    \item Estrictamente, no es una condición necesaria para identificar bajo supuestos fuertes (p.\,ej., normalidad conjunta), pero sí es altamente recomendable para una identificación creíble y mayor precisión.
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Anexo}
+
+\begin{frame}{Razón de Mills inversa (IMR)}\label{ANEX:IMR}
+    Valor esperado de una variable aleatoria normal estándar truncada.
+\begin{itemize}
+    \item Recordemos que:
+    \begin{align*}
+        \phi(W) &= \frac{1}{\sqrt{2\pi}} \exp\left(-\frac{W^2}{2}\right), \\[0.3em]
+        \frac{d\phi(W)}{dW} &= -W \cdot \phi(W).
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Valor esperado de una normal estándar truncada}\label{ANEX:IMR2}
+\begin{itemize}
+    \item Para una constante \( k \), el valor esperado condicional es:
+    \begin{align*}
+        \mathbb{E}[W \mid W < k] 
+        &= \int_{-\infty}^{k} W \cdot f(W \mid W < k) \, dW \\
+        &= \frac{1}{\Phi(k)} \int_{-\infty}^{k} W \cdot \phi(W) \, dW \\
+        &= \frac{-1}{\Phi(k)} \int_{-\infty}^{k} \frac{d\phi(W)}{dW} \, dW \\
+        &= \frac{-1}{\Phi(k)} \left[ \phi(W) \right]_{-\infty}^{k} \\
+        &= -\frac{\phi(k)}{\Phi(k)}.
+    \end{align*}
+\end{itemize}
+\hyperlink{DIAP:IMR}{{\beamerreturnbutton{Regresar}}}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Recapitulando}
+
+\begin{frame}{Objetivos del curso}
+\begin{itemize}
+	\item En este curso, los estudiantes aprenderán y practicarán \textbf{técnicas microeconométricas de punta} empleadas en el trabajo aplicado, con un enfoque en la \textcolor{blue}{estimación de efectos causales}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Resultados de aprendizaje}
+\begin{itemize}\setlength{\itemsep}{0.5em}
+    \item[1.] \textbf{Formular} estrategias para abordar problemas de identificación en ejercicios econométricos de inferencia causal  %\pause    
+    \item[2.] \textbf{Evaluar} críticamente la validez de una estrategia de identificación en un contexto específico de estimación %\pause    
+    \item[3.] \textbf{Realizar} estimaciones de modelos econométricos utilizando herramientas como Stata, R o Python %\pause    
+    \item[4.] \textbf{Interpretar} correctamente los resultados de un ejercicio econométrico %\pause
+     \item[5.] \textbf{Diferenciar} y \textbf{evaluar} la validez interna y externa en un ejercicio de estimación %\pause    
+    \item[6.] \textbf{Comunicar} efectivamente los resultados de una estimación econométrica. %\pause    
+    \item[7.] \textbf{Realizar} análisis de sensibilidad y robustez
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%BIBLIOGRAPHY
+\nobibliography{references}
+\end{document}

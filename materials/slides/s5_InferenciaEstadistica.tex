@@ -1,0 +1,621 @@
+\documentclass[10pt, xcolor=dvipsnames]{beamer}
+\input{preambulo/preambulo-magistral}
+
+% Ajustes locales de esta clase (preservados del original):
+\setbeamercolor{button}{bg=black,fg=white}
+\setbeamercovered{invisible}
+
+\subtitle{Inferencia Estadística}
+
+\begin{document}
+	\beamertemplatenavigationsymbolsempty	
+\begin{frame}[plain]%Title Page%
+	\titlepage
+	\vspace{-0.4cm}
+\textbf{Temas de la clase:} \\ \vspace{0.3cm}
+	\tableofcontents
+\end{frame}
+
+\begin{frame}{Temas de la clase:}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Pruebas sobre un parámetro}
+
+\begin{frame}{Pruebas de hipótesis}
+\begin{itemize}
+    \item Una \textcolor{blue}{hipótesis} es una afirmación sobre los \textbf{parámetros poblacionales} (no observados).
+    \smallspace
+ %\pause
+\begin{itemize}
+    \item Establecemos una \textcolor{blue}{hipótesis nula} (\(\textcolor{black}{\HT{0}}\)) y una \textcolor{blue}{hipótesis alternativa} (\(\textcolor{black}{\HT{1}}\)). %\pause
+    \medskip
+    \item \textbf{Objetivo:} utilizar la muestra para decidir si rechazamos \(\textcolor{black}{\HT{0}}\) en favor de \(\textcolor{black}{\HT{1}}\). %\pause
+    \medskip
+    \item La \textbf{regla de decisión} utiliza un \textcolor{blue}{estadístico de prueba}: \(\textcolor{brown}{T_N} = T(\YB,\XB)\), para evaluar la compatibilidad de la muestra con \(\textcolor{black}{\HT{0}}\). %\pause
+    \medskip
+    \item Para algunos valores del estadístico rechazamos $\HT{0}$ (\textcolor{blue}{región de rechazo}), para otros no (\textcolor{blue}{región de no rechazo}).
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Error tipo I y error tipo II}
+\begin{itemize}
+	\item El \textcolor{blue}{estadístico de prueba} $\textcolor{brown}{T_N}$ es una función de la muestra aleatoria, así que también es una \textbf{variable aleatoria}.
+	%\pause
+	\item El mismo procedimiento, con muestras diferentes, puede llevar a conclusiones distintas. \\ \vspace{2em}
+\begin{center}
+	\begin{tabular}{ l | c | c | c |}
+		& \multicolumn{3}{c}{\textbf{Decisión} ($\textcolor{black}{\HT{0}}$)} \\ \cline{1-4}
+		\multirow{3}{*}{\textbf{Realidad}}  & & \textbf{No Rechazar} & \textbf{Rechazar} \\ \cline{2-4}
+		& $\textcolor{black}{\HT{0}}$ & Correcta & \textcolor{blue}{Error tipo I}  \\ \cline{2-4}
+		& $\textcolor{black}{\HT{1}}$ & \textcolor{blue}{Error tipo II} & Correcta \\ \cline{2-4}
+	\end{tabular}
+\end{center}		 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{¿Culpable o inocente?}
+\begin{itemize}
+    \item Suponga que hay un juez decidiendo si una persona es inocente o culpable. \vspace{-0.3cm}
+    \begin{align*}
+    \begin{split}
+        \textcolor{black}{\HT{0}}:& \text{Inocente}, \\
+        \textcolor{black}{\HT{1}}:& \text{Culpable}.
+    \end{split}
+    \end{align*}
+ %\pause
+    \item \textcolor{blue}{Error tipo I:} condenar \underline{dado que} es inocente (dado que $\textcolor{black}{\HT{0}}$ es cierta).
+    \item \textcolor{blue}{Error tipo II:} no condenar \underline{dado que} es culpable (dado que $\textcolor{black}{\HT{1}}$ es cierta).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Nivel de significancia}
+\begin{itemize}
+    \item \textcolor{blue}{Nivel de significancia} ($\textcolor{blue}{\alpha}$): probabilidad de rechazar $\textcolor{black}{\HT{0}}$ \underline{\textcolor{red}{dado que es cierta}} (error tipo I).
+    \medskip
+ %\pause
+    \item Si la \textcolor{blue}{regla de decisión} es rechazar si el estadístico $\textcolor{brown}{T_N}>c$,
+    \begin{align*}
+        \textcolor{blue}{\alpha} = \Prob{\text{rechazar} \;\; \textcolor{black}{\HT{0}}|\textcolor{black}{\HT{0}}  \;\; \text{verdadera}} = \Prob{\textcolor{brown}{T_N}>c|\textcolor{black}{\HT{0}}}.
+    \end{align*}
+    %\pause
+    \item Suponga que bajo $\textcolor{black}{\HT{0}}$, $\textcolor{brown}{T_N}\xrightarrow{d} \mathcal{N}(0,1)$, entonces:   
+    \begin{align*}
+    \begin{split}
+    \lim_{N \rightarrow \infty} \Prob{\textcolor{brown}{T_N}>c|\textcolor{black}{\HT{0}}} = 1-\Phi(c) = \textcolor{blue}{\alpha},
+    \end{split}
+    \end{align*}
+    donde \(\Phi(x)\) es la CDF de la normal estándar.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{P-valor}
+\begin{itemize}
+    \item \textcolor{blue}{P-valor}: el \textbf{menor} nivel de significancia $\textcolor{blue}{\alpha}$ al cual, dado el valor observado de $\textcolor{brown}{T_N}$, rechazamos la hipótesis nula.	
+    \begin{align*}
+    \begin{split}
+        \textcolor{brown}{P} = 2\big(1-\Phi(|\textcolor{brown}{T_N}|)\big) \quad \text{(prueba bilateral)}.
+    \end{split}
+    \end{align*}
+ %\pause
+    \begin{itemize}
+        \item \textbf{No es la probabilidad de que la hipótesis nula sea cierta}: se asume que $\textcolor{black}{\HT{0}}$ es cierta y se pregunta: ¿cuál es la probabilidad de obtener un estadístico igual o más extremo que $|\textcolor{brown}{T_N}|$?
+        \smallspace
+        \item Es una pregunta sobre la \textbf{compatibilidad de los datos} con el modelo estadístico.	
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Poder de la prueba}
+\begin{itemize}
+    \item \textcolor{blue}{Poder de la prueba} ($1-\textcolor{blue}{\beta}$): probabilidad de rechazar $\textcolor{black}{\HT{0}}$ dado que $\textcolor{black}{\HT{1}}$ es cierta.
+    \medskip
+    \begin{itemize}
+        \item Mide la capacidad de un estudio para detectar un efecto, dado que el efecto realmente existe. 
+    \end{itemize}
+    \medskip
+ %\pause
+    \item Si la regla de decisión es rechazar $\textcolor{black}{\HT{0}}$ si el estadístico $\textcolor{brown}{T_N}>c$,
+    \begin{align*}
+    1-\textcolor{blue}{\beta} = \Prob{\text{rechazar} \;\; \textcolor{black}{\HT{0}}|\textcolor{black}{\HT{1}}  \;\; \text{verdadera}} = \Prob{\textcolor{brown}{T_N}> c|\textcolor{black}{\HT{1}}}
+    \end{align*}
+    \vspace{-0em}
+    donde $\textcolor{blue}{\beta}$ es la probabilidad de cometer un \textcolor{blue}{error tipo II}.
+    \medskip
+ %\pause
+    \item Lo ideal sería minimizar $\textcolor{blue}{\alpha}$ y $\textcolor{blue}{\beta}$, pero en general hay un \textit{trade-off}. Si $\uparrow c$ $\implies$ $\downarrow \textcolor{blue}{\alpha}$ (reducimos la \textcolor{blue}{región de rechazo}), pero $\uparrow \textcolor{blue}{\beta}$ (aumenta la \textcolor{blue}{región de no rechazo}). 
+\end{itemize}
+\end{frame}
+
+\begin{frame}[plain]
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm]{Figuras/error-tipo-1-2.png}	
+\end{figure}	
+\end{frame}
+
+
+\begin{frame}{Guerra de las estrellas I}
+\begin{itemize}
+    \item Usualmente nos enfocamos en $\textcolor{blue}{\alpha}$, pero no hay un criterio objetivo para determinar su valor ex-ante ($\textcolor{black}{*}$, $\textcolor{black}{**}$, $\textcolor{black}{***}$).
+    \medskip
+ %\pause
+    \item ¡Evitemos contar estrellas!
+    \begin{itemize}
+        \item Problemas de \textbf{replicación} \citep{brodeur2016star, Wassersteinetal19}. 
+        \item No rechazar $\textcolor{black}{\HT{0}}$ no es suficiente para decir que $\textcolor{black}{\HT{0}}$ es cierta. Se necesita un \textbf{análisis de poder}.
+        \medskip
+    \end{itemize}
+\end{itemize}
+ %\pause
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=George Cobb: Profesor Emérito Mount Holyoke College, breakable]
+    \begin{figure}[H]
+        \includegraphics[width=9cm, height=9cm, keepaspectratio]{Figuras/guerra-estrellas-valores-p.png}
+    \end{figure}
+\end{tcolorbox}
+\end{frame}
+
+
+\begin{frame}{Guerra de las estrellas II}
+\begin{itemize}
+        \item Significancia estadística $\neq$ significancia económica \citep{ziliak2004size}. %\pause
+    \begin{itemize}
+        \item Decir que $\brown{\beta_k} \neq 0$ es \textbf{poco informativo}. %\pause
+        \item Si $N$ es grande, incluso desviaciones minúsculas de $\textcolor{black}{\HT{0}}$ resultan estadísticamente significativas: casi cualquier hipótesis nula puntual que no sea \textit{exactamente} cierta se rechaza con un $N$ lo suficientemente grande.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Pruebas sobre un parámetro}
+\begin{itemize}
+    \item Suponga que tiene una muestra aleatoria $\{(Y_i, \XB_{i}): i=1, \ldots,N\}$ y el modelo lineal: 
+    \begin{align*}
+        Y_i = \XB'_i \textcolor{brown}{\betaB} + e_i, \quad \text{donde} \quad  \textcolor{brown}{\betaB} = \EX[\XB_i\XB'_i]^{-1} \EX[\XB_iY_i].     
+    \end{align*}
+ %\pause
+    Queremos probar:
+    \vspace{-1em}
+    \begin{align*}
+    \begin{split}
+        \textcolor{black}{\HT{0}}:& \textcolor{brown}{\beta_k} = 0, \\
+        \textcolor{black}{\HT{1}}:& \textcolor{brown}{\beta_k} \neq 0,
+    \end{split}
+    \end{align*}
+    donde \(\textcolor{brown}{\beta_k}\) es el \(k\)-ésimo elemento del vector \(\textcolor{brown}{\betaB}\).
+ %\pause
+    \vspace{1em}
+    \item \textbf{Distribución límite} del estimador por MCO:
+    \begin{align*}
+    \begin{split}
+    \sqrt{N}\left(\textcolor{brown}{\betaBH_{mco}}-\textcolor{brown}{\betaB}\right) \xrightarrow{d} \mathcal{N}(\mathbf{0}, \AB \Sigma \AB'),
+    \end{split}
+    \end{align*}
+     donde \(\AB = \EX[\XB_i \XB_i']^{-1}\) y \(\Sigma = \EX[\XB_i \XB_i' e_i^2]\).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Pruebas sobre un parámetro}
+\begin{itemize}
+    \item Por la \textbf{convergencia en distribución} de vectores y las propiedades de la \textbf{normal multivariada}:
+    \begin{align*}
+        \sqrt{N}\left(\textcolor{brown}{\betaH_{k}}-\textcolor{brown}{\beta_k}\right) \xrightarrow{d} \mathcal{N}(0, \sigma^2_k),
+    \end{align*}
+    donde \(\sigma^2_k\) es el \(k\)-ésimo elemento de la diagonal de \(\AB \Sigma \AB'\). %\pause
+    \vspace{1em}
+    \item \textbf{Definamos} el estadístico de prueba:
+    \begin{align*}
+    \begin{split}
+        \textcolor{brown}{z_k} = \frac{\textcolor{brown}{\hat{\beta}_k}-\textcolor{brown}{\beta_k}}{\sigma_k/\sqrt{N}} \xrightarrow{d} \mathcal{N}(0,1),
+    \end{split}
+    \end{align*}
+    con \(\sigma_k = \sqrt{\sigma^2_k}\).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estadístico de prueba}
+\begin{itemize}
+    \item Sea $\hat{\sigma}_k$ un estimador consistente de $\sigma_k$ (recordar que tenemos estimadores: \(\AB_N \, \hat{\Sigma} \, \AB'_N \xrightarrow{p} \AB \Sigma \AB'\) bajo diferentes supuestos).
+    %\pause
+    \[
+        \textcolor{brown}{t_k} \;=\; \frac{\textcolor{brown}{\hat{\beta}_k} - \textcolor{brown}{\beta_k}}{\hat{\sigma}_k / \sqrt{N}}
+        \;=\; \left(\frac{\sigma_k}{\hat{\sigma}_k}\right)
+              \frac{\textcolor{brown}{\hat{\beta}_k} - \textcolor{brown}{\beta_k}}{\sigma_k / \sqrt{N}}
+        \;=\; \left(\frac{\sigma_k}{\hat{\sigma}_k}\right) \textcolor{brown}{z_k}.
+    \]
+    %\pause
+    \item Como 
+    \[
+        \plim \left(\frac{\sigma_k}{\hat{\sigma}_k}\right) = 1,
+    \]
+    se sigue que
+    \[
+        \textcolor{brown}{t_k} \xrightarrow{d} \mathcal{N}(0,1).
+    \]
+    %\pause
+    Por lo tanto, podemos utilizar $\textcolor{brown}{t_k}$ como \textbf{estadístico de prueba}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Pruebas sobre un parámetro}
+\begin{itemize}
+    \item La prueba de hipótesis es:
+    \begin{align*}
+    \begin{split}
+        \textcolor{black}{\HT{0}}:& \textcolor{brown}{\beta_k} = 0, \\
+        \textcolor{black}{\HT{1}}:& \textcolor{brown}{\beta_k} \neq 0.
+    \end{split}
+    \end{align*}
+        \item Bajo $\textcolor{black}{\HT{0}}$ (i.e., \(\textcolor{brown}{\beta_k} = 0\)), el estadístico de prueba es: 
+    \begin{align*}
+    \begin{split}
+        \textcolor{brown}{t_k} &= \frac{\brown{\hat{\beta}_k}}{\hat{\sigma}_k/\sqrt{N}} \xrightarrow{d} \mathcal{N}(0,1).
+    \end{split}
+    \end{align*}
+\vspace{-1em}
+  %\pause
+    \item Calculamos $\textcolor{brown}{t_k}$ y lo comparamos con el \textcolor{blue}{valor crítico} asociado al \textcolor{blue}{nivel de significancia} deseado de la normal estándar.
+ %\pause
+    \item Si $|\textcolor{brown}{t_k}|$ es lo suficientemente grande, concluimos que \textbf{los datos no son compatibles con} $\brown{\beta_k} = 0$ y rechazamos la hipótesis nula. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Intervalo de confianza}
+\begin{itemize}
+	\item Dada la distribución límite de $\textcolor{brown}{t_k}$, tenemos que	
+	%\pause
+\begin{align*}
+	\fontvid
+\begin{split}
+    \Prob{-c_{\textcolor{blue}{\alpha}/2}<\textcolor{brown}{t_k}< c_{\textcolor{blue}{\alpha}/2}} 
+    &= \Prob{-c_{\textcolor{blue}{\alpha}/2}<\frac{(\textcolor{brown}{\hat{\beta}_k}-\textcolor{brown}{\beta_k})}{\hat{\sigma}_k/\sqrt{N}}< c_{\textcolor{blue}{\alpha}/2}} \\
+    &= \Prob{\brown{\hat{\beta}_k}-c_{\textcolor{blue}{\alpha}/2}(\hat{\sigma}_k/\sqrt{N}) < \brown{\beta_k} < \brown{\hat{\beta}_k} + c_{\textcolor{blue}{\alpha}/2}(\hat{\sigma}_k/\sqrt{N})} \\ &\xrightarrow[N \to \infty]{} 1-\textcolor{blue}{\alpha},
+\end{split}
+\end{align*}	
+    \begin{itemize}
+        %\pause
+        \item \textbf{No} es la probabilidad de que el parámetro esté dentro del intervalo, \textbf{dada una muestra}: el parámetro está o no está. \smallspace 
+        %\pause
+        \item El intervalo contiene el parámetro con una cierta probabilidad: si repetimos muchas veces el ejercicio con diferentes muestras, en el $(1-\textcolor{blue}{\alpha})\cdot 100\%$ de los casos el intervalo contiene el parámetro.
+    \end{itemize}
+\end{itemize}	
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Restricciones lineales}
+
+\begin{frame}{Restricciones lineales}
+\begin{itemize}
+    \item Sea $\textbf{R}$ una matriz no estocástica de $P\times K$ y $\textbf{q}$ un vector no estocástico de $P\times 1$, donde  $P\leq K$ y $\textbf{R}$ tiene rango $P$.
+    \medskip
+    \item Considere el sistema de $P$ ecuaciones lineales de la forma
+    \begin{align*}
+        \textbf{R}\brown{\betaB} - \textbf{q} &= \mathbf{0}.
+    \end{align*}
+    \vspace{-1em}
+ %\pause
+    Expandiendo
+    \begin{align*}
+    \begin{split}
+    r_{11}\brown{\beta_1} + r_{12}\brown{\beta_2} + \ldots + r_{1K}\brown{\beta_K} - q_1 &= 0 \\
+    r_{21}\brown{\beta_1} + r_{22}\brown{\beta_2} + \ldots + r_{2K}\brown{\beta_K} - q_2 &= 0 \\
+    \vdots \\ 
+    r_{P1}\brown{\beta_1} + r_{P2}\brown{\beta_2} + \ldots + r_{PK}\brown{\beta_K} - q_P &= 0. 
+    \end{split}
+    \end{align*}
+ %\pause
+    \item Definiendo $\textbf{R}$ y $\textbf{q}$ de forma apropiada, podemos formular cualquier hipótesis lineal de manera compacta. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Ejemplo 1: prueba sobre un único parámetro}
+\begin{itemize}
+    \item Sea \(Y_i\) una variable de resultado y \(D_i \in \{0, 1\}\) una indicadora de tratamiento. Considere el modelo y la hipótesis:
+    \vspace{0.0em}
+    \begin{align*}
+    \begin{split}
+        Y_i = \brown{\beta_1} + &\brown{\beta_2} D_{i} + e_i, \\
+        \textcolor{black}{\HT{0}}:& \brown{\beta_2} = 0, \\
+        \textcolor{black}{\HT{1}}:& \brown{\beta_2} \neq 0.
+    \end{split}
+    \end{align*}
+   %\pause
+    \vspace{-1em}
+    	\item Definamos $\textbf{R} = \begin{pmatrix} 0 & 1 \end{pmatrix}$ y $\textbf{q}=0$. \vspace{-0.2cm}
+    \begin{align*}
+    \begin{split}
+        \textbf{R}\brown{\betaB} - \textbf{q} &= \begin{pmatrix} 0 & 1 \end{pmatrix} \begin{pmatrix} \brown{\beta_1} \\ \brown{\beta_2}\end{pmatrix} -0 = \brown{\beta_2}.
+    \end{split}
+    \end{align*}
+   %\pause
+    La prueba de hipótesis original es equivalente a:
+    \begin{align*}
+    \begin{split}
+    \textcolor{black}{\HT{0}}:& \textbf{R}\brown{\betaB} - \textbf{q} = 0, \\
+    \textcolor{black}{\HT{1}}:& \textbf{R}\brown{\betaB} - \textbf{q} \neq 0.
+    \end{split}
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Ejemplo 2: prueba sobre una combinación lineal de parámetros}
+\begin{itemize}
+    \item Sean \(D_{i1} \in \{0,1\}\) y \(D_{i2} \in \{0,1\}\) dos variables indicadoras de tratamiento, donde \(D_{i2}\) se asigna sólo entre quienes tienen \(D_{i1}=1\) (i.e., un tratamiento complementario). %\pause
+    \smallspace
+    \item Considere el modelo y la hipótesis:
+    \begin{align*}
+    \begin{split}
+        Y_i = \brown{\beta_1} + &\brown{\beta_2} D_{i1} + \brown{\beta_3} (D_{i1} \cdot D_{i2}) + e_i. \\
+        \textcolor{black}{\HT{0}}:& \brown{\beta_2} + \brown{\beta_3} = 0,  \\
+        \textcolor{black}{\HT{1}}:& \brown{\beta_2} + \brown{\beta_3} \neq 0.
+    \end{split}
+    \end{align*}  
+   %\pause
+    \item Definamos $\textbf{R} = \begin{pmatrix} 0 & 1 & 1 \end{pmatrix}$ y $\textbf{q}=0$, tal que \(\textbf{R}\brown{\betaB} - \textbf{q} = \brown{\beta_2} + \brown{\beta_3}\). La prueba de hipótesis original es equivalente a:
+    \vspace{-0.0em}
+    \begin{align*}
+    \begin{split}
+    \textcolor{black}{\HT{0}}:& \textbf{R}\brown{\betaB} - \textbf{q} = 0, \\
+    \textcolor{black}{\HT{1}}:& \textbf{R}\brown{\betaB} - \textbf{q} \neq 0.
+    \end{split}
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Ejemplo 3: prueba de significancia conjunta}
+\begin{itemize}
+    \item Mismo modelo, pero la hipótesis es: \vspace{-0.2cm}
+    \begin{align*}
+    \begin{split}
+        \textcolor{black}{\HT{0}}:& \brown{\beta_2}=0, \brown{\beta_2} +\brown{\beta_3} = 0,  \\
+        \textcolor{black}{\HT{1}}:& \brown{\beta_2}\neq0, \;  \text{o} \; \brown{\beta_2} + \brown{\beta_3} \neq 0.
+    \end{split}
+    \end{align*}
+   %\pause
+    \vspace{-0.0cm}
+    	\item Definamos $\textbf{R} = \begin{pmatrix} 0 & 1 & 0 \\ 0&1&1 \end{pmatrix}$ y $\textbf{q}=\begin{pmatrix} 0 \\ 0 \end{pmatrix}$. En este caso $P=2$. \vspace{-0.2cm}
+    \begin{align*}
+    \begin{split}
+        \textbf{R}\brown{\betaB} - \textbf{q} &= \begin{pmatrix} 0 & 1 & 0 \\ 0&1&1 \end{pmatrix} \begin{pmatrix} \brown{\beta_1} \\ \brown{\beta_2} \\ \brown{\beta_3} \end{pmatrix} -\begin{pmatrix} 0 \\ 0 \end{pmatrix} = \begin{pmatrix} \brown{\beta_2} \\ \brown{\beta_2} + \brown{\beta_3} \end{pmatrix} 
+    \end{split}
+    \end{align*}
+   %\pause
+    La prueba de hipótesis es equivalente a:
+    \begin{align*}
+    \begin{split}
+        \textcolor{black}{\HT{0}}:& \textbf{R}\brown{\betaB} - \textbf{q} = \mathbf{0}, \\
+        \textcolor{black}{\HT{1}}:& \textbf{R}\brown{\betaB} - \textbf{q} \neq \mathbf{0}.
+    \end{split}
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estadístico de Wald I}
+\begin{itemize}
+    \item Vamos a derivar un \textcolor{blue}{estadístico de prueba} ($\textcolor{brown}{W_N}$) que se pueda aplicar de forma general a pruebas de hipótesis de la forma: 
+    \begin{align*}
+    \begin{split}
+        \textcolor{black}{\HT{0}}:& \textbf{R}\brown{\betaB} - \textbf{q} = \mathbf{0}, \\
+        \textcolor{black}{\HT{1}}:& \textbf{R}\brown{\betaB} - \textbf{q} \neq \mathbf{0}.
+    \end{split}
+    \end{align*}
+   \pause
+    \item \textbf{Distribución límite} del estimador por MCO:
+    \begin{align*}
+    \begin{split}
+        \sqrt{N}\left(\brown{\betaBH_{mco}} - \brown{\betaB}\right) \xrightarrow{d} \mathcal{N}(\mathbf{0}, \AB \Sigma \AB'). 
+    \end{split}
+    \end{align*}	 
+   \pause
+    Si $\textcolor{black}{\HT{0}}$ es cierta, tenemos que $\textbf{R}\brown{\betaB}=\textbf{q}$ y 
+    \begin{align*}
+    \begin{split}
+        \textbf{R}\sqrt{N}\left(\brown{\betaBH_{mco}}-\brown{\betaB}\right) &= \sqrt{N}\left(\textbf{R}\brown{\betaBH_{mco}}-\textbf{R}\brown{\betaB}\right) \\ &= \sqrt{N}\left(\textbf{R}\brown{\betaBH_{mco}}-\textbf{q}\right).
+    \end{split}
+    \end{align*}	 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estadístico de Wald II}
+\begin{itemize}
+    \item Dado que $\textbf{R}$ y $\textbf{q}$ son constantes, se cumple:
+    \begin{align*}
+    \begin{split}
+        \sqrt{N}\left(\textbf{R}\brown{\betaBH_{mco}}-\textbf{q}\right) \xrightarrow{d} \mathcal{N}(\mathbf{0}, \textbf{R}\AB \Sigma \AB'\textbf{R}'). 
+    \end{split}
+    \end{align*}
+    La matriz de varianzas--covarianzas \(\textbf{R}\AB \Sigma \AB'\textbf{R}'\) tiene dimensión \(P \times P\). 
+    \pause
+    \item Esta es la distribución límite bajo la hipótesis nula \(\HT{0}\). A partir de ella se construye el estadístico de Wald, \(\brown{W_N}\).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Distribuciones normal y $\chi^2$}
+\begin{tcolorbox}[colback=white, arc=0mm, boxrule=0.5pt, title=Teorema (distribución de formas cuadráticas), breakable]
+    Sea $\WB$ un vector \(P \times 1\) y \(\Omega\) una matriz no singular, tales que 
+    \[
+        \WB \xrightarrow{d} \mathcal{N}(\mathbf{0},\Omega).
+    \]
+    Entonces,
+    \[
+        \WB'\Omega^{-1}\WB \xrightarrow{d} \chi^2_P.
+    \]
+
+    \textcolor{blue}{Interpretación:} \(\Omega^{-1/2}\WB\) equivale (en el límite) a \(P\) normales estándar independientes; la suma de sus cuadrados sigue una distribución $\chi^2$ con \(P\) grados de libertad.
+\end{tcolorbox}
+    \pause
+\begin{itemize}
+    \item \textbf{Aplicación en nuestro caso:} 
+    \[
+        \WB = \sqrt{N}\big(\textbf{R}\,\brown{\betaBH_{mco}}-\textbf{q}\big),
+        \quad 
+        \Omega = \textbf{R}\AB \Sigma \AB' \textbf{R}'.
+    \]
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estadístico de Wald: forma general}
+\begin{itemize}
+    \item Bajo la hipótesis nula, se cumple que:
+    \begin{align*}
+    \begin{split}
+        \underbrace{\sqrt{N} \left(\textbf{R}\textcolor{brown}{\betaBH_{mco}}-\textbf{q}\right)'}_{\WB'} \underbrace{ \left(\textbf{R}\AB \Sigma \AB'\textbf{R}'\right)^{-1} }_{\Omega^{-1}} \underbrace{ \sqrt{N} \left(\textbf{R}\textcolor{brown}{\betaBH_{mco}}-\textbf{q}\right)}_{\WB} \xrightarrow{d} \chi^2_P,
+    \end{split}
+    \end{align*}
+    donde $P$ es el número de restricciones lineales. \\ \vspace{0.2cm} 
+    \pause
+    \item Al sustituir la matriz de varianzas--covarianzas por su estimador consistente:
+    \begin{align*}
+    \begin{split}
+        \textcolor{brown}{W_N} = \sqrt{N} \left(\textbf{R}\textcolor{brown}{\betaBH_{mco}}-\textbf{q}\right)'(\textbf{R} \AB_N \hat{\Sigma} \AB'_N \textbf{R}')^{-1} \sqrt{N} \left(\textbf{R}\textcolor{brown}{\betaBH_{mco}}-\textbf{q}\right) \xrightarrow{d} \chi^2_P,
+    \end{split}
+    \end{align*}
+    \item El estadístico \(\textcolor{brown}{W_N}\) se denomina \textcolor{blue}{estadístico de Wald}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Prueba de Wald}\label{PruebaWald}
+\begin{itemize}
+    \item Pasos para implementar la prueba:
+    \pause
+    \begin{enumerate}
+        \item Formular la hipótesis en términos de restricciones lineales:
+    \begin{align*}
+    \begin{split}
+        \textcolor{black}{\HT{0}}:& \textbf{R}\brown{\betaB} - \textbf{q} = \mathbf{0}, \\
+        \textcolor{black}{\HT{1}}:& \textbf{R}\brown{\betaB} - \textbf{q} \neq \mathbf{0},
+    \end{split}
+    \end{align*}	
+        donde $\textbf{R}$ y $\textbf{q}$ se definen según la hipótesis de interés. 
+        \smallspace
+    \pause
+    
+        \item Calcular el estadístico de prueba \(\textcolor{brown}{W_N}\).
+        \smallspace
+    \pause
+        \item Obtener el \textcolor{blue}{valor crítico} de una distribución $\chi^2$ con \(P\) grados de libertad al \textcolor{blue}{nivel de significancia} elegido.
+    
+    \pause
+        \smallspace
+        \item Regla de decisión: Si \(\textcolor{brown}{W_N}\) $>$ \textcolor{blue}{valor crítico} $\;\Rightarrow\;$ rechazar \(\HT{0}\). En caso contrario, no se rechaza \(\HT{0}\).
+    \end{enumerate}
+\end{itemize}
+\hyperlink{Anexo:MDelta}{{\beamerreturnbutton{Pruebas sobre funciones no lineales de los parámetros}}}    
+\end{frame}
+
+\begin{frame}[plain]
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=11cm]{Figuras/Chi2-dist}	
+\end{figure}	
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Muestras pequeñas y muestras grandes}
+
+\begin{frame}{Muestras pequeñas y grandes}
+\begin{itemize}
+    \item Los programas estadísticos reportan el estadístico \(\,\brown{t}\), 
+    que \textcolor{blue}{bajo normalidad y homocedasticidad de los errores} sigue, bajo \(\HT{0}\!: \brown{\beta_k}=0\), una distribución \(t\) de Student con \(N-K\) grados de libertad:
+    \vspace{-0.5em}
+    \[
+        \brown{t_k} \;=\; \frac{\brown{\hat{\beta}_k}}{\hat{\sigma}_k/\sqrt{N}} \;\sim\; t_{N-K}.
+    \]
+    Pero \(t_{N-K} \xrightarrow{d} \mathcal{N}(0,1)\). Más aún, si \(N - K \gtrsim 100\), las diferencias con la normal son pequeñas.
+    \medskip
+    \pause
+    \item En pruebas de significancia conjunta se reporta el estadístico \(\brown{F}\) que, bajo los mismos supuestos, sigue:
+    \[
+        \brown{F} \;\sim\; F(P,\,N-K),
+    \]
+    donde \(P\) es el número de restricciones bajo prueba. Cuando \(N \to \infty\), se cumple que \(P \brown{F} \xrightarrow{d} \chi^2_P\).
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Anexo: Método Delta}
+
+
+\begin{frame}{Método Delta}\label{Anexo:MDelta}
+\begin{tcolorbox}[colback=white, arc=0mm, boxrule=0.5pt, 
+title=\textbf{Teorema: Método Delta}, breakable]
+    Sea $\hat{\thetaB}_N$ un estimador \(K \times 1\) de $\thetaB$, tal que
+    \[
+        \sqrt{N}\,(\hat{\thetaB}_N - \thetaB) 
+        \;\xrightarrow{d}\; \mathcal{N}(\mathbf{0}, \mathbf{V}).
+    \]
+    Sea $\mathbf{g} : \mathbb{R}^K \to \mathbb{R}^P$ una función continuamente diferenciable. Entonces,
+    \[
+        \sqrt{N}\,\big(\mathbf{g}(\hat{\thetaB}_N) - \mathbf{g}(\thetaB)\big)
+        \;\xrightarrow{d}\;
+        \mathcal{N}\!\left(\mathbf{0},\;
+        \pderiv{\mathbf{g}(\thetaB)}{\thetaB'} \,\mathbf{V}\,
+        \pderiv{\mathbf{g}(\thetaB)}{\thetaB'}'\right).
+    \]
+\end{tcolorbox}
+
+\begin{itemize}
+    \item $\pderiv{\mathbf{g}(\thetaB)}{\thetaB'}$ es la \textbf{matriz jacobiana} de dimensión \(P \times K\), evaluada en $\thetaB$.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estadístico de Wald (caso general)}
+\begin{itemize}
+    \item La función \(\mathbf{g}\) puede representar restricciones lineales o no lineales sobre los parámetros. Queremos probar \(\HT{0}\!: \mathbf{g}(\thetaB) = \mathbf{q}\) vs. \(\HT{1}\!: \mathbf{g}(\thetaB) \neq \mathbf{q}\), con \(\mathbf{q}\) conocido. \textbf{Ejemplo:} \(g(\thetaB) = \log(\theta_k)\) y \(q = 0\).
+
+    \medskip
+    \item El \textbf{estadístico de Wald} se define como
+    \[
+        \brown{W_N} \;=\; 
+        N\big(\mathbf{g}(\hat{\thetaB}_N) - \mathbf{q}\big)' 
+        \left(
+            \pderiv{\mathbf{g}(\hat{\thetaB}_N)}{\thetaB'} 
+            \,\hat{\mathbf{V}}\,
+            \pderiv{\mathbf{g}(\hat{\thetaB}_N)}{\thetaB'}'
+        \right)^{-1}
+        \big(\mathbf{g}(\hat{\thetaB}_N) - \mathbf{q}\big),
+    \]
+    donde \(\plim \hat{\mathbf{V}} = \mathbf{V}\).
+    \medskip
+    %\pause
+    \item Bajo \(\HT{0}\) y condiciones de regularidad, \(\brown{W_N} \xrightarrow{d} \chi^2_P\). Los pasos de la prueba son análogos a los del caso de restricciones lineales.
+\end{itemize}
+
+\hyperlink{PruebaWald}{{\beamerreturnbutton{Regresar}}}
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%BIBLIOGRAPHY
+\nobibliography{references}
+
+\end{document}

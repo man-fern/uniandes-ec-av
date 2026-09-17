@@ -1,0 +1,445 @@
+\documentclass[10pt, xcolor=dvipsnames]{beamer}
+\input{preambulo/preambulo-magistral}
+
+% Ajustes locales de esta clase (preservados del original):
+\AtBeginSubsection[]
+{
+    \begin{frame}
+        {Subsección}
+        \tableofcontents[currentsection, currentsubsection, subsectionstyle=show/shaded/hide]
+    \end{frame}
+}
+
+\subtitle{Control Sintético}
+
+\begin{document}
+	\beamertemplatenavigationsymbolsempty	
+\begin{frame}[plain]%Title Page%
+	\titlepage
+	\vspace{-0.4cm}
+\textbf{Temas de la Clase:} \\ \vspace{0.3cm}
+	\tableofcontents
+\end{frame}
+
+\begin{frame}{Temas de la clase:}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Motivación}
+
+\begin{frame}{Motivación: \texorpdfstring{\citet{abadie_comparative_2015}}{Abadie et al. (2015)}}
+\begin{itemize}\setlength{\itemsep}{1em}
+	\item \textbf{Pregunta:} ¿Cuál fue el impacto económico de la reunificación alemana en 1990 sobre Alemania Occidental?
+    \vspace{0.3em}
+	\begin{itemize}\setlength{\itemsep}{0.3em}
+		\item Alemania Oriental y Alemania Occidental estaban separadas desde el final de la Segunda Guerra Mundial.		
+		\item La reunificación ocurrió el 3 de octubre de 1990.	%\pause		
+		\item ¿Cómo hubiera evolucionado el PIB per cápita de Alemania Occidental sin la reunificación?		
+	\end{itemize}
+    %\pause
+	\vspace{0.3cm}
+	``\textit{It is difficult to find a more dramatic episode of \textbf{economic dislocation in peacetime} during the twentieth century than that associated with the reunification of Germany}.''
+	\citet{burda2001reunification} 
+\end{itemize}	
+\end{frame}
+
+
+\begin{frame}{Control sintético}
+\begin{itemize}\setlength{\itemsep}{1em}
+	\item \textcolor{blue}{Control sintético} es un método (originalmente pensado) para estimar el efecto el causal de un tratamiento que se aplica a \textbf{nivel agregado} y afecta a \textbf{pocas unidades}.  \\ \vspace{0.1cm}
+    %\pause
+    \item Cercano a las metodologías de \textbf{estudio de caso comparativo}. \\ \vspace{0.1cm}	
+    \begin{itemize}\setlength{\itemsep}{0.3em}
+    	\item Ataques terroristas concentrados geográficamente  \citep{abadie2003economic}. \\ 	
+    	\item Regulación del consumo de tabaco en California \citep{abadie2010}.
+    	\item Impacto de un desastre natural en la actividad económica \citep{cavallo2013catastrophic}.	
+    \end{itemize} 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Diferencias en diferencias y \textit{matching}}
+\begin{itemize}\setlength{\itemsep}{0.75em}
+    \item Se puede pensar como una combinación de \textcolor{blue}{diferencias en diferencias} y \textcolor{blue}{matching}.
+    %\pause
+    \item \textcolor{blue}{DiD:} comparamos los resultados entre tratados y controles antes y después del tratamiento.
+    \vspace{0.3em}
+    \begin{itemize}\setlength{\itemsep}{0.3em}
+        \item Normalmente, hay muchas unidades en cada grupo.
+        \item Cada unidad no tratada es parte del grupo de control, pero es posible que ninguna de ellas, individualmente, sea un ``buen'' \textcolor{blue}{contrafactual}.
+    \end{itemize}		
+    %\pause
+    \item \textcolor{blue}{Control sintético:} construimos un \textbf{grupo de control único} combinando la información de las unidades no tratadas mediante un \textbf{promedio ponderado}. El objetivo es crear un contrafactual ``óptimo''.
+    %\pause
+    \item Estimadores de \textcolor{blue}{matching} (e.g., \textit{PSM}) buscan un \textit{clon} para cada unidad tratada dentro del grupo de control; ahora, nuestro objetivo es \textcolor{red}{\textbf{construir ese \textit{clon}}}.
+\end{itemize}	
+\end{frame}
+
+
+\begin{frame}{El Frankenstein de Alemania Occidental}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.75\linewidth]{Figuras/frankenstein-alemania-occidental.png}
+    \end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Estimación del control sintético}
+
+\begin{frame}{Notación: \textit{Pool} de donantes}
+\begin{itemize}\setlength{\itemsep}{0.75em}
+	\item Hay $J+1$ unidades: $j=1,...,J+1$.
+	\item Sin pérdida de generalidad, asumimos que la única unidad tratada es $j=1$ (\textit{e.g.}, Alemania Occidental).  
+    \vspace{0.1cm}
+    %\pause
+	\begin{itemize}
+	\item Si hay varias unidades tratadas, el método se puede aplicar a cada unidad por separado o a un agregado.
+	\end{itemize}
+    %\pause
+	\item Vamos a llamar al resto de unidades, $j=2,...,J+1$, el \textcolor{blue}{``\textit{pool} de donantes''}: el conjunto de unidades no tratadas que son \textbf{potenciales grupos de comparación} para la construcción del contrafactual (\textit{e.g.}, otros países OCDE). 
+    \vspace{0.1cm}
+    %\pause
+	\begin{enumerate}\vspace{0.3em}
+		\item Es importante que estas unidades \textbf{no estén afectadas por eventos de naturaleza similar al tratamiento}.
+    %\pause
+		\item Al definir el \textcolor{blue}{\textit{pool} de donantes}, es mejor seleccionar unidades con características ``relativamente'' similares.
+	\end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Notación: Covariables y variación temporal}
+\begin{itemize}\setlength{\itemsep}{0.5em}
+    \item Tenemos información para $T$ periodos. Los primeros $T_0$ periodos \textbf{ocurren antes de la intervención}.
+    %\pause
+    \item Para cada unidad $j$ y periodo $t$, observamos una variable de resultado de interés, $Y_{jt}$ (\textit{e.g.}, PIB per cápita).
+    %\pause
+    \item Para cada unidad $j$, observamos un conjunto de $K$ variables independientes, $x_{j1},...,x_{jK}$. %\pause
+    \vspace{0.3em}
+    \begin{enumerate}
+    \item No están afectadas por el tratamiento pero \textcolor{blue}{tienen capacidad predictiva} sobre la variable de resultado. %\pause
+    \item En general queremos que estas variables estén \textcolor{blue}{definidas pre-tratamiento}. %\pause
+    \item Es posible (y deseable) usar la \textcolor{blue}{variable de resultado en el periodo pre-tratamiento}!
+    \end{enumerate} 
+    %\pause
+    \item Los vectores $\xB_1,...,\xB_{J+1}$ de $K \times 1$ contienen las variables independientes para cada unidad. La matriz $\XB_D = (\xB_2 ... \xB_{J+1})$ de $K\times J$ contiene las variables independientes para las $J$ unidades en el \textbf{pool de donantes}. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Efecto Causal de Interés}
+\begin{itemize}
+    \item \textbf{Resultados potenciales}:
+    \begin{align*}
+        Y_{jt} = 
+        \begin{cases}
+            Y_{jt}(0) & \text{sin tratamiento}, \\
+            Y_{jt}(1) & \text{con tratamiento}.
+        \end{cases}
+    \end{align*}    
+    \vspace{-0.75em}
+    %\pause
+    \textbf{Estimando}:
+    \begin{align*}
+        \textcolor{brown}{\tau_{1t}} &= Y_{1t}(1) - \textcolor{blue}{Y_{1t}(0)} = Y_{1t} - \textcolor{blue}{Y_{1t}(0)}, \quad \text{para } t > T_0.
+    \end{align*}
+    %\pause
+    \vspace{-1.5em}
+    \item \textbf{Observamos}:
+    \[
+    Y_{jt} = 
+    \begin{cases} 
+        Y_{jt}(1) & \text{si } j = 1 \text{ y } t > T_0, \\[0.1cm]
+        Y_{jt}(0) & \text{si } j = 1 \text{ y } t \leq T_0, \\[0.1cm]
+        Y_{jt}(0) & \text{si } j \neq 1, \; \forall \; t.
+    \end{cases}
+    \]   
+    %\pause
+    \textcolor{red}{\textbf{Problema fundamental de la inferencia causal}:} No observamos $\textcolor{blue}{Y_{1t}(0)}$ para $t > T_0$.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Construyendo el control sintético}
+\begin{itemize}
+    \item El objetivo es estimar $\textcolor{blue}{Y_{1t}(0)}$ en $t>T_0$, usando una o varias unidades no tratadas. \vspace{0.0cm}
+    %\pause
+    \item Sea $\textcolor{red}{\hat{Y}_{1t}(0)}$ un estimador de $\textcolor{blue}{Y_{1t}(0)}$. El efecto causal \textbf{estimado} es
+    \begin{align*}
+        \textcolor{brown}{\hat{\tau}_{1t}} = Y_{1t} - \textcolor{red}{\hat{Y}_{1t}(0)} \;\; \text{para} \;\; t>T_0.
+    \end{align*}	
+    %\pause
+    \item \textcolor{red}{\textbf{Control sintético}:} promedio ponderado de las unidades en el \textcolor{blue}{\textit{pool} de donantes}:
+    \begin{align*}
+    \textcolor{red}{\hat{Y}_{1t}(0)} = \sum_{j=2}^{J+1} w_j Y_{jt}(0) = \sum_{j=2}^{J+1} w_j Y_{jt}. 
+    \end{align*}	
+    \noindent donde los pesos están dados por el vector $\wB=(w_2,...,w_{J+1})'$. Imponemos $\sum_{j=2}^{J+1} w_j=1$ y $w_j\geq0$ $\forall j$. Escoger un vector $\wB$ es equivalente a escoger un \textcolor{blue}{control sintético}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Construyendo el control sintético II}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item Un buen \textcolor{blue}{control sintético} se debe parecer lo ``más posible'' a la unidad tratada en términos de las variables independientes \textbf{en el periodo pre-tratamiento}. \\  \vspace{0.0cm}
+    %\pause
+    \item La métrica propuesta por \citet{abadie2003economic,abadie2010} es
+    \begin{align*}
+    \fontvie
+        \wB^{*}(\vB) = \amin_{\wB} ||\xB_1-\XB_D\wB|| = \amin_{\wB} \left(\sum_{h=1}^{K} v_h \Big(x_{1h} - \sum_{j=2}^{J+1} w_j x_{jh}\Big)^2\right)^{1/2},
+    \end{align*}
+    \vspace{-1.2em}
+    \begin{center}
+    \fontvid
+    s.a.\ $\sum_{j=2}^{J+1} w_j = 1$,\ $w_j \geq 0\ \forall j$.
+    \end{center}
+    %\pause
+    \item $\vB = (v_1,...,v_K)'$ es un \textbf{vector de constantes} que reflejan la \textbf{importancia que le damos a cada variable independiente} $h$ para predecir $\textcolor{blue}{Y_{1t}(0)}$. Queremos darle más peso a las variables con mayor poder predictivo.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Construyendo el control sintético III}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item Dado un vector $\vB$, es posible encontrar el minimizador $\wB^{*}(\vB)$ a través de métodos de optimización con restricciones. 
+    %\pause
+    \item Para cada vector $\vB$ hay un control sintético diferente $\wB^{*}(\vB) =\left(w_2(\vB),...,w_{J+1}(\vB)\right)$. \\ \vspace{0.0cm}
+    %\pause
+    \item ¿Cómo seleccionar $\vB$? \citet{abadie2003economic,abadie2010} proponen minimizar el \textcolor{blue}{error cuadrático medio de predicción (MSPE)} para un subconjunto del periodo \textbf{pre-tratamiento}:
+    \begin{align*}
+        \vB^{*}= \amin_{\vB} \sum_{t\in \mathcal{T}_0} \Big(Y_{1t} - \sum_{j=2}^{J+1} w_j^{*}(\vB)\,Y_{jt}\Big)^2,
+    \end{align*}
+    \noindent para $\mathcal{T}_0 \subseteq \{1,...,T_0\}$. \\ \vspace{0.0cm}
+    %\pause
+    \item \textbf{Intuición}: vector que hace que el \textcolor{blue}{control sintético} y la unidad tratada tengan \textbf{trayectorias similares} pre-tratamiento.  
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Resumen}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item Queremos \textbf{aproximar la trayectoria} que tendría la variable de resultado de la unidad tratada en ausencia del tratamiento para $t>T_0$ (\textit{i.e.}, estimar el \textcolor{blue}{contrafactual}).    
+    \pause
+    \item Seleccionamos los pesos $\wB$ tal que el \textcolor{blue}{control sintético} replique lo más cerca posible la unidad tratada en términos de las variables en el vector $\xB_1$. La importancia de cada variable en $\xB_{1}$ está dada por las constantes en el vector $\vB$.     
+    \pause
+    \item Podemos seleccionar estas constantes de tal manera que se minimice el \textcolor{blue}{error cuadrático medio de predicción} en un subconjunto del período \textbf{pre-tratamiento}.    
+    \pause
+    \item Si $\textcolor{red}{\hat{Y}_{1t}(0)} \approx \textcolor{blue}{Y_{1t}(0)} = Y_{1t}$ en $t\leq T_0$, se espera que $\textcolor{red}{\hat{Y}_{1t}(0)} \approx \textcolor{blue}{Y_{1t}(0)}$ en $t>T_0$.	
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section[Ejemplo: Abadie et al. (2015)]{Ejemplo: \texorpdfstring{\citet{abadie_comparative_2015}}{Abadie et al. (2015)}}
+
+\begin{frame}{Ejemplo: \texorpdfstring{\citet{abadie_comparative_2015}}{Abadie et al. (2015)}}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item \textbf{Pregunta:} ¿Cuál fue el impacto económico de la reunificación alemana en 1990 sobre Alemania Occidental?
+    \vspace{0.5em}
+    \pause
+    \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item El \textcolor{blue}{\textit{pool} de donantes} para construir el \textcolor{blue}{control sintético} lo conforman 16 países de la OCDE.    
+    \item Hay información para los años 1960-2003 (\textbf{30 años pre-tratamiento}).    
+    \pause
+    \vspace{0.4em}
+    \item Para cada país $j$, el vector de variables independientes $\xB_j$ incluye:
+    \vspace{0.4em}
+    \begin{itemize}\setlength{\itemsep}{0.4em}
+    \item \textbf{PIB per cápita} (promedios 1981-1990).
+    \item \textbf{Participación del sector industrial} (promedios 1981-1990).
+    \item \textbf{Tasa de inflación} (promedios 1981-1990).
+    \item \textbf{Nivel de apertura comercial} (promedios 1981-1990). 
+    \item \textbf{Tasa de inversión} (promedios 1980-1984).
+    \item \textbf{Tasa de escolaridad} (promedios 1980-1985).   
+    \end{itemize}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Pesos estimados}
+\vspace{-1.0cm}
+\begin{center}	
+	\begin{figure}        
+		\includegraphics[width=11cm, height=11cm, keepaspectratio]{Figuras/abadie2015-pesos-sinteticos-alemania.png}
+	\end{figure} 
+\end{center}
+    \pause
+\begin{itemize}
+	\item Sólo 5 países tienen pesos positivos. 
+	\item La \textbf{variable con más peso} en la predicción es el \textbf{promedio del PIB per cápita en la década anterior a la reunificación}: variable de resultado en el periodo pre-tratamiento.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Balance de variables predictoras}
+    \begin{figure}
+        \centering
+        \includegraphics[width=1
+        \linewidth]{Figuras/control-sintetico-balance-variables.png}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Capacidad predictiva del control sintético pre-tratamiento}
+\vspace{-1cm}
+\begin{center}	
+	\begin{figure}        
+    \includegraphics[width=11cm, height=11cm, keepaspectratio]{Figuras/abadie2015-ajuste-pretratamiento-pib.png}
+	\end{figure} 
+\end{center}
+\end{frame}
+
+
+\begin{frame}{Efecto de la reunificación}
+\fontvie
+\begin{center}	
+	\begin{figure}        
+		\includegraphics[width=6cm, height=6cm, keepaspectratio]{Figuras/abadie2015-efecto-pib-alemania.png}
+	\end{figure} 
+\end{center}
+\fontvid
+\vspace{-0.2cm}
+\begin{itemize}
+	\item Efecto negativo pronunciado sobre el PIB per cápita de Alemania Occidental: una reducción de \$1,600 USD per cápita por año entre 1990-2003.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section[Ejemplo: Abadie et al. (2010)]{Ejemplo: \texorpdfstring{\citet{abadie2010}}{Abadie et al. (2010)}}
+
+\begin{frame}{Ejemplo: \texorpdfstring{\citet{abadie2010}}{Abadie et al. (2010)}}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item Efecto de la \textbf{Proposición 99} --un programa de control de tabaco en California implementado en 1988--, sobre el consumo anual de cigarrillos per cápita.
+    \vspace{0.4em}    
+    \begin{itemize}
+        \item Incrementa el precio en 25 centavos por cajetilla.
+    \end{itemize}    
+    \pause
+    \item El \textcolor{blue}{\textit{pool} de donantes} lo conforman \textbf{38 estados de EE.UU.} (excluyen estados que implementaron medidas antitabaco de gran escala o aumentos en el impuesto). %%\pause    
+    \item Hay información para los años \textbf{1970-2000}.    
+    \pause
+    \item Para cada estado $j$, el vector de variables independientes $\xB_j$ incluye:
+    \vspace{0.4em}
+    \begin{itemize}
+    \fontvid
+        \item \textbf{Precio minorista promedio de los cigarrillos} (promedios 1980-1988).
+        \item \textbf{Ingreso per cápita en el estado} (promedios 1980-1988).
+        \item \textbf{Porcentaje de la población de 15 a 24 años} (promedios 1980-1988).
+        \item \textbf{Consumo de cerveza per cápita} (promedios 1980-1988).
+        \item \textbf{Consumo anual de cigarrillos per cápita} (1975, 1980, 1988).   
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Pesos estimados}
+\begin{center}	
+	\begin{figure}        
+		\includegraphics[width=7cm, height=7cm, keepaspectratio]{Figuras/abadie2010-pesos-sinteticos-california.png}
+	\end{figure} 
+\end{center}
+Sólo 5 estados tienen pesos positivos.
+\end{frame}
+
+
+\begin{frame}{Capacidad predictiva del control sintético pre-tratamiento}
+\begin{center}	
+	\begin{figure}        
+		\begin{subfigure}{0.47\textwidth}
+		\includegraphics[width=5cm, height=5cm, keepaspectratio]{Figuras/abadie2015-ajuste-pretratamiento-comparacion.png}
+	    \end{subfigure} 
+		\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=5cm, height=5cm, keepaspectratio]{Figuras/abadie2010-ajuste-pretratamiento-comparacion.png}
+	    \end{subfigure} 	
+	\end{figure} 
+\end{center}
+\end{frame}
+
+\begin{frame}{Efecto del programa}
+\begin{center}	
+	\begin{figure}        
+		\includegraphics[width=6cm, height=6cm, keepaspectratio]{Figuras/abadie2010-efecto-tabaco-california.png}
+	\end{figure} 
+\end{center}
+\begin{itemize}
+    \item Para el periodo completo (1989-2000), el consumo de cigarrillos per cápita cae en un 25\%. 
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Inferencia estadística}
+
+\begin{frame}{Inferencia estadística}
+\begin{itemize}\setlength{\itemsep}{1em}
+    \item Tenemos una unidad tratada y un \textcolor{blue}{control sintético}: Se dificulta usar los métodos de inferencia estadística tradicional.    
+    \pause
+    \item La alternativa es hacer inferencia a través de \textcolor{blue}{ejercicios de falsificación}, \textit{e.g.}, \textcolor{blue}{estudios de placebo}.    
+        \pause
+    \item \textbf{Intuición}: si la estimación usando el \textcolor{blue}{control sintético} refleja el efecto causal del tratamiento, no deberíamos encontrar efectos similares para unidades que no reciben el tratamiento o para periodos en los que la unidad no ha sido tratada. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Inferencia estadística en controles sintéticos}
+\begin{enumerate}\setlength{\itemsep}{1em}
+    \item[I.] \textcolor{blue}{Placebo temporal} 
+    \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item Suponga que \textbf{asigna artificialmente el año del tratamiento} para Alemania Occidental antes de 1990, por ejemplo, en 1975. 
+    \pause
+    \item ¿Debería encontrar un efecto del tratamiento?    
+    \pause
+    \item Si encuentra un efecto similar o incluso mayor al del ejercicio original, podemos inferir que el efecto estimado en el ejercicio original no es el efecto causal del tratamiento. 		
+    \end{itemize}	
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}{Placebo temporal: ejemplo \citet{abadie_comparative_2015}}
+	\begin{center}	
+		\begin{figure}        
+			\includegraphics[width=7cm, height=7cm, keepaspectratio]{Figuras/abadie2015-placebo-temporal.png}
+		\end{figure} 
+	\end{center}
+\end{frame}
+
+\begin{frame}{Inferencia estadística en controles sintéticos}
+\begin{enumerate}\setlength{\itemsep}{1em}
+    \item[II.] \textcolor{blue}{Placebo espacial} 
+    \begin{itemize}\setlength{\itemsep}{0.5em}
+    \item Suponga que tomamos otro país diferente a Alemania Occidental como si fuera la unidad tratada, por ejemplo, \textbf{Suiza}.
+    \pause    
+    \item Suponga que aplica la metodología de \textcolor{blue}{control sintético} \textbf{usando a Suiza como la unidad tratada}. \textcolor{red}{¿Debería encontrar un efecto del tratamiento?}    
+    \pause
+    \item Si encuentra un efecto similar o incluso mayor al de Alemania Occidental, es evidencia de que el efecto estimado en el ejercicio original no es el efecto causal del tratamiento.    
+    \pause
+    \item ¿Por qué parar con Suiza? podemos estimar el efecto para cada unidad en el \textcolor{blue}{\textit{pool} de donantes} y generar una \textbf{distribución} de \textcolor{blue}{efectos placebo}.    
+    \pause
+    \item Podemos construir \textbf{p-valores} a partir de esa distribución empírica de \textcolor{blue}{efectos placebo}.
+    \end{itemize}
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}{Placebo espacial: ejemplo \citet{abadie2010}}
+	\begin{center}	
+		\begin{figure}        
+			\includegraphics[width=10cm, height=10cm, keepaspectratio]{Figuras/abadie2010-placebo-espacial.png}
+		\end{figure} 
+	\end{center}
+	\begin{itemize}
+		\item Ningún \textcolor{blue}{efecto placebo} tiene una magnitud mayor al de California. 
+		\item La probabilidad de encontrar este resultado por azar es 1/39 = 0.026 (\textbf{p-valor estimado}).
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%BIBLIOGRAPHY
+\nobibliography{references}
+
+\end{document}

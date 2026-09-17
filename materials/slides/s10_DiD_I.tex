@@ -1,0 +1,574 @@
+\documentclass[10pt, xcolor=dvipsnames]{beamer}
+\input{preambulo/preambulo-magistral}
+
+% Ajustes locales de esta clase (preservados del original):
+\AtBeginSubsection[]
+{
+    \begin{frame}
+    {Subsección}
+        \tableofcontents[currentsection, currentsubsection, subsectionstyle=show/shaded/hide]
+    \end{frame}
+}
+
+\subtitle{Diferencias en Diferencias (DiD)}
+
+\begin{document}
+	\beamertemplatenavigationsymbolsempty	
+\begin{frame}[plain]%Title Page%
+	\titlepage
+	\vspace{-0.4cm}
+\textbf{Temas de la Clase:} \\ \vspace{0.3cm}
+	\tableofcontents
+\end{frame}
+
+\begin{frame}{Temas de la clase:}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Introducción}
+	\begin{itemize}\setlength{\itemsep}{1.0em}
+		\item 	\textcolor{blue}{Diferencias en diferencias (DiD)}: uno de los métodos más usados en econometría aplicada. \smallspace
+		%\pause
+        \begin{itemize}
+    		\item Se puede implementar en muchos contextos. \setlength{\itemsep}{1.0em}
+    		\begin{itemize}
+    			\item Evaluación de políticas públicas.
+    			\item Experimentos naturales o cuasi-experimentos.
+    		\end{itemize}
+    		%\pause
+    		\item Posibilidad de validar (\textbf{parcialmente}) los supuestos de identificación.
+    		%\pause
+    		\item Método \textbf{flexible}: se puede extender (\textit{e.g.}, tratamientos discretos, intensidad de tratamiento, estudio de eventos, \textit{etc}.).
+        \end{itemize}
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{DiD y Estudio de Eventos}
+	\begin{figure}[H]
+		\includegraphics[width=11.0cm, keepaspectratio]{Figuras/diD-avances-recientes-currie2020.png}
+        \caption*{Fuente: \citet{Currie2020}.}
+	\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Experimentos naturales y modelo de diferencias}
+
+\begin{frame}{John Snow y la epidemia de cólera}
+\begin{itemize}\setlength{\itemsep}{1.0em}
+	\item A mediados del siglo XIX se presentaron varias epidemias de cólera en Londres. Los médicos no sabían su causa o cómo frenarla.
+    %\pause
+	\item \textbf{Teoría predominante} (teoría miasmática) postulaba que la enfermedad se transmitía por gases tóxicos.
+	%\pause
+	\item El médico y epidemiólogo \textbf{John Snow} (1813 – 1858) no estaba de acuerdo.
+\begin{itemize}\setlength{\itemsep}{0.75em}
+	\item Las medidas para impedir que los gases llegaran a las personas no daban resultado. %\pause
+	\item Su hipótesis era que la enfermedad se transmitía al consumir agua del sistema de acueducto que contenía materiales residuales.
+	\begin{itemize}
+	\item Las excreciones humanas contenían el agente activo (un microorganismo no observado), y este llegaba al suministro de agua, reinfectando a las personas que la consumían.
+	\item La repetición de este proceso generaba la epidemia.
+	\end{itemize}
+    %\pause
+    \item \textbf{¿Cómo probar la hipótesis?}
+\end{itemize}
+\end{itemize}	
+\end{frame}
+
+
+\begin{frame}{Experimento naturales}
+\begin{itemize}\setlength{\itemsep}{1.0em}
+	\item La \textcolor{blue}{estrategia de identificación} de Snow se basó en lo que se conoce en la literatura como un \textcolor{blue}{experimento natural}. \smallspace
+	\begin{itemize}
+    	\item \textcolor{blue}{Experimento natural}: una situación en la que factores fuera de control del investigador --en oposición a un experimento controlado-- generan \textbf{asignaciones} a un tratamiento de forma posiblemente \textbf{exógena}.
+    \end{itemize}
+    %\pause
+	\item El suministro de agua en Londres en la época estaba a cargo de diferentes compañías. \smallspace
+    \begin{itemize}
+        \item La mayoría de estas compañías tomaban el agua del río Támesis, que se sabía estaba contaminado con aguas residuales. 
+    \end{itemize}
+\end{itemize}	     
+\end{frame}
+
+
+\begin{frame}{El experimento natural de John Snow}
+	\begin{itemize}\setlength{\itemsep}{1.0em}
+		\item En 1852, una de estas compañías, \textbf{\textit{Lambeth Company}}, \textcolor{red}{cambió el punto de recolección de agua río arriba}, en una zona superior al punto de descarga del alcantarillado (un lugar donde el agua no estaba (tan) contaminada).
+		%\pause
+		\item Otras compañías, en particular \textbf{\textit{Southwark and Vauxhall Company}}, \textcolor{red}{mantuvieron el punto de recolección río abajo}, en una zona inferior al punto de descarga del alcantarillado (agua contaminada). \smallspace
+		%\pause
+		\item La idea de Snow era simple: comparar las tasas de mortalidad por cólera entre distritos que recibían el suministro de estas dos compañías durante el brote de 1854. 
+	\end{itemize}	     
+\end{frame}
+
+
+\begin{frame}{La lógica de la comparación}
+\begin{quote}
+    ``The \textcolor{blue}{experiment} . . . was on the grandest scale. No fewer than 300,000 people of both sexes, of every age and occupation, and of every rank and station, from gentle-folks down to the very poor, \textcolor{blue}{were divided into two groups \textbf{without their choice}, and, in some cases, without their knowledge}; one group being supplied with water containing the sewage of London, and, amongst it, whatever might have come from the cholera patients, the other group having water free from such impurity.''
+\end{quote}
+\hspace{1cm} John Snow (1855, On the Mode of Communication of Cholera.)
+\end{frame}
+
+
+\begin{frame}{John Snow y la epidemia de cólera}
+	\begin{figure}[H]
+		\caption*{Tasas de mortalidad por 10,000 hogares en la epidemia de cólera en Londres en 1854 \vspace{-0.3cm}}	
+		\includegraphics[width=9cm, height=9cm, keepaspectratio]{Figuras/snow-colera-tasas-mortalidad.png}
+	\end{figure}
+	%\pause
+\begin{itemize}
+	\item Los distritos que recibían el suministro de agua de \textit{Southwark and Vauxhall Company} (distritos de \textbf{control}) tuvieron una tasa de mortalidad \textbf{8.5 veces mayor} relativo a los distritos que recibían el suministro de \textit{Lambeth Company} (distritos de \textbf{tratamiento}). \smallspace
+	\pause
+	\item En primera medida esto parece una evidencia contundente, pero no se puede descartar problemas de selección. 
+\end{itemize}	
+\end{frame}
+
+
+\begin{frame}{Resultados potenciales}
+	\begin{itemize}\setlength{\itemsep}{1.0em}
+	\item \textcolor{blue}{Resultados potenciales}:
+    {\small    
+	\begin{align*}
+		Y_i = 
+		\begin{cases}
+		Y_i(1) &\hspace{0.3pt} \text{tasa de mortalidad del distrito $i$ si recibe agua limpia}\\
+		Y_i(0) &\hspace{0.3pt} \text{tasa de mortalidad del distrito $i$ si recibe agua contaminada}.
+		\end{cases}
+	\end{align*}
+    }
+	\pause
+	\item $D_i$: $=1$ si el proveedor de agua del distrito $i$ es \textit{Lambeth Company}; $=0$ si el proveedor es \textit{Southwark and Vauxhall Company}.	\smallspace
+	\pause
+	\item \textcolor{blue}{Efecto causal por distrito}:
+	\begin{align*}
+	\textcolor{brown}{\tau_i} = Y_i(1) - Y_i(0). 
+	\end{align*}	
+	\pause
+	\textcolor{red}{Problema fundamental de la inferencia causal}: no vemos al mismo distrito en los dos estados de la naturaleza al mismo tiempo.  
+\end{itemize}	
+\end{frame}
+
+
+\begin{frame}{El problema de selección}
+\begin{itemize}
+	\item \textbf{Tasa de mortalidad observada}:
+	\begin{align*}
+	Y_i = Y_i(0)  + \underbrace{(Y_i(1)-Y_i(0))}_{\textcolor{brown}{\tau_i}} D_i.
+	\end{align*}
+	\pause
+	\item $\textcolor{brown}{\tau_{Snow}} = \EX[Y_i|D_i =1] - \EX[Y_i|D_i =0]$. Pero sabemos que
+	\begin{equation*}
+	\begin{split}
+	\textcolor{brown}{\tau_{Snow}} =& \underbrace{\EX[Y_i(1)|D_i =1] - \textcolor{blue}{\EX[Y_i(0)|D_i =1]}}_{\textcolor{brown}{\tau_{ATT}}} \\
+	+& \underbrace{\textcolor{blue}{\EX[Y_i(0)|D_i =1]} - \EX[Y_i(0)|D_i =0]}_{\text{\textbf{Sesgo de selección}}}. 
+	\end{split}
+	\end{equation*}	 
+	\pause
+	En palabras, $\textcolor{brown}{\tau_{Snow}}=\textcolor{brown}{\tau_{ATT}}$ únicamente si \textbf{no hay diferencias sistemáticas entre los distritos} que son abastecidos por cada una de las compañías.
+\end{itemize}	
+\end{frame}
+
+
+\begin{frame}[plain]
+	\fontvie
+	\begin{figure}[H]
+		\includegraphics[width=9.5cm, height=9.5cm, keepaspectratio]{Figuras/snow-colera-mapa-londres.jpg}
+	\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Modelo de diferencias en diferencias (DiD)}
+
+\begin{frame}{Modelo de DiD - extendiendo la lógica de Snow}
+\begin{itemize}\setlength{\itemsep}{1.0em}
+    \item El modelo de \textcolor{blue}{diferencias en diferencias} es una extensión de la lógica de Snow cuando tenemos datos panel. \smallspace
+    \begin{itemize}
+        \item \textbf{Datos panel:} \textcolor{blue}{observaciones para unas mismas unidades en diferentes momentos del tiempo} (individuos, firmas, ciudades, países, colegios, cohortes, \textit{etc}.).
+    \end{itemize}
+    \pause
+    \item \textbf{Notación} (modelo de \(2 \times 2\)): \smallspace
+    \begin{itemize}
+        \item Periodos \(t\in\{0,1\}\): \(\text{pre}\) y \(\text{post}\).
+        \item Indicador de grupo \(D_i\in\{0,1\}\).
+        \item Indicador temporal \(\text{Post}_t=\mathbf{1}\{t=1\}\).
+        \item Tratamiento efectivo \(D_{i,t}=D_i\times \text{Post}_t\).
+        \item Resultado \(Y_{i,t}\).
+    \end{itemize}    
+    \pause
+    \item Tres formas equivalentes de motivar DiD: \smallspace
+    \begin{enumerate}
+    \item Gráficamente.
+    \item Resultados potenciales.
+    \item Modelo de regresión.
+    \end{enumerate}   
+\end{itemize} 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{- Gráficamente}
+
+\begin{frame}{Representación gráfica I}
+\begin{itemize}
+	\item 	Diferencias en el tiempo para el grupo tratado ($D_i=1$):
+	\begin{center}
+		\begin{tikzpicture}[scale=0.4]
+		\draw[thick,<->,red] (0,12) node[above]{$Y$}--(0,0)--(16,0) node[right]{$Tiempo$};
+		\draw(2,2) node[below]{\tiny \hspace{0.1cm} $\EX[Y_{i,0}|D_i=1]$} --(14,5) node[above]{\tiny $\EX[Y_{i,1}|D_i=1]$};
+		\draw[fill] (2,2) circle [radius =0.2];			
+		\draw[fill] (14,5) circle [radius =0.2];	
+		\draw [dashed] (0,2)--(2,2);	
+		\draw [dashed] (0,5)--(14,5);		
+		\draw [decorate,decoration={brace,amplitude=6pt},xshift=-1pt,yshift=0pt]
+		(0,2) -- (0,5) node [black,midway,xshift=-1.2cm] {\tiny $\Delta_t \EX[Y_{i,t}|D_i=1]$};	
+		\draw [dotted, thick] (8,0)--(8,12);		
+		\node [below] at (8,0) {Intervención};
+		\node [below] at (2,0) {Pre};
+		\node [below] at (14,0) {Post};		
+		\end{tikzpicture}
+	\end{center}	
+\end{itemize}	
+\end{frame}
+
+
+\begin{frame}{Representación gráfica II}
+\begin{itemize}
+	\item Diferencias en el tiempo para el grupo de control ($D_i=0$):
+	\begin{center}
+		\begin{tikzpicture}[scale=0.4]
+		\draw[thick,<->, red] (0,12) node[above]{$Y$}--(0,0)--(16,0) node[right]{$Tiempo$};
+		\draw(2,2) node[below]{\tiny \hspace{0.1cm} $\EX[Y_{i,0}|D_i=1]$} --(14,5) node[above]{\tiny $\EX[Y_{i,1}|D_i=1]$};
+		\draw[fill] (2,2) circle [radius =0.2];			
+		\draw[fill] (14,5) circle [radius =0.2];	
+		\draw(2,4) node[below]{\tiny \hspace{0.1cm} $\EX[Y_{i,0}|D_i=0]$} --(14,11) node[above]{\tiny $\EX[Y_{i,1}|D_i=0]$};
+		\draw[fill] (2,4) circle [radius =0.2];			
+		\draw[fill] (14,11) circle [radius =0.2];	
+		\draw [dashed] (0,4)--(2,4);	
+		\draw [dashed] (0,11)--(14,11);		
+		\draw [decorate,decoration={brace,amplitude=7pt},xshift=-1pt,yshift=0pt]
+		(0,4) -- (0,11) node [black,midway,xshift=-1.2cm] {\tiny $\Delta_t \EX[Y_{i,t}|D_i=0]$};	
+		\draw [dotted, thick] (8,0)--(8,12);		
+		\node [below] at (8,0) {Intervención};
+		\node [below] at (2,0) {Pre};
+		\node [below] at (14,0) {Post};		
+		\end{tikzpicture}
+	\end{center}
+	\smallspace
+    \pause
+    \item El valor esperado de la tasa de mortalidad en el periodo pre no es igual en los dos grupos, i.e., es posible que tengamos selección. 
+\end{itemize}	   
+\end{frame}
+
+
+\begin{frame}{Supuestos de identificación}
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=\textbf{S1. Tendencias paralelas}, breakable]	
+    \textcolor{red}{En ausencia del tratamiento}, la evolución promedio de la variable dependiente en el grupo tratado \textbf{habría sido igual} a la del grupo de control (posible condicional a covariables).
+\end{tcolorbox}   
+\pause
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=\textbf{S2. No anticipación}, breakable]	
+    Los individuos (o unidades) no ajustan sus resultados antes del tratamiento por esperar recibirlo. Por tanto, el tratamiento no tiene efectos en periodos previos a su inicio.
+\end{tcolorbox}   
+\pause
+\begin{tcolorbox}[colback=white, arc=0mm, boxrule=0.5pt, title=\textbf{S3. SUTVA}, breakable]
+    No hay interferencia entre unidades: el tratamiento de una unidad no afecta los resultados potenciales de otras (ni efectos de equilibrio general).
+\end{tcolorbox}
+\end{frame}
+
+
+\begin{frame}{Supuestos de identificación: gráficamente}
+	\begin{center}
+		\begin{tikzpicture}[scale=0.45]
+		\draw[thick,<->, red] (0,12) node[above]{$Y$}--(0,0)--(16,0) node[right]{$Tiempo$};
+		\draw(2,2) node[below]{\tiny \hspace{0.1cm} $\EX[Y_{i,0}|D_i=1]$} --(14,5) node[above]{\tiny $\EX[Y_{i,1}|D_i=1]$};
+		\draw[blue, dashed] (2,2) --(14,9) node[right]{\tiny Contrafactual};	
+		\draw[fill] (2,2) circle [radius =0.2];			
+		\draw[fill] (14,5) circle [radius =0.2];
+		\draw[blue, fill] (14,9) circle [radius =0.2];		
+		\draw [dashed] (0,5)--(14,5);	
+		\draw [dashed] (0,9)--(14,9);			
+		\draw [decorate,decoration={brace,amplitude=7pt},xshift=-1pt,yshift=0pt]
+		(0,5) -- (0,9) node [black,midway,xshift=-0.7cm] {$\textcolor{brown}{\tau_{DiD}}$};		
+		\draw(2,4) node[below]{\tiny \hspace{0.1cm} $\EX[Y_{i,0}|D_i=0]$} --(14,11) node[above]{\tiny $\EX[Y_{i,1}|D_i=0]$};
+		\draw[fill] (2,4) circle [radius =0.2];			
+		\draw[fill] (14,11) circle [radius =0.2];	
+		\draw [dotted, thick] (8,0)--(8,12);		
+		\node [below] at (8,0) {Intervención};
+		\node [below] at (2,0) {Pre};
+		\node [below] at (14,0) {Post};		
+		\end{tikzpicture}
+	\end{center}      
+    %\pause
+    \begin{itemize}
+        \item No se requiere que \(\EX[Y_{i,0}|D_i=0] = \EX[Y_{i,0}|D_i=1] \implies\) se permiten diferencias sistemáticas entre los grupos.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Modelo de diferencias en diferencias}
+\begin{itemize}\setlength{\itemsep}{1.0em}
+	\item Bajo los supuestos descritos
+	\begin{align*}
+	\textcolor{brown}{\tau_{DiD}} = \Delta_t \EX[Y_{i,t}|D_i=1] - \Delta_t \EX[Y_{i,t}|D_i=0] = \textcolor{brown}{\tau_{ATT}}.
+	\end{align*}
+    \pause
+	Notar que $\textcolor{brown}{\tau_{Snow}}\neq\textcolor{brown}{\tau_{DiD}}$ a menos que {\small$\EX[Y_{i,0}|D_i=1]=\EX[Y_{i,0}|D_i=0]$}.
+	\pause
+	\item Bajo \textcolor{blue}{tendencias paralelas}, al hacer las diferencias en el tiempo se elimina el componente sistemático. \smallspace
+    \begin{itemize}
+        \item El supuesto de tendencias paralelas puede ser más ``suave'' que el supuesto de no diferencias sistemáticas. 
+        \item Es posible validar (\textbf{parcialmente}) este supuesto si hay más de un periodo pre.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{- Resultados potenciales}
+
+\setlength\extrarowheight{7pt}
+\begin{frame}{Resultados potenciales I}
+	\begin{align*}
+    \begin{split}
+        \textcolor{brown}{\tau_{ATT}} &= \underbrace{\EX[Y_{i,1}(1)|D_i = 1]}_{\text{\textbf{Obs.}}} - \underbrace{\textcolor{blue}{\EX[Y_{i,1}(0)|D_i = 1]}}_{\text{\textbf{No Obs.}}} \\ 
+        &= \EX[Y_{i,1} | D_i = 1] - \underbrace{\textcolor{blue}{\EX[Y_{i,1}(0)|D_i = 1]}}_{\text{\textbf{No Obs.}}}        
+    \end{split}
+    \end{align*}
+    \vspace{-1.0em}
+	\pause
+\begin{itemize}\setlength{\itemsep}{1.0em}
+	\item En el modelo de diferencias ``simples'' se asume que \textbf{no hay selección}:
+    \[
+    \underbrace{\textcolor{blue}{\EX[Y_{i,1}(0)|D_i = 1]}}_{\text{\textbf{No Obs.}}} = \EX[Y_{i,1} | D_i = 0],
+    \]
+    pero puede ser un \textcolor{red}{supuesto muy fuerte}.
+\end{itemize}  
+\end{frame}
+
+
+\begin{frame}{Resultados potenciales II}
+\begin{itemize}
+	\item ¿Qué resultados potenciales puedo observar? \smallspace
+    \begin{itemize}
+        \item \(\EX[Y_{i,0}(0)|D_i = 0] = \EX[Y_{i,0}|D_i = 0]\).
+        \item \(\EX[Y_{i,1}(1)|D_i = 1] = \EX[Y_{i,1}|D_i = 1]\).
+        \item \(\EX[Y_{i,0}(0)|D_i = 1] = \EX[Y_{i,0}|D_i = 1]\) si \textcolor{blue}{no hay anticipación}.
+        \item \(\EX[Y_{i,1}(0)|D_i = 0] = \EX[Y_{i,1}|D_i = 0]\) si se cumple \textcolor{blue}{SUTVA}.        
+    \end{itemize}
+    \vspace{1em}
+	\begin{center}
+		\begin{tabular}{ | l | c | c |}
+			\hline
+			& \textbf{Pre ($t=0$)} & \textbf{Post ($t=1$}) \\ \hline		
+			\textbf{Tratado ($D_i=1$)} & $\EX[Y_{i,0}(0)|D_i = 1]$ & $\EX[Y_{i,1}(1)|D_i = 1]$ \\ \hline
+			\textbf{Control ($D_i=0$)} & $\EX[Y_{i,0}(0)|D_i = 0]$ & $\EX[Y_{i,1}(0)|D_i = 0]$ \\ \hline
+		\end{tabular}
+	\end{center}
+    \end{itemize}	
+\end{frame}
+
+
+\begin{frame}{Resultados potenciales}
+    \begin{itemize}
+        \item Si se cumple \textcolor{blue}{tendencias paralelas}:
+    {\small
+    \begin{align*}
+        \underbrace{\textcolor{blue}{\EX[Y_{i,1}(0)|D_i = 1]}}_{\text{\textbf{No Obs.}}} - \underbrace{\EX[Y_{i,0}(0)|D_i = 1]}_{\text{\textbf{Obs.}}} =  \underbrace{\EX[Y_{i,1}(0)|D_i = 0]}_{\text{\textbf{Obs.}}}  - \underbrace{\EX[Y_{i,0}(0)|D_i = 0]}_{\text{\textbf{Obs.}}}.
+    \end{align*}
+    }
+    \pause
+    Resolviendo para el componente no observado:
+    {\small
+    \begin{align*}
+    \begin{split}
+        \underbrace{\textcolor{blue}{\EX[Y_{i,1}(0)|D_i = 1]}}_{\text{\textbf{No Obs.}}} &= \underbrace{\EX[Y_{i,0}(0)|D_i = 1]}_{\text{\textbf{Obs.}}} +  \Big(\underbrace{\EX[Y_{i,1}(0)|D_i = 0]}_{\text{\textbf{Obs.}}}  - \underbrace{\EX[Y_{i,0}(0)|D_i = 0]}_{\text{\textbf{Obs.}}} \Big). \\
+        &= \EX[Y_{i,0} | D_i = 1] +  \Big(\EX[Y_{i,1} | D_i = 0] - \EX[Y_{i,0} | D_i = 0] \Big).
+        \end{split}
+    \end{align*}
+    }
+    \end{itemize}	
+\end{frame}
+
+\begin{frame}{Resultados potenciales III}
+	\begin{align*}
+    \begin{split}
+        \textcolor{brown}{\tau_{ATT}} &= \underbrace{\EX[Y_{i,1}(1)|D_i = 1]}_{\text{\textbf{Obs.}}} - \underbrace{\textcolor{blue}{\EX[Y_{i,1}(0)|D_i = 1]}}_{\text{\textbf{No Obs.}}} \\ 
+        &= \EX[Y_{i,1} | D_i = 1] - \underbrace{\textcolor{blue}{\EX[Y_{i,1}(0)|D_i = 1]}}_{\text{\textbf{No Obs.}}}        
+    \end{split}
+    \end{align*}
+\begin{itemize}
+	\item Reemplazando:
+\end{itemize}	
+    {\small
+	\begin{align*}
+	\begin{split}
+	\textcolor{brown}{\tau_{ATT}} =& \Big(\underbrace{\EX[Y_{i,1} | D_i = 1] - \EX[Y_{i,0} | D_i = 1]}_{\Delta_t \EX[Y_{i,t}|D_i=1]}\Big) - \Big(\underbrace{\EX[Y_{i,1} | D_i = 0] - \EX[Y_{i,0} |D_i = 0]}_{\Delta_t \EX[Y_{i,t}|D_i=0]}\Big).
+	\end{split}
+	\end{align*}
+    }
+    En palabras, si se cumplen los supuestos de identificación \(\textcolor{brown}{\tau_{ATT}} = \textcolor{brown}{\tau_{DiD}}\).
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{- Modelo de regresión}
+
+\begin{frame}{Modelo de regresión lineal}
+\begin{itemize}\setlength{\itemsep}{1.0em}
+	\item Modelo de regresión:
+	\begin{align*}
+	Y_{i,t} = \beta_0 + \beta_1 Post_t + \beta_2 D_i + \textcolor{brown}{\beta_3} (D_i \times Post_t) + e_{i,t}
+	\end{align*} 
+	\pause
+	\begin{enumerate}
+		\item[1.] $\EX[Y_{i,t}|Post_t=1, D_i = 1] = \beta_0 + \beta_1 + \beta_2 + \textcolor{brown}{\beta_3}$ \\ 
+		\pause
+		\item[2.] $\EX[Y_{i,t}|Post_t=0, D_i = 1] = \beta_0 + \beta_2$ \\	 
+		\pause
+		\item[3.] $\EX[Y_{i,t}|Post_t=1, D_i = 0] = \beta_0 + \beta_1$ \\ 	
+		\pause
+		\item[4.] $\EX[Y_{i,t}|Post_t=0, D_i = 0] = \beta_0$	
+	\end{enumerate}
+	\pause
+	\vspace{0.2cm}	
+	\textbf{Diferencias en el tiempo para cada grupo} ($\Delta_t \EX[Y_{i,t}|D_i]$):
+	\begin{enumerate}
+		\item[a.] $(1)-(2)=\beta_1 + \textcolor{brown}{\beta_3}$ \\
+		\item[b.] $(3)-(4)=\beta_1$ \\	
+	\end{enumerate}
+	\vspace{0.2cm}	
+	\pause
+	\textbf{DiD} ($\Delta_t \EX[Y_{i,t}|D_i=1]-\Delta_t \EX[Y_{i,t}|D_i=0]$):
+	\begin{itemize}
+		\item $\textcolor{brown}{\tau_{DiD}} \equiv (a)-(b) = \textcolor{brown}{\beta_3}$ \\
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Modelo de regresión en primeras diferencias}
+\begin{itemize}\setlength{\itemsep}{1.0em}
+	\item Modelo de regresión (alternativa en primeras diferencias):
+	\begin{align*}
+	\Delta_t Y_{i,t} = \gamma_0 + \textcolor{brown}{\gamma_1} D_i + e_{i,t}
+	\end{align*} 
+	\pause
+	\item \textbf{Diferencias en el tiempo para cada grupo} ($\Delta_t \EX[Y_{i,t}|D_i]$):
+	\begin{enumerate}
+		\item[1.] $\Delta_t \EX[Y_{i,t}|D_i = 1] = \gamma_0 + \textcolor{brown}{\gamma_1}$ \\
+		\item[2.] $\Delta_t \EX[Y_{i,t}|D_i = 0] = \gamma_0$ \\	
+	\end{enumerate}
+    \pause
+	\vspace{0.2cm}
+	\textbf{DiD} ($\Delta_t \EX[Y_{i,t}|D_i=1]-\Delta_t \EX[Y_{i,t}|D_i=0]$):
+	\begin{itemize}
+		\item $\textcolor{brown}{\tau_{DiD}} \equiv (1)-(2) = \textcolor{brown}{\gamma_1}$ \\
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Algunas ventajas del modelo de regresión}
+	\begin{enumerate}\setlength{\itemsep}{0.75em}
+		\item Podemos agregar controles (si son necesarios). \smallspace
+		\begin{itemize}\setlength{\itemsep}{0.35em}
+			\item Controles que hacen que el supuesto de \textcolor{blue}{tendencias paralelas} sea más plausible. %%\pause
+			\item Reducen la varianza residual $\implies$ mejora la precisión del estimador. %%\pause
+			\item Evitar usar variables de control que puedan estar afectadas por el tratamiento.  
+		\end{itemize} 	
+		%%\pause
+		\item Permite calcular errores estándar directamente. \smallspace
+		%%\pause
+		\item Se puede generalizar fácilmente a más de dos periodos. Esto a su vez permite testear \textbf{parcialmente} el supuesto de tendencias paralelas (próximas diapositivas). \smallspace
+		%%\pause
+		\item Se puede generalizar a tratamientos que no son binarios. Por ejemplo, diferentes intensidades del tratamiento (próximas diapositivas).	
+	\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Ejemplo: \citet{card1994american}}
+
+\begin{frame}{\citet{card1994american}}
+\begin{itemize}
+	\item ¿Cuál es el efecto de incrementar el salario mínimo sobre el nivel de empleo/desempleo? 
+	\pause
+	\item Si hay competencia perfecta en el mercado laboral, $\uparrow$ salario mínimo $\downarrow$ el nivel de empleo. 
+	\begin{center}
+		\begin{tikzpicture}[scale=0.255]
+		\draw[thick,<->] (0,10) node[left]{$w$}--(0,0)--(12,0) node[right]{$L$};
+		\node [below] at (5,0) {$L^*$};
+		\node [left] at (0,5) {$w^*$};
+		\node [left] at (0,7) {$w_{mw}$};
+		\draw(1,1)--(9,9) node[right]{$L^S$};
+		\draw(1,9)--(9,1) node[right]{$L^D$};
+		\draw[dashed](0,5)--(5,5)--(5,0);
+		\draw[dashed](0,7)--(3,7)--(3,0);
+		\node [below] at (3,0) {$L_{mw}$};
+		\end{tikzpicture}
+	\end{center}
+	\vspace{0.0cm} 
+	\pause
+	\item Es posible afectar negativamente grupos que en principio se buscaba ayudar.
+	\pause
+	\item La predicción teórica no tiene ambigüedad (al menos en este contexto), pero la evidencia empírica no ha sido concluyente. 
+\end{itemize}	
+\end{frame}
+
+
+\begin{frame}{\citet{card1994american}}
+\begin{itemize}
+	\item En abril 1992, el estado de \textbf{New Jersey (NJ) aumentó el salario mínimo} de \$4.25 a \$5.05 dólares por hora  (18.8\%). El aumento había sido decretado en 1990. \smallspace
+	\pause
+	\item Card y Krueger recolectaron información de 410 restaurantes de comida rápida (\textit{e.g.}, Burger King, KFC, etc.) en el estado NJ y Pensilvania (estado vecino de NJ donde el \textbf{salario mínimo se mantuvo en \$4.25}). \smallspace
+	\pause
+	\item Información pre: febrero-marzo de 1992. Información post: noviembre-diciembre de 1992. \smallspace
+	\begin{align*}
+	\Delta E_{i} = \alpha + \textcolor{brown}{\tau} NJ_i + \XB'_{i}\betaB + \epsilon_{i}.
+	\end{align*}
+\end{itemize}	
+\end{frame}
+
+
+\begin{frame}{\citet{card1994american}}
+	\begin{figure}[H]
+		\includegraphics[width=8.5cm, height=8.5cm, keepaspectratio]{Figuras/card-krueger-mapa-nj-pa.png}
+	\end{figure}
+\end{frame}
+
+
+\begin{frame}{\citet{card1994american}}
+	\begin{figure}[H]
+		\caption*{Distribución del Salario de Entrada por Estado}
+		\begin{subfigure}{.49\textwidth}
+			\caption{Febrero 1992}	
+			\includegraphics[width=5.5cm, height=5.5cm, keepaspectratio]{Figuras/card-krueger-salarios-febrero1992.png}
+		\end{subfigure}
+		\begin{subfigure}{.49\textwidth}
+			\caption{Noviembre 1992}
+			\includegraphics[width=5.5cm, height=5.5cm, keepaspectratio]{Figuras/card-krueger-salarios-noviembre1992.png}
+		\end{subfigure}	
+		\caption*{Barra negra (NJ)}	
+	\end{figure}
+\end{frame}
+
+\begin{frame}{\citet{card1994american}}
+	\begin{figure}[H]
+		\begin{subfigure}{.49\textwidth}
+			\caption{Diferencias de Promedios}	
+			\includegraphics[width=5cm, height=5cm, keepaspectratio]{Figuras/card-krueger-diferencias-promedios.png}
+		\end{subfigure}
+		\begin{subfigure}{.49\textwidth}
+			\caption{Modelo de Regresión}
+			\includegraphics[width=5cm, height=5cm, keepaspectratio]{Figuras/card-krueger-modelo-regresion.png}
+		\end{subfigure}	
+	\end{figure}
+	\textbf{No se encuentra ningún efecto sobre el empleo}. 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%BIBLIOGRAPHY
+\nobibliography{references}
+
+\end{document}

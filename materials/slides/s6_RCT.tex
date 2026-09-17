@@ -1,0 +1,796 @@
+\documentclass[10pt, xcolor=dvipsnames]{beamer}
+\input{preambulo/preambulo-magistral}
+
+% Ajustes locales de esta clase (preservados del original):
+\setbeamercolor{button}{bg=black,fg=white}
+\setbeamercovered{invisible}
+
+\subtitle{Experimentos Sociales Controlados (RCTs)}
+
+\begin{document}
+	\beamertemplatenavigationsymbolsempty	
+\begin{frame}[plain]%Title Page%
+	\titlepage
+	\vspace{-0.4cm}
+\textbf{Temas de la Clase:} \\ \vspace{0.3cm}
+	\tableofcontents
+\end{frame}
+
+\begin{frame}{Temas de la Clase:}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Crecimiento de los métodos experimentales en economía}
+    \begin{itemize}
+    \item Historia larga de uso de métodos experimentales en otras disciplinas.
+    \item En economía, su adopción es más reciente y ha estado fuertemente impulsada por las \textbf{evaluaciones de impacto}.
+    %\pause
+    \vspace{0.5cm}
+    \begin{figure}[H]
+    \centering
+    	\includegraphics[width=10cm]{Figuras/crecimiento-metodos-experimentales-ravallion.png}		
+    \caption*{Fuente: \citet{Ravallion20}}
+    \end{figure}	
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Banerjee, Duflo y Kremer}
+    \begin{figure}[H]
+    \centering
+    	\includegraphics[width=9cm]{Figuras/nobel-2019-banerjee-duflo-kremer.png}		
+    \end{figure}	
+    \begin{itemize}
+    \item Nobel en 2019 ``\textit{for their \textcolor{red}{\textbf{experimental approach}} to alleviating global poverty.}''	
+    \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{El problema de selección}
+
+\begin{frame}{Recordando el problema de selección}
+\begin{itemize}
+    \item Nos interesa estimar el \textcolor{blue}{efecto causal} de un tratamiento sobre una variable de resultado \(Y_i\). Sea $D_i$ una variable indicadora: 
+    \begin{align*}
+        D_i = 
+        \begin{cases}
+            1 &\hspace{0.5pt} \text{si $i$ recibe el tratamiento}\\
+            0 &\hspace{0.5pt} \text{si $i$ no recibe el tratamiento}
+        \end{cases}
+    \end{align*}
+    %\pause
+    \item Cada unidad tiene dos \textcolor{blue}{resultados potenciales}:
+    \begin{align*}
+        Y_i = 
+        \begin{cases}
+            Y_i(1) &\hspace{0.5pt} \text{si $i$ recibe el tratamiento}\\
+            Y_i(0) &\hspace{0.5pt} \text{si $i$ no recibe el tratamiento}
+        \end{cases}
+    \end{align*}
+    %\pause
+    \item Definimos el \textcolor{blue}{efecto causal} como la diferencia de los \textcolor{blue}{resultados potenciales}: \vspace{-0.2cm}
+    \begin{align*}
+    	\brown{\tau_i} \equiv Y_i(1)-Y_i(0).
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Problema fundamental de la inferencia causal}
+\begin{itemize}
+    \item  \textcolor{red}{Problema fundamental:} nunca observamos a la misma unidad en los dos estados posibles (\(D_i=1\) y \(D_i=0\)). Lo que efectivamente observamos es:
+    \begin{align*}
+    \begin{split}
+    Y_i &= Y_i(1) D_i + Y_i(0) (1-D_i)  \\
+    &= Y_i(0) + (Y_i(1)-Y_i(0)) D_i \\
+    &= Y_i(0) + \brown{\tau_i} D_i.
+    \end{split}
+    \end{align*}
+    %\pause
+    \item Definamos:
+    \begin{itemize}
+        \item \(\brown{\tau} \equiv \EX[\brown{\tau_i} \mid D_i=1]\) \hfill (\textcolor{blue}{ATT: efecto promedio sobre los tratados}).
+        \item \(\brown{\alpha} \equiv \EX[Y_i(0)]\) \hfill (\textcolor{blue}{promedio poblacional de \(Y_i(0)\)}).
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Modelo de regresión lineal y sesgo de selección}
+\begin{itemize}
+    \item Considere el \textbf{modelo de regresión}:
+    \vspace{-0.5em}
+    \begin{align*}
+    \begin{split}
+        Y_i &= \brown{\alpha} + \brown{\tau} D_i + e_i; \quad \text{donde} \quad e_i \equiv \Big((\brown{\tau_i} - \brown{\tau}) D_i + Y_i(0) - \brown{\alpha} \Big).
+    \end{split}
+    \end{align*}
+    %\pause
+    A partir de este modelo se obtiene:
+    \begin{align*}
+        \EX[Y_i | D_i=1] - \EX[Y_i | D_i=0] = \brown{\tau} +  \underbrace{\EX[Y_i(0) | D_i=1] - \EX[Y_i(0) | D_i=0]}_{\textcolor{blue}{\text{Sesgo de selección}}}
+    \end{align*}
+    %\pause
+    \vspace{-0.8em}
+    \item El \textbf{estimador por MCO} es:
+    \begin{align*}
+        \brown{\hat{\tau}_{mco}} = \frac{\sum_i Y_i D_i}{N_1} - \frac{\sum_i Y_i (1-D_i)}{N_0} \xrightarrow{p} \EX[Y_i | D_i=1] - \EX[Y_i | D_i=0]        
+    \end{align*}
+    donde \(N_1 = \sum_i D_i\) y \(N_0 = \sum_i (1-D_i)\). \\
+    \vspace{1.0em}
+    En otras palabras, \(\brown{\hat{\tau}_{mco}}\) estima la \textcolor{red}{diferencia observada de medias}, la cual solo coincide con el \textbf{ATT} cuando no existe sesgo de selección.
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Aleatorización}
+
+\begin{frame}{Aleatorización como respuesta al problema de selección}
+
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=\citet{Athey2017}, breakable]
+    \footnotesize ``\textit{Definimos los \textbf{experimentos aleatorizados} como aquellos contextos en los que el \textbf{mecanismo de asignación} no depende de las características de las unidades, sean observadas o no observadas, y en los que \textbf{el investigador tiene control sobre dicha asignación}.}''
+\end{tcolorbox}
+    %\pause
+\begin{itemize}	
+    \item Si asignamos a los individuos al grupo de tratamiento o control de manera \textcolor{blue}{aleatoria}, entonces:
+    \vspace{-0.75em}
+    \begin{align*}
+        Y_i(0),Y_i(1) \indep D_i.
+    \end{align*}	
+    %\pause
+    \vspace{-0.5cm} \\
+     La \textcolor{blue}{aleatorización} garantiza que:
+    \begin{align*}
+        \EX[Y_i(0)|D_i =1] = \EX[Y_i(0)|D_i =0]= \EX[Y_i(0)].
+    \end{align*}	
+    \vspace{-1.5em}
+    %\pause
+    \item Si se cumple SUTVA, \( \brown{\hat{\tau}_{mco}} \;\xrightarrow{p}\; \brown{\tau} \), por lo que obtenemos un estimador consistente del \textbf{ATT}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Aleatorización simple}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Figuras/aleatorizacion-simple-diagrama.png}
+    \caption*{\footnotesize Fuente: adaptado de \href{https://www.scribbr.com/methodology/random-assignment/}{Scribbr}}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Aleatorización por grupos (cluster randomization)}
+\begin{itemize}	
+    \item En algunos contextos no es factible asignar el tratamiento de manera individual.  
+    En su lugar, se asigna \textcolor{blue}{aleatoriamente a nivel de grupo o clúster} (p.ej., escuela, municipio).
+    %\pause
+    \vspace{0.4em}
+    \item \textcolor{blue}{Método de asignación:} el tratamiento se asigna a nivel de clúster, $D_c \in \{0,1\}$, y todas las unidades del clúster lo heredan (\textcolor{red}{full compliance}):
+    \vspace{-0.5em}
+    \begin{align*}
+        D_i &= D_c \quad \text{para todo $i$ en el clúster $c$}; \\
+        Y_{ic}(0),Y_{ic}(1) &\;\indep\; D_c.
+    \end{align*}
+    %\pause
+    \vspace{-2em}
+    \item \textbf{Modelo de regresión}:
+    \vspace{-1em}
+    \[
+        Y_{ic} = \brown{\alpha} + \brown{\tau} D_c + u_{ic}; 
+        \quad u_{ic} = \eta_c + e_{ic},
+    \]
+    con $\eta_c$ componente común al clúster y $e_{ic}$ idiosincrático. \\
+    \vspace{0.3em}
+    La aleatorización elimina el problema de selección, \textbf{pero la inferencia debe corregirse por la} \textcolor{blue}{correlación intra-clúster}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Aleatorización condicional (estratificada)}
+\begin{itemize}	
+    \item En algunos experimentos, la asignación se realiza \textcolor{blue}{dentro de grupos definidos por una característica} $X_i$ (p.ej., género, educación, municipio). Esto implica que:  
+    \vspace{-0.5em}
+    \begin{align*}
+        &\hspace{2.5cm} Y_i(0),Y_i(1) \;\indep\; D_i | X_i; \quad \text{y} \\ \\
+        &\EX[Y_i(0)\mid D_i=1,X_i] = \EX[Y_i(0)\mid D_i=0,X_i] = \EX[Y_i(0)\mid X_i].
+    \end{align*}
+    %\pause
+    \item \textbf{Modelo de regresión:} 
+    \vspace{-0.0em}
+    \begin{align*}
+        Y_i = \brown{\alpha} + \brown{\tau} D_i + \sum_{x} \brown{\delta_x} \,\mathbf{1}\{X_i=x\} + u_i,
+    \end{align*}
+    donde $\brown{\tau}$ mide el efecto promedio del tratamiento controlando por diferencias entre estratos definidos por $X_i$.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Visualización de los esquemas de aleatorización}
+\centering
+\begin{tikzpicture}[
+    % --- dot styles (6pt for compact fit) ---
+    dot/.style={circle, minimum size=6pt, inner sep=0pt,
+                draw=black!15, line width=0.2pt},
+    sam/.style={dot, fill=black!20},
+    trt/.style={dot, fill=red!55},
+    ctl/.style={dot, fill=blue!50},
+    % --- containers ---
+    panel/.style={rounded corners=6pt, draw=black!12,
+                  fill=white, line width=0.7pt},
+    clbox/.style={rounded corners=3pt, draw=black!25,
+                  line width=0.6pt, inner sep=3pt},
+    stbox/.style={rounded corners=3pt, draw=black!30, dashed,
+                  line width=0.6pt, inner sep=3pt},
+    % --- text ---
+    ttl/.style={font=\fontvid\bfseries, text=black!80},
+    lbl/.style={font=\fontvib\bfseries, text=black!55},
+    desc/.style={font=\fontvib, text=black!45, align=center},
+    slbl/.style={font=\fontvia, text=black!50, anchor=east},
+    % --- arrows ---
+    arr/.style={->, >=stealth, line width=0.9pt, black!25},
+  ]
+
+  % ======== Column centres ========
+  \def\colA{-3.7}
+  \def\colB{0}
+  \def\colC{3.7}
+
+  % ======== Panel backgrounds ========
+  \draw[panel] (\colA-1.65, 3.1) rectangle (\colA+1.65, -2.8);
+  \draw[panel] (\colB-1.65, 3.1) rectangle (\colB+1.65, -2.8);
+  \draw[panel] (\colC-1.65, 3.1) rectangle (\colC+1.65, -2.8);
+
+  % ======== Titles ========
+  \node[ttl] at (\colA, 2.85) {Simple};
+  \node[ttl] at (\colB, 2.85) {Por clúster};
+  \node[ttl] at (\colC, 2.85) {Estratificada};
+
+  % ==================== SIMPLE ====================
+  \node[lbl] at (\colA, 2.5) {Muestra};
+  % Sample dots: 3 rows × 4 cols
+  \foreach \dx in {-0.50,-0.17,0.17,0.50} {
+    \node[sam] at (\colA+\dx, 2.12) {};
+    \node[sam] at (\colA+\dx, 1.78) {};
+    \node[sam] at (\colA+\dx, 1.44) {};
+  }
+  % Arrow
+  \draw[arr] (\colA, 1.1) -- (\colA, 0.7);
+  \node[desc] at (\colA+0.6, 0.9) {aleatorizar};
+  % T/C labels — anchor=east/west prevents horizontal overlap
+  \node[lbl, text=red!55!black, anchor=east] at (\colA-0.05, 0.4) {Tratamiento};
+  \node[lbl, text=blue!55!black, anchor=west] at (\colA+0.05, 0.4) {Control};
+  % T dots (3 rows × 2 cols)
+  \foreach \dy in {0.05,-0.35,-0.75} {
+    \node[trt] at (\colA-0.68, \dy) {};
+    \node[trt] at (\colA-0.35, \dy) {};
+  }
+  % C dots (3 rows × 2 cols)
+  \foreach \dy in {0.05,-0.35,-0.75} {
+    \node[ctl] at (\colA+0.35, \dy) {};
+    \node[ctl] at (\colA+0.68, \dy) {};
+  }
+  % Dashed divider
+  \draw[black!10, line width=0.5pt, dashed] (\colA, 0.2) -- (\colA, -0.9);
+  \node[desc] at (\colA, -1.3) {Cada unidad se asigna\\individualmente al azar};
+
+  % ==================== CLÚSTER ====================
+  \node[lbl] at (\colB, 2.5) {Muestra};
+  % Sample clusters: 2×2 grid (centres ±0.60, y=2.0 / 1.2)
+  \node[clbox, fill=black!3] at (\colB-0.60, 2.0) {%
+    \begin{tikzpicture}
+      \node[sam] at (0,0){}; \node[sam] at (0.30,0){};
+      \node[sam] at (0.15,0.26){};
+    \end{tikzpicture}};
+  \node[clbox, fill=black!3] at (\colB+0.60, 2.0) {%
+    \begin{tikzpicture}
+      \node[sam] at (0,0){}; \node[sam] at (0.30,0){};
+      \node[sam] at (0.15,0.26){};
+    \end{tikzpicture}};
+  \node[clbox, fill=black!3] at (\colB-0.60, 1.2) {%
+    \begin{tikzpicture}
+      \node[sam] at (0,0){}; \node[sam] at (0.30,0){};
+      \node[sam] at (0.15,0.26){};
+    \end{tikzpicture}};
+  \node[clbox, fill=black!3] at (\colB+0.60, 1.2) {%
+    \begin{tikzpicture}
+      \node[sam] at (0,0){}; \node[sam] at (0.30,0){};
+      \node[sam] at (0.15,0.26){};
+    \end{tikzpicture}};
+  % Arrow
+  \draw[arr] (\colB, 0.7) -- (\colB, 0.35);
+  \node[desc] at (\colB+0.6, 0.525) {aleatorizar};
+  % T/C labels — anchor=east/west prevents horizontal overlap
+  \node[lbl, text=red!55!black, anchor=east] at (\colB-0.08, 0.05) {Tratamiento};
+  \node[lbl, text=blue!55!black, anchor=west] at (\colB+0.08, 0.05) {Control};
+  % Result: T clusters (y = −0.5, −1.3)
+  \node[clbox, fill=red!6] at (\colB-0.60, -0.5) {%
+    \begin{tikzpicture}
+      \node[trt] at (0,0){}; \node[trt] at (0.30,0){};
+      \node[trt] at (0.15,0.26){};
+    \end{tikzpicture}};
+  \node[clbox, fill=red!6] at (\colB-0.60, -1.3) {%
+    \begin{tikzpicture}
+      \node[trt] at (0,0){}; \node[trt] at (0.30,0){};
+      \node[trt] at (0.15,0.26){};
+    \end{tikzpicture}};
+  % Result: C clusters
+  \node[clbox, fill=blue!5] at (\colB+0.60, -0.5) {%
+    \begin{tikzpicture}
+      \node[ctl] at (0,0){}; \node[ctl] at (0.30,0){};
+      \node[ctl] at (0.15,0.26){};
+    \end{tikzpicture}};
+  \node[clbox, fill=blue!5] at (\colB+0.60, -1.3) {%
+    \begin{tikzpicture}
+      \node[ctl] at (0,0){}; \node[ctl] at (0.30,0){};
+      \node[ctl] at (0.15,0.26){};
+    \end{tikzpicture}};
+  \node[desc] at (\colB, -1.95) {Grupos completos se\\asignan al azar};
+
+  % ==================== ESTRATIFICADA ====================
+  \node[lbl] at (\colC, 2.5) {Muestra};
+  % Stratum labels OUTSIDE boxes (avoids bounding-box misalignment)
+  \node[slbl] at (\colC-0.85, 2.0) {$x\!=\!1$};
+  \node[stbox, fill=yellow!3] at (\colC+0.1, 2.0) {%
+    \begin{tikzpicture}
+      \node[sam] at (0,0){}; \node[sam] at (0.27,0){};
+      \node[sam] at (0.54,0){}; \node[sam] at (0.81,0){};
+    \end{tikzpicture}};
+  \node[slbl] at (\colC-0.85, 1.25) {$x\!=\!2$};
+  \node[stbox, fill=yellow!3] at (\colC+0.1, 1.25) {%
+    \begin{tikzpicture}
+      \node[sam] at (0,0){}; \node[sam] at (0.27,0){};
+      \node[sam] at (0.54,0){}; \node[sam] at (0.81,0){};
+      \node[sam] at (1.08,0){};
+    \end{tikzpicture}};
+  % Arrow
+  \draw[arr] (\colC+0.1, 0.8) -- (\colC+0.1, 0.4);
+  \node[desc] at (\colC+0.75, 0.6) {aleatorizar};
+  % Result strata with T/C
+  \node[slbl] at (\colC-0.85, -0.05) {$x\!=\!1$};
+  \node[stbox, fill=yellow!3] at (\colC+0.1, -0.05) {%
+    \begin{tikzpicture}
+      \node[trt] at (0,0){}; \node[trt] at (0.27,0){};
+      \node[ctl] at (0.54,0){}; \node[ctl] at (0.81,0){};
+    \end{tikzpicture}};
+  \node[slbl] at (\colC-0.85, -0.75) {$x\!=\!2$};
+  \node[stbox, fill=yellow!3] at (\colC+0.1, -0.75) {%
+    \begin{tikzpicture}
+      \node[ctl] at (0,0){}; \node[ctl] at (0.27,0){};
+      \node[trt] at (0.54,0){}; \node[trt] at (0.81,0){};
+      \node[ctl] at (1.08,0){};
+    \end{tikzpicture}};
+  \node[desc] at (\colC, -1.35) {Aleatorización dentro\\de cada estrato};
+
+  % ======== LEGEND ========
+  \node[sam] at (-2.5, -3.15) {};
+  \node[anchor=west, font=\fontvic, text=black!60] at (-2.3, -3.15) {Muestra};
+  \node[trt] at (-0.5, -3.15) {};
+  \node[anchor=west, font=\fontvic, text=black!60] at (-0.3, -3.15) {Tratamiento};
+  \node[ctl] at (1.6, -3.15) {};
+  \node[anchor=west, font=\fontvic, text=black!60] at (1.8, -3.15) {Control};
+
+\end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}{Esquemas de aleatorización: pros y contras}
+\small
+\begin{columns}[t,totalwidth=\textwidth]
+% ------------------ Simple ------------------
+\column{0.32\textwidth}
+\textbf{Simple}
+\begin{itemize}\itemsep4pt
+  \item[\textcolor{green!60!black}{\textbf{+}}] Fácil de implementar y analizar (diferencia de medias).  
+  \item[\textcolor{green!60!black}{\textbf{+}}] No requiere información previa.  
+  \item[\textcolor{red!70!black}{\textbf{--}}] Posible desbalance en covariables por azar, sobre todo en muestras pequeñas.  
+\end{itemize}
+% ------------------ Cluster ------------------
+\column{0.33\textwidth}
+\textbf{Por clúster}
+\begin{itemize}\itemsep4pt
+  \item[\textcolor{green!60!black}{\textbf{+}}] Adecuado cuando el tratamiento opera a nivel de grupo.  
+  \item[\textcolor{green!60!black}{\textbf{+}}] Contiene los spillovers dentro del clúster: no contaminan al grupo de control.  
+  \item[\textcolor{red!70!black}{\textbf{--}}] Menor potencia: por la correlación intra-clúster (ICC), el tamaño efectivo depende del número de clústeres.  
+\end{itemize}
+% ------------------ Estratos ------------------
+\column{0.35\textwidth}
+\textbf{Por estratos}
+\begin{itemize}\itemsep4pt
+  \item[\textcolor{green!60!black}{\textbf{+}}] Garantiza balance en las covariables de estratificación.  
+  \item[\textcolor{green!60!black}{\textbf{+}}] Mayor precisión si los estratos predicen \(Y\).  
+  \item[\textcolor{red!70!black}{\textbf{--}}] Requiere información previa para definir estratos.  
+  \item[\textcolor{red!70!black}{\textbf{--}}] El análisis debe respetar el diseño (efectos fijos de estrato).  
+\end{itemize}
+\end{columns}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{SUTVA}
+
+\begin{frame}{Valor estable de la unidad de tratamiento (SUTVA)}
+\begin{itemize}
+    \item \textcolor{red}{\textbf{Supuesto adicional}} (\textcolor{blue}{SUTVA}): El resultado potencial de una unidad depende solo de su propio estado de tratamiento, no del de otras unidades ni de la forma de asignación. \vspace{1.0em}   
+    %\pause
+    \begin{enumerate}
+        \item \textbf{No interferencia}: sin spillovers, externalidades ni efectos de equilibrio general.
+    \begin{align*}
+        Y_i(D_i, \mathbf{D_{-i}}) = Y_i(D_i)  \hspace{1cm} \text{(\textcolor{blue}{resultados potenciales})}
+    \end{align*}
+    donde $\mathbf{D_{-i}}$ denota el vector de asignaciones de \textbf{todas las demás unidades}.
+    \vspace{1em}
+    %\pause
+    \item \textbf{Consistencia/sin versiones múltiples}: el resultado bajo tratamiento es único, independientemente de cómo se reciba.
+     \begin{itemize}
+         \item Diferente dosis.
+         \item Diferente percepción o recepción.
+         \item Contexto de aplicación.
+     \end{itemize}
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Ejemplo de violación de SUTVA}
+\begin{itemize}
+    \item Sea $D_i \in \{0,1\}$ un indicador de si el individuo $i$ recibe tratamiento, y 
+    $Z_i \in \{0,1\}$ un indicador de si \emph{algún miembro del hogar} recibe tratamiento. $D_i$ \textbf{se asigna de manera aleatoria.}
+    %\pause
+    \vspace{1em}
+    \item \textcolor{red}{Problema}: \(Y_i(D_i, Z_i) \neq Y_i(D_i)\). Por ejemplo, considere
+    \begin{align*}
+    Y_i(D_i,Z_i) =
+    \begin{cases}
+        Y_i(1) & \text{si } D_i=1\\
+        Y_i(0) & \text{si } D_i=0 \;\text{y}\; Z_i=0 \\
+        Y_i(0)+\brown{\gamma} & \text{si } D_i=0 \;\text{y}\; Z_i=1
+    \end{cases}    
+    \end{align*}
+    \vspace{-0.5em}
+    con \(\brown{\gamma}>0\).
+    %\pause
+    \vspace{0.75em}
+    \item Si estimamos el modelo: \(Y_i = \brown{\alpha} + \brown{\tau} D_i + e_i\) por MCO, 
+    \begin{align*}
+        \brown{\hat{\tau}_{mco}} &\;\xrightarrow{p}\; \EX[Y_i(1)\mid D_i=1] - \EX[Y_i(0)+\brown{\gamma} Z_i\mid D_i=0] \\
+        &= \brown{\tau} - \underbrace{\brown{\gamma}\,\Prob{Z_i=1\mid D_i=0}}_{\text{\textcolor{blue}{sesgo por spillover}}}.
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Ejemplo: \citet{miguel2004worms}}
+\fontvie
+\begin{itemize}
+    \item Programa de desparasitación de niños en Kenia.
+    %\pause
+    \smallspace
+    \item \textcolor{blue}{Problema:} si se aleatoriza al nivel de los niños y se ignoran los \textbf{efectos de contagio}, se \textbf{subestima} el verdadero impacto del programa.
+    \smallspace
+    %\pause
+    \item \textcolor{blue}{Diseño:} se aleatorizaron los colegios que recibían el tratamiento (\textit{cluster randomization}). %\pause
+    \smallspace
+    \item \textcolor{blue}{Resultados:}
+    \begin{itemize}
+        \item Reducción significativa del ausentismo, especialmente entre los más jóvenes.  
+        \item Efectos indirectos: estudiantes de colegios vecinos también se beneficiaron.  
+        \item Al internalizar estas externalidades, el análisis costo–beneficio muestra que es socialmente rentable subsidiar la desparasitación.  
+    \end{itemize}
+    \smallspace
+    %\pause
+    \item Es clave diseñar la aleatorización para \textbf{minimizar la interferencia entre unidades}. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Experimentos y cambios de comportamiento}
+\begin{itemize}
+    \item Aún con \textcolor{blue}{asignación aleatoria}, los resultados potenciales pueden verse afectados por el hecho de participar en un experimento. \medskip
+   %\pause
+    \item \textcolor{red}{Efecto placebo:} un sujeto recibe una sustancia inerte, pero experimenta cambios por un estímulo psicológico. \medskip
+   %\pause
+    \item \textcolor{red}{Efecto Hawthorne:} los tratados modifican su conducta porque saben que están siendo observados. 
+    \begin{itemize}
+        \item Ejemplo clásico: experimentos en la \textit{Western Electric Factory} sobre iluminación y productividad.  
+        \item La productividad aumentaba durante los experimentos, pero caía al terminar la observación. 
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Experimentos y cambios de comportamiento}
+\begin{itemize}
+    \item \textcolor{red}{Efecto John Henry:} los no tratados cambian su conducta para compensar el no recibir tratamiento. Nombrado por la figura (legendaria) de John Henry en la industria del acero. \medskip
+   %\pause
+    \item \textcolor{red}{Experimenter demand effect:} los participantes ajustan su comportamiento según lo que creen que los investigadores esperan de ellos (p.\,ej., en actitudes frente a normas sociales). \medskip
+   %\pause
+    \item Estos efectos pueden darse en otros contextos, pero son especialmente relevantes en evaluaciones experimentales: los individuos saben que forman parte de un estudio.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[plain]
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.75\linewidth]{Figuras/caricatura-efecto-experimentador.png}
+        \caption*{Autor: Paul Noth (Alta Journal (2023)).}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Estimación del efecto causal}
+\begin{itemize}		
+    \item Bajo los supuestos:
+    \begin{enumerate}
+        \item \textcolor{blue}{Asignación aleatoria} del tratamiento. 
+        \item \textcolor{blue}{SUTVA} (sin interferencias, consistencia).
+    \end{enumerate}
+    \begin{align*}
+        \EX[Y_i \mid D_i=1] - \EX[Y_i \mid D_i=0] \;=\; \brown{\tau}.
+    \end{align*}
+    %\medskip
+   %\pause
+    El \textbf{poder de los RCTs} es que, con estos supuestos, el problema de identificación queda resuelto. 
+    \medskip
+   %\pause
+    \item La \textbf{estimación es directa}:
+    \begin{enumerate}
+        \item Mediante la \textcolor{blue}{diferencia de medias} entre grupos. 
+        \item Modelo de regresión estimado por MCO.
+    \end{enumerate}
+\end{itemize}	
+\end{frame}
+
+
+\begin{frame}{Validez interna y externa}
+	\begin{itemize}
+    \item \textcolor{blue}{Validez interna}: capacidad de atribuir causalidad al efecto estimado \emph{dentro de la muestra del estudio}. \vspace{0.1cm}
+   %\pause
+    \item \textcolor{blue}{Validez externa}: grado en que los resultados pueden \emph{generalizarse} y \emph{replicarse} en otras poblaciones o contextos.  \vspace{0.5cm}
+   %\pause
+    \begin{figure}[H]
+    	\centering
+    	\includegraphics[width=8cm]{Figuras/validez-interna-externa-gertler.png}	
+    	\caption*{Fuente: \citet{Gertler2010a}.}
+    \end{figure}
+	\end{itemize}	
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Verificación de la aleatorización}
+
+\begin{frame}{Verificación de la aleatorización}
+\begin{itemize}
+    \item Si hay una \textcolor{blue}{asignación aleatoria}, $D_i$ no debe estar correlacionada con ninguna variable observada (predeterminada). 
+    \begin{align*}
+    D_i = \XB'_i\boldsymbol{\gamma} + \eta_i.
+    \end{align*}
+   %\pause
+    Si las variables en $\XB_i$ son predeterminadas respecto al tratamiento, o no están afectadas por este, no deberíamos rechazar la hipótesis nula en pruebas de significancia individual (o conjunta):
+    \begin{align*}
+    \begin{split}
+        \HT{0}:& \gamma_k = 0, \\
+        \HT{1}:& \gamma_k \neq 0.
+    \end{split}
+    \end{align*}
+   %\pause
+    De forma alternativa, si hacemos una prueba estadística de \textbf{diferencia de medias} entre tratados y no tratados para cada variable en $\XB$, no deberíamos ver diferencias significativas. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[plain]
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=11cm]{Figuras/balance-rct-property-tax.png}	
+\end{figure}
+\end{frame}
+
+
+\begin{frame}[plain]
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=7.0cm]{Figuras/balance-rct-microfinanzas-2.png}	
+\end{figure}
+% The miracle of microfinance? Evidence from a randomized evaluation
+\end{frame}
+
+
+\begin{frame}{Controles en RCTs: ¿por qué incluirlos?}
+\begin{itemize}
+    \item Podemos incluir \textcolor{blue}{covariables predeterminadas} (no afectadas por el tratamiento) en:
+    \begin{align*}
+        Y_i = \brown{\alpha} + \brown{\tau} D_i + \XB'_i\brown{\boldsymbol{\gamma}} + e_i 
+    \end{align*}
+   %\pause
+    \item Con asignación aleatoria ($D_i \indep \XB_i$), la consistencia del estimador de $\brown{\tau}$ no depende de incluir controles. Sin embargo, \vspace{1em}
+    \begin{itemize}
+        \item \textbf{Mejora la precisión} $\Rightarrow$ si $\XB$ predice $Y$, el error tiene menor varianza que en el modelo sin controles ($Y_i = \brown{\alpha} + \brown{\tau} D_i + u_i$):
+            \begin{align*}
+                \Var[e_i] \leq \Var[u_i]
+            \end{align*}
+           %\pause
+        \item Mitiga \textbf{desequilibrios muestrales} que ocurren por azar. \smallspace
+       %\pause
+        \item Permite \textbf{respetar el diseño}: por ejemplo, incluir efectos fijos de estrato.
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Buenas prácticas al incluir controles}
+\fontvie
+\begin{itemize}
+    \item \textbf{Qué incluir:}
+    \begin{itemize}
+        \item Valor de línea de base de \(Y\): el mejor predictor; grandes ganancias de potencia \citep{mckenzie2012}.
+        \item Covariables predeterminadas que predicen \(Y\) y efectos fijos de estrato (si aplica).
+        \item Interacciones \(D_i \times (\XB_i - \bar{\XB})\) para heterogeneidad.
+    \end{itemize}
+   %\pause
+    \item \textbf{Qué evitar:}
+    \begin{itemize}
+        \item Variables post-tratamiento o mediadores: ``malos controles'' que sesgan \(\brown{\tau}\).
+        \item Muchos controles poco predictivos: el ajuste puede sesgar en muestras pequeñas \citep{Freedman2008}.
+    \end{itemize}
+   %\pause
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Inferencia por aleatorización}
+
+\begin{frame}{Tipos de incertidumbre}
+\begin{itemize}
+    \item \textcolor{blue}{Inferencia basada en el muestreo}: Los estimadores y estadísticos son aleatorios porque los datos provienen de una muestra aleatoria. Por ejemplo: 
+    \vspace{-1.0em}
+    \begin{align*}
+        \textcolor{brown}{T_N} = T(\YB,\mathbf{D})
+    \end{align*}
+    donde $\{(Y_i, D_{i}): i=1, \ldots,N\}$ son observaciones extraídas de la población y \(D_i \in \{0,1\}\).
+    \vspace{1.0em}
+   %\pause
+    \item \textcolor{blue}{Inferencia por aleatorización}: Los \emph{resultados potenciales} $\mathbf{Y}(0), \mathbf{Y}(1)$ se consideran fijos, y la fuente de aleatoriedad es la asignación al tratamiento: 
+    \vspace{-1.0em}
+    \begin{align*}
+        \textcolor{brown}{T(D)} = T(\mathbf{D}\mid \mathbf{Y}(0), \mathbf{Y}(1)).
+    \end{align*}
+   %\pause
+        Para simplificar, tratamos la muestra como si fuera la población completa:
+        \vspace{-1em}
+    \begin{align*}
+        N:\text{total de unidades}, N_1: \text{tratadas}, N_0: \text{control}, N=N_1+N_0.
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Idea básica de la inferencia por aleatorización}
+\begin{itemize}
+    \item Sea \(\mathbf{D}^{\text{obs}}=(D_1,\ldots,D_N)'\) el vector de asignaciones observado y considere la hipótesis:
+    \begin{align*}
+    \begin{split}
+        \textcolor{black}{\HT{0}}:& Y_i(0) = Y_i(1), \quad \forall \;\; i=1, \ldots, N. \\
+        \textcolor{black}{\HT{1}}:& Y_i(0) \neq Y_i(1), \quad \text{para al menos un } i.
+    \end{split}
+    \end{align*}
+    Definamos el estadístico:
+    \[
+        \brown{T({D^\text{obs}})} = \frac{1}{N_1}\sum_{i} Y_i D_i
+          - \frac{1}{N_0}\sum_{i} Y_i (1-D_i).
+    \]
+    La diferencia de medias calculada con la asignación \(\mathbf{D}^{\text{obs}}\).
+   %\pause
+    \vspace{0.5em}
+    \item En un diseño completamente aleatorizado, todas las asignaciones con \(N_1\) tratados son equiprobables:
+    \[
+        \Prob{\mathbf{D}\mid \mathbf{Y}(0),\mathbf{Y}(1)}
+        = \binom{N}{N_1}^{-1}
+        \;\; \forall \;\;  \mathbf{D}\text{ con }\sum_{i} D_i=N_1.
+    \]
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Permutaciones (aleatorización simple)}
+\begin{itemize}
+    \item Bajo \(\textcolor{black}{\HT{0}}\), \(Y_i(1)=Y_i(0)\) y, por tanto, \(\mathbf{Y}\) no depende de \(\mathbf{D}\). Las variaciones de \(\brown{T}\) provienen solo del azar de la asignación. 
+    %\pause
+    \vspace{1em}
+    \item \textbf{Algoritmo}: 
+    \begin{enumerate}
+        \item Generar \(J\) reasignaciones \(\mathbf{D}^{(j)}\) que \textbf{respeten el diseño} (mismo \(N_1\); dentro de estratos o por clúster si aplica). 
+    %\pause
+        \vspace{1em}
+        \item Calcular
+        \vspace{-1.0em}
+    \[
+        \brown{T({D^{(j)}})}=\frac{1}{N_1}\sum_i Y_i D_i^{(j)}-\frac{1}{N_0}\sum_i Y_i\big(1-D_i^{(j)}\big).
+    \]
+   %\pause
+        \item Estimar el \textit{p-valor}:
+        \vspace{-1.0em}
+    \[
+        \text{p-val}=\frac{1}{J}\sum_{j=1}^{J}\mathbf{1} \{ |\brown{T({D^{(j)}})}| \ge | \brown{T({D^\text{obs}})}| \}.
+    \]
+    Si el \(\text{p-val}\) es menor al nivel de significancia deseado, la evidencia no es consistente con \(\textcolor{black}{\HT{0}}\).
+    \end{enumerate} 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Extensiones de la inferencia por aleatorización}
+\begin{itemize}
+  \item \textbf{Uso de covariables}: podemos construir estadísticos que ajusten por variables \(\XB\) (por ejemplo, regresión de \(Y_i\) en \(D_i\) y \(\XB_i\)).  
+  La regla de permutación \emph{no cambia}: siempre debe respetar el diseño original. %\pause
+  \vspace{1em}
+  \item \textbf{Diseños más complejos}: si la asignación fue por \emph{estratos} o \emph{clústeres}, las permutaciones se realizan dentro de esas mismas estructuras. %\pause
+  \vspace{1em}
+  \item \textbf{Otros estadísticos}: además de medias, se pueden usar medianas, rangos o pruebas de distribución. %\pause
+  \vspace{1em}
+  \item \textbf{Interferencia o spillovers}: si el tratamiento de una unidad afecta a otras, se pueden plantear hipótesis basadas en \emph{exposición} o en redes.
+\end{itemize}
+\end{frame}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{No todo es perfecto}
+
+\begin{frame}{Críticas a los RCTs}
+\begin{itemize}
+    \item Algunas críticas a los RCTs \citep{deaton2018understanding}: 
+    \vspace{1em}
+    \begin{enumerate}
+        \item El \textbf{alcance de las preguntas}: los RCTs solo permiten responder un subconjunto limitado de las preguntas relevantes en economía. 
+        %\pause
+        \vspace{1em}
+        \item \textbf{Validez externa}: la evidencia enfrenta las mismas limitaciones de extrapolación y generalización que otros métodos.
+        \begin{itemize}
+            \item Dificultades para ``escalar'' intervenciones probadas en entornos controlados. 
+            %\pause
+        \end{itemize}
+        \vspace{1em}
+        \item \textbf{Problemas de atrición y selección}: la pérdida de participantes o el sesgo en quién permanece en tratamiento/control pueden afectar los resultados.
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{¿Qué estamos estimando?}
+\begin{itemize}
+    \item ¿Qué mide exactamente el efecto causal? 
+    %\pause
+    \[
+        \textcolor{brown}{\tau_{ATE}} = \EX[Y_i(1) - Y_i(0)].
+    \]
+    Este es un \textbf{efecto total}, no una \textbf{derivada parcial} \citep{Duflo2007}. 
+    %\pause
+    \item Supongamos que la variable de resultado se determina como:
+    \[
+        Y = f(Z, D, e; \theta).
+    \]
+    La asignación al tratamiento puede afectar tanto a \(Y\) como a \(Z\). ¿Cuáles son los \textcolor{blue}{mecanismos} que generan el efecto observado? 
+    %\pause
+    \smallspace
+    \item Para responder, necesitamos un modelo que haga explícitas las relaciones entre variables. Es decir, se requiere \textbf{combinar con teoría} \citep{Keane2010, Andrews23}.
+\end{itemize}
+\end{frame}
+
+%BIBLIOGRAPHY
+\nobibliography{references}
+
+\end{document}

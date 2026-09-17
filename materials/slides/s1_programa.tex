@@ -1,0 +1,591 @@
+ \documentclass[10pt, xcolor=dvipsnames]{beamer}
+\input{preambulo/preambulo-magistral}
+
+% Ajustes locales de esta clase (preservados del original):
+\setbeamercolor{button}{bg=black,fg=white}
+\setbeamercovered{invisible}
+\renewcommand{\Prob}[1]{\text{Pr}\left(#1\right)} % esta clase usaba paréntesis
+
+\subtitle{Introducción, programa y estructura del curso}
+
+\begin{document}
+	\beamertemplatenavigationsymbolsempty	
+\begin{frame}[plain]%Title Page%
+	\titlepage
+	\vspace{-0.4cm}
+\textbf{Temas de la clase:} \\ \vspace{0.3cm}
+	\tableofcontents
+\end{frame}
+
+\begin{frame}\frametitle{Temas de la clase:}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Presentación}
+
+\begin{frame}{Profesor clase magistral}
+\begin{itemize}
+    \item \textbf{Manuel Fernández} \vspace{0.1cm}
+    \begin{itemize}
+        \item Profesor de la Facultad de Economía
+        \item \textcolor{blue}{Áreas de investigación}:
+        \begin{itemize}
+            \item Economía laboral
+            \item Economía de la salud
+            \item Econometría aplicada
+        \end{itemize}
+       %\pause
+        \item \textcolor{blue}{Otros cursos}:
+        \begin{itemize}
+            \item Introducción a la Macroeconomía
+            \item Seminario de Tesis PEG
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Motivación y objetivos del curso}
+ 
+\begin{frame}{Descripción del curso}
+\begin{itemize}
+	\item En este curso, los estudiantes aprenderán y practicarán \textcolor{blue}{técnicas microeconométricas de punta} empleadas en el trabajo aplicado, con un enfoque en la \textcolor{blue}{estimación de efectos causales}%\pause
+	\item Estas técnicas se aplican ampliamente en áreas como Economía Laboral, Organización Industrial, Economía de la Salud y Economía del Desarrollo%\pause
+	\item El curso enfatiza \textcolor{blue}{cómo} y \textcolor{blue}{bajo qué condiciones} es apropiado utilizar cada uno de los modelos vistos en clase
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Resultados de aprendizaje}
+\begin{itemize}
+    \item[1.] \textbf{Formular} estrategias para abordar problemas de identificación en ejercicios econométricos de inferencia causal %\pause
+    
+    \item[2.] \textbf{Evaluar} críticamente la validez de una estrategia de identificación en un contexto específico de estimación%\pause
+    
+    \item[3.] \textbf{Realizar} estimaciones de modelos econométricos utilizando herramientas como Stata, R o Python%\pause
+    
+    \item[4.] \textbf{Interpretar} correctamente los resultados de un ejercicio econométrico%\pause
+
+     \item[5.] \textbf{Diferenciar} y \textbf{evaluar} la validez interna y externa en un ejercicio de estimación%\pause
+    
+    \item[6.] \textbf{Comunicar} efectivamente los resultados de una estimación econométrica%\pause
+    
+    \item[7.] \textbf{Evaluar} la robustez y sensibilidad de los resultados
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Relevancia I}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=6.5cm, height=6.5cm, keepaspectratio]{Figuras/caricatura-tenemos-muchos-datos.png}
+    \end{figure}
+   %\pause
+\begin{itemize}
+    \item \textcolor{red}{No es suficiente obtener y manipular una gran cantidad de datos}%\pause
+    \item \textbf{Predicción}: ¿Qué va a pasar? 
+    \item \textbf{Inferencia causal}: ¿Qué hubiera pasado? (contrafactual)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Relevancia II}
+\begin{itemize}
+    \item ¿Dónde le gustaría trabajar?
+    \begin{itemize}
+        \item Sector financiero
+        \item Consultoría
+        \item Sector público
+        \item ONGs y multilaterales
+        \item Sector privado
+        \item Investigación académica 
+        \item Otro %\vspace{0.1cm}		    
+    \end{itemize}
+   %\pause
+    \item Las metodologías que estudiamos en este curso son aplicables en trabajos que economistas desempeñan en cualquiera de estos sectores
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Estructura del curso}
+
+\begin{frame}{Clase magistral}
+\textcolor{red}{\textbf{Clase magistral:}} principales metodologías econométricas de manera teórica $+$ ejemplos de aplicaciones %\vspace{0.2cm}
+\begin{itemize}
+    \item Manuel Fernández (\href{mailto:man-fern@uniandes.edu.co}{man-fern@uniandes.edu.co})
+    \begin{itemize}
+        \item \textbf{Horario de atención:} jueves 2:00 p.m. a 3:00 p.m., W-902 (con \href{https://calendly.com/manuelfsb/horario-de-atencion}{\underline{cita}})
+    \end{itemize}
+   %\pause
+    \item \textbf{Horario de clase:}  martes y jueves 8:00 a.m. - 9:20 a.m.
+    \item \textbf{Salón:} R-112
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Clase complementaria}
+\textcolor{red}{\textbf{Clase complementaria:}} aplicaciones de las metodologías aprendidas durante la clase magistral
+
+\textbf{Horario de clase:} viernes 8:00 a.m. - 9:20 a.m. %\pause
+\begin{itemize}
+    \item \textcolor{red}{\textbf{Sección 1}:} Juan Felipe Mora (\href{mailto:jf.mora54@uniandes.edu.co}{\underline{jf.mora54@uniandes.edu.co}})	
+    \begin{itemize}
+        \item \textbf{Horario de atención:} viernes 9:30 a.m. - 10:30 a.m., W-826
+        \vspace{0.2cm}
+    \end{itemize}	
+
+    \item \textcolor{red}{\textbf{Sección 2}:} Sergio Andrés Delgado Quevedo (\href{mailto:s.delgadoq@uniandes.edu.co}{\underline{s.delgadoq@uniandes.edu.co}}) 	
+    \begin{itemize}
+        \item \textbf{Horario de atención:} miércoles 3:00 p.m. a 4:00 p.m., W-701 \vspace{0.2cm}	
+    \end{itemize}
+    %\pause
+    \item \textcolor{red}{\textbf{Sección Doctorado}:} Juan José Ferro Hoyos (\href{mailto:jj.ferro261@uniandes.edu.co}{\underline{jj.ferro261@uniandes.edu.co}})	
+    \begin{itemize}
+        \item \textbf{Horario de atención:} jueves 3:00 p.m. a 4:30 p.m., W-722
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Monitorias}
+\textcolor{red}{\textbf{Monitorias quincenales:}} reforzar conceptos, presentar ejercicios prácticos, repasar para los exámenes, retroalimentación 
+
+\textbf{Horario y lugar:} por definir (\textcolor{red}{contestar la encuesta}) %\pause
+\begin{itemize}
+    \item María José Medellín Rodríguez (\href{mailto:m.medellin@uniandes.edu.co}{\underline{m.medellin@uniandes.edu.co}})	
+    \begin{itemize}
+        \item \textbf{Horario de atención:} lunes 3:30 p.m. a 4:30 p.m., virtual por \href{https://uniandes-edu-co.zoom.us/j/84495378848?pwd=RaGsZxmsMw6FnaaPy6amJP7fsMVHc2.1}{zoom}.
+    \end{itemize}
+\end{itemize}	
+\vspace{1cm}
+	\pause
+	\textbf{\underline{Horarios de atención por semana:}} prof. magistral (1 hora) + prof. comp. (1 hora $\times$ 2) + doctorado (1.5 horas) + prof. asistente (1 hora) = \textcolor{red}{5.5 horas por semana} 
+\end{frame}
+
+\begin{frame}[plain]
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm, height=10cm, keepaspectratio]{Figuras/guia-curso-2026-2.png}
+\end{figure} 
+\end{frame}
+
+\begin{frame}{Lenguajes de programación I}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=11cm, height=11cm, keepaspectratio]{Figuras/uso-software-aej-applied.png}
+\end{figure} 
+\end{frame}
+
+\begin{frame}{Lenguajes de programación II}
+\begin{itemize}
+    \item En las clases complementarias vamos a trabajar en Stata y R%\pause
+    \item \textcolor{blue}{Esta \textbf{NO} es una clase de programación}. Ser un buen programador no implica ser un buen econometrista (y viceversa)%\pause
+\begin{itemize}
+	\item La programación tiene una lógica que es transferible
+	\item Está permitido hacer los talleres, la evaluación práctica y el trabajo final en \textbf{Stata}, \textbf{R} o \textbf{Python}
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Replicabilidad}
+\begin{itemize}
+    \item En toda evaluación que implique programación, debe adjuntar una carpeta \texttt{.zip} o un enlace a un repositorio de GitHub que incluya:
+    \begin{enumerate}
+        \item Todas las bases de datos utilizadas, excepto aquellas entregadas por el equipo docente
+        \item Archivos de código individuales, claramente comentados
+        \item \textit{Programa maestro:} ejecuta toda la secuencia y genera todos los resultados sin errores
+    \end{enumerate}
+   %\pause
+    \begin{tcolorbox}[colback=gray!10, title=\textbf{Nota}, breakable]
+        Los puntos asociados a un ejercicio no replicable no serán calificados
+    \end{tcolorbox}
+    \item Se recomienda a todos los estudiantes leer la guía de buenas prácticas de \href{https://web.stanford.edu/~gentzkow/research/CodeAndData.pdf}{Gentzkow \& Shapiro (2014)} 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Uso responsable de chatbots de IA}
+\begin{itemize}
+    \item El uso de chatbots de IA (ChatGPT, Claude, GitHub Copilot, Gemini, etc.) puede ser muy útil para programar. Pero recuerde: \textbf{¿Quién está al volante?}%\pause
+    \vspace{0.5em}
+    \begin{itemize}
+        \item[$\checkmark$] Como \textcolor{blue}{complemento}: asistencia con sintaxis, detección y corrección de errores (\textit{debugging}), mejoras de eficiencia, orden y estilo%\pause
+        \item[\ding{55}] Como \textcolor{blue}{sustituto}: el chatbot produce el código y usted se limita a observar, sin involucrarse activamente en su elaboración%\pause
+    \end{itemize}    
+\end{itemize}
+    \begin{tcolorbox}[colback=gray!10, title=\textbf{Nota}, breakable]
+        Todo uso de asistencia de IA debe ser transparente: en cada línea o bloque de código asistido, incluya un comentario breve explicando cómo fue utilizado.
+    \end{tcolorbox}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluaciones}
+
+\begin{frame}{Evaluaciones}
+\begin{enumerate}
+    \item[1.] \textbf{Primer examen (\textcolor{brown}{20\%}):} \textcolor{red}{viernes 25 de septiembre} horario de la complementaria
+    \begin{itemize}
+        \item Todo el material cubierto hasta la clase justamente anterior al parcial
+    \end{itemize}
+   %\pause
+    \item[2.] \textbf{Segundo examen (\textcolor{brown}{20\%}):} \textcolor{red}{jueves 26 de noviembre} horario de la magistral
+    \begin{itemize}
+    \item Todo el material cubierto entre el primer examen y la última clase del semestre. El examen es \textbf{presencial}
+    \end{itemize}
+   %\pause
+    \item[3.] \textbf{Talleres (3) (\textcolor{brown}{30\%})}
+   %\pause
+    \item[4.] \textbf{Quices (2) (\textcolor{brown}{10\%})}		
+   %\pause
+    \item[5.] \textbf{Evaluación Práctica (\textcolor{brown}{20\%}):} los estudiantes podrán elegir una (y solo una) de las siguientes opciones:
+    \begin{enumerate}
+    \item[a)] Trabajo final 
+    \item[b)] Evaluación práctica de manejo de datos
+    \end{enumerate}
+    \end{enumerate}
+\end{frame}
+
+
+\begin{frame}{Cronograma de talleres}
+    \begin{center}
+    \begin{longtable}{|l|l|l|}
+    \caption{Cronograma de Entrega de los Talleres.}\label{TAB:Cronograma} \\    
+    \hline 
+    \textbf{Taller}   & \textbf{Disponible}         & \textbf{Entrega/Evaluación} \\ \hline
+    \textbf{Taller 1} & Viernes, 14 de agosto       & Viernes, 11 de septiembre \\ \hline
+    \textbf{Taller 2} & Viernes, 11 de septiembre   & Viernes, 23 de octubre \\ \hline
+    \textbf{Taller 3} & Viernes, 23 de octubre      & Viernes, 20 de noviembre \\ \hline 
+    %\end{tabular} 
+    \end{longtable}
+    \end{center}
+\vspace{-2em}
+\begin{itemize}
+\pause
+    \item Se \underline{\textbf{debe resolver en parejas}} (\textcolor{red}{contestar la encuesta})
+    \item Un estudiante por pareja deberá entregar el taller a través de \textcolor{brown}{Bloque Neón}. \textbf{La entrega debe hacerse a más tardar a las 7:59 a.m. de la fecha correspondiente.}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Relación entre nota promedio de parciales y talleres}
+    \begin{table}[htbp]\centering
+\label{tab:talleres_parciales}
+\begin{tabular}{lccc}
+\toprule
+Semestre & Coef. Correlación & Coef. de regresión & $p$-valor \\
+& (1) & (2) & (3) \\
+\midrule
+2023-2 & 0.291 & 0.354 & 0.030 \\
+2024-1 & 0.180 & 0.285 & 0.243 \\
+2024-2 & 0.595 & 0.772 & 0.000 \\
+2025-1 & 0.730 & 0.963 & 0.000 \\
+\textcolor{red}{\textbf{2025-2}} & \textcolor{red}{\textbf{0.017}} & \textcolor{red}{\textbf{0.035}} & \textcolor{red}{\textbf{0.903}} \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{itemize}
+    \item \textit{Nota:} La tabla reporta, por semestre, (i) la correlación simple entre la nota promedio en talleres y la nota promedio en parciales, (ii) el coeficiente de una regresión de la nota promedio en parciales sobre la nota promedio en talleres, y (iii) el $p$-valor asociado a dicho coeficiente.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Evaluación de los talleres}
+\begin{itemize}\setlength{\itemsep}{1.0em}
+    \item La evaluación de cada taller consta de dos componentes:
+    \begin{enumerate}\setlength{\itemsep}{0.65em}
+        \item (\textbf{50\% de la nota}) Calificación de un punto con base en la entrega realizada en Bloque Neón. %\pause
+        \item (\textbf{50\% de la nota}) Evaluación presencial e individual de un inciso correspondiente a un punto distinto del taller, que se realizará durante la sesión complementaria del día de la entrega. \textcolor{red}{La pregunta evaluada puede ser literalmente igual al inciso original o incluir modificaciones menores orientadas a verificar la comprensión del tema.}
+    \end{enumerate}
+\end{itemize}    
+\end{frame}
+
+
+\begin{frame}{El problema del ``free-rider''}
+    \begin{figure}[H]
+	\centering
+	\includegraphics[width=6.5cm, height=6.5cm, keepaspectratio]{Figuras/problema-free-rider.png}
+    \end{figure} 
+    \begin{tcolorbox}[colback=gray!10, title=\textbf{Nota}, breakable]
+        El objetivo de permitir el trabajo en pareja es fomentar la discusión y colaboración en el proceso de aprendizaje, no que se dividan los puntos. Se espera que cada integrante de la pareja aporte trabajo en cada punto de cada taller. Más aún, \textbf{\textcolor{red}{cada estudiante es responsable del taller completo, independientemente de la forma como se organizan las parejas para trabajar}}
+    \end{tcolorbox}
+\end{frame}
+
+\begin{frame}{Cambio de pareja}
+\begin{itemize}
+    \item Las parejas son asignadas la primera semana y se mantienen para todos los talleres%\pause
+    \item Un cambio se aceptará \textbf{únicamente} bajo una de estas dos condiciones:
+    \begin{enumerate}
+        \item[(i)] El otro miembro de la pareja \textcolor{blue}{retiró el curso}
+        \item[(ii)] El otro miembro de la pareja \textcolor{blue}{no trabajó de manera aceptable} en el taller anterior%\pause
+    \end{enumerate}
+    \item \textbf{Procedimiento:} subir un documento corto al enlace de \textcolor{brown}{Bloque Neón}, habilitado el día de la evaluación del taller, detallando las razones
+    \begin{itemize}
+        \item El enlace se cierra automáticamente a los \textbf{tres (3) días hábiles}
+    \end{itemize}
+   %\pause
+    \begin{tcolorbox}[colback=gray!10, breakable]
+        \textbf{\textcolor{red}{No se aceptarán solicitudes fuera de este plazo ni por condiciones distintas a las dos indicadas}}
+    \end{tcolorbox}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Quices}
+\begin{itemize}
+    \item Se realizarán dos quices \textbf{basados en las lecturas obligatorias}
+    \begin{itemize}
+        \item Consulte la sección 8.2 del programa para ver el listado completo de lecturas
+    \end{itemize}
+   %\pause
+    \item Una semana antes de cada quiz, se enviará un enunciado con una pregunta diferente para cada lectura asignada
+    \item El día del examen, se seleccionará una pregunta para que los estudiantes respondan de forma individual en el salón
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Evaluación práctica: opción trabajo final}
+\begin{itemize}
+    \item El estudiante debe proponer una \textbf{pregunta de investigación} económica que pueda \textcolor{blue}{responderse utilizando alguna de las metodologías econométricas} vistas en clase   
+    \item Elaborar un documento que incluya introducción, motivación y justificación, fuente de datos, metodología, resultados, discusión y conclusiones
+    \begin{itemize}
+        \item Extensión de entre 4 y 6 páginas (las tablas pueden incluirse en anexos, sin superar un total de 9 páginas)
+    \end{itemize}
+   %\pause
+    \item Para optar por esta opción, el estudiante \textbf{debe entregar una propuesta de trabajo} a más tardar el viernes 30 de octubre antes de las 11:59 p.m.
+    \item El trabajo es individual
+    \item Fecha de entrega: \textbf{jueves 3 de diciembre} antes de las 11:59 p.m.
+\end{itemize}    
+\end{frame}
+
+\begin{frame}{Evaluación práctica: opción examen manejo de datos}
+\begin{itemize}
+    \item \textbf{Objetivo:} evaluar la forma como se aproximan a los datos en el contexto de un problema real de estimación
+   %\pause
+    \item El enunciado del examen práctico será entregado a los estudiantes el \textbf{viernes 20 de noviembre} a través de Bloque Neón. 
+    \item El trabajo es individual
+    \item La entrega es el mismo día de entrega del trabajo final
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Reclamos, asistencia, notas y fraude}
+
+\begin{frame}{Reclamos}
+Seguimos el \href{https://secretariageneral.uniandes.edu.co/index.php/es/component/content/article/11-asuntos-estudiantiles/24-reglamentos-estudiantiles}{\underline{reglamento general de estudiantes de maestría}}
+\begin{itemize}[itemsep=0.1em, parsep=0pt]
+    \item \textbf{Reclamos:}
+    \begin{itemize}[itemsep=0.1em, parsep=0pt]
+        \item \textbf{Máximo} cuatro (4) días hábiles tras conocer la nota
+        \item Por escrito: subir a \textcolor{brown}{Bloque Neón} documento con imágenes de la evaluación y sustentación del reclamo (lineamientos en el programa)
+        \item Se responde en \textbf{máximo} cinco (5) días hábiles
+        \item \textcolor{red}{Los reclamos de exámenes presenciales son válidos solo si el examen fue resuelto en \textbf{esfero}}
+    \end{itemize}	 	 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Asistencia y supletorios}
+Seguimos el \href{https://secretariageneral.uniandes.edu.co/index.php/es/component/content/article/11-asuntos-estudiantiles/24-reglamentos-estudiantiles}{\underline{reglamento general de estudiantes de maestría}}
+\begin{itemize}[itemsep=0.1em, parsep=0pt]
+    \item \textcolor{red}{La asistencia a clase no es obligatoria}
+    \item \textbf{Inasistencia a evaluaciones:} 
+    \begin{itemize}[itemsep=0.1em, parsep=0pt]
+        \item Se habilitará un enlace en \textcolor{brown}{Bloque Neón} \textbf{el día del examen}. El estudiante deberá cargar la excusa en ese enlace, que se cierra automáticamente a los \textbf{tres (3) días calendario}
+        \item \textcolor{blue}{Todas las excusas pasan por un proceso de verificación de la facultad}
+    \end{itemize}
+   %\pause
+    \item \textbf{Fechas de supletorios:}
+    \begin{itemize}[itemsep=0.1em, parsep=0pt]
+        \item \textcolor{red}{Viernes 9 de octubre, 7:00 p.m.:} parte presencial taller 1, quiz 1 y parcial 1
+        \item \textcolor{red}{Viernes 4 de diciembre, 7:00 p.m.:} parte presencial talleres 2 y 3, quiz 2 y parcial 2
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Notas definitivas}
+\begin{itemize}
+    \item \textbf{Aproximaciones y curva:}
+    \begin{itemize}
+        \item Las calificaciones definitivas serán numéricas, con un rango de uno punto cinco (1.50) a cinco punto cero (5.00), incluyendo unidades, décimas y centésimas
+        \item Los estudiantes que obtengan una nota inferior a 3.00 reprobarán el curso
+        \item Las notas acumuladas serán compartidas con los estudiantes a través de \textcolor{brown}{Bloque Neón} para que verifiquen la correcta inscripción
+       %\pause
+        \item El profesor podrá aplicar una \textbf{``curva''} para ajustar la distribución de notas hacia una distribución objetivo.
+        \begin{itemize}
+            \item[i.] Solo mejoras de Pareto
+            \item[ii.] Se preservará el ranking de los estudiantes
+        \end{itemize}
+    \end{itemize}        
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Fraude}
+    \begin{itemize}
+        \item El fraude en cualquiera de las evaluaciones, incluidos talleres, exámenes y el trabajo final, \textcolor{blue}{no es admisible bajo ninguna circunstancia}. Cualquier evidencia de fraude, ya sea presencial o por similitud obvia en las respuestas, \textbf{será remitida al comité disciplinario} del Consejo de la Facultad de Economía. Los estudiantes involucrados deberán presentar sus descargos ante este comité.
+        \item \textbf{La evaluación o actividad académica respectiva será calificada con una nota de cero punto cero (0.0)}, como consecuencia académica, sin perjuicio de la sanción disciplinaria que se imponga.
+    \end{itemize}    
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Contenido temático}
+
+\begin{frame}{¿En qué vamos a trabajar?}	
+\begin{itemize}
+	\item \textbf{\underline{Econometría}:} estudio unificado de \textcolor{blue}{modelos económicos}, \textcolor{blue}{análisis de datos}, y \textcolor{blue}{estadística matemática} \citep{Hanse2021}. \vspace{0.4cm}	\pause
+\begin{itemize}
+	\item[1.] \textcolor{red}{\textbf{Modelos económicos}}: construcciones teóricas (simplificaciones) diseñadas para estudiar relaciones económicas
+\begin{align*}
+y = f(x_1,\ldots,x_K,e_1,\ldots,e_J;\textcolor{brown}{\beta_1},\ldots,\textcolor{brown}{\beta_P})
+\end{align*}\vspace{-0.4cm}
+	\item $y$ es la \textbf{variable dependiente}
+	\item $x_k$,  $k \in \{1,\ldots, K\}$, son \textbf{variables independientes} observadas 
+	\item $e_j$, $j \in \{1,\ldots, J\}$, son ``\textbf{perturbaciones}'' o \textbf{factores no observados} 
+	\item $\textcolor{brown}{\beta_p}$, $p \in \{1,\ldots, P\}$, son \textbf{parámetros} que median la relación
+\end{itemize}	
+\end{itemize}
+\end{frame}
+
+\begin{frame}{¿En qué vamos a trabajar?}	
+\begin{enumerate}
+	\item[2.] \textcolor{red}{\textbf{Datos}}: mediciones de las variables de interés.
+\begin{align*}
+\{(y_i,x_{i1},\ldots,x_{iK}): i = 1, \ldots, N\}
+\end{align*}	
+\pause
+	\item[3.] \textcolor{red}{\textbf{Estadística matemática}}: aplicaciones de teoría de probabilidad. Por ejemplo, si el modelo teórico nos dice que $\pderiv{y}{x_k} = \textcolor{brown}{\beta_k}<0$, quisiéramos estimar $\textcolor{brown}{\beta_k}$:	 
+	\begin{align*}
+	\textcolor{brown}{\hat{\beta}_k} = h(\yB,\XB)
+	\end{align*}
+ \begin{itemize}
+     \item El estimador es una función de los datos
+     \item Los estimadores tienen propiedades estadísticas
+ \end{itemize}
+\end{enumerate}	
+\end{frame}
+
+\begin{frame}{¿En qué vamos a trabajar?}    
+\begin{itemize}
+    \item Preguntas clave que se abordarán a lo largo del curso:
+    \vspace{1em}
+    \begin{enumerate}
+        \item \textcolor{red}{\textbf{Identificación}:} ¿Bajo qué condiciones podemos hablar de relaciones \textbf{causales}? ¿Qué supuestos teóricos y estadísticos son necesarios para que los parámetros del modelo estén determinados de manera única a partir de la distribución de variables observadas?
+        \vspace{1em}%\pause     
+        \item \textcolor{red}{\textbf{Métodos de estimación}:} ¿Cómo podemos estimar los parámetros de interés? ¿Qué propiedades estadísticas tienen esos estimadores? 
+        \vspace{1em}%\pause        
+        \item \textcolor{red}{\textbf{Inferencia estadística}:} Dado que los estimadores son variables aleatorias, ¿qué podemos inferir de su distribución de probabilidad a partir de la muestra?
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Temas por clase I}
+    \begin{itemize}[itemsep=0.1em, parsep=0pt]
+    \item \textcolor{red}{Clases 1-2}: Introducción, contrafactuales y modelo causal de Rubin
+    \item \textcolor{red}{Clases 3-6}: Modelo de regresión lineal, estimadores y sus propiedades estadísticas   
+    \item \textcolor{red}{Clases 7-8}: Inferencia estadística: pruebas de hipótesis, restricciones lineales y método delta    %\pause
+    \item \textcolor{red}{Clases 9-10}: Experimentos sociales controlados (RCTs)
+    \item \textcolor{red}{Clases 11-12}: Modelos de matching, propensity score matching (PSM)
+    \item \textcolor{red}{Clases 13-14}: Regresión discontinua nítida (RDN)     
+    \item \textcolor{red}{Clases 15-18}: Variables instrumentales (IV), estimador MC2E, estimador de Wald, interpretación LATE de IV, regresión discontinua borrosa (RDB)
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Temas por clase II}
+    \begin{itemize}[itemsep=0.1em, parsep=0pt]
+    \item \textcolor{red}{Clases 19-22}: Diferencias en diferencias (DiD), estudio de eventos
+    \item \textcolor{red}{Clases 23-24}: Instrumentos shift-share
+    \item \textcolor{red}{Clases 25-26}: Control sintético
+    \item \textcolor{red}{Clases 27-28}: Modelo de selección de Heckman
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bibliografía y lecturas obligatorias}
+
+\begin{frame}\frametitle{Bibliografía: libros de texto}
+ 	\fontvid
+\begin{itemize}[itemsep=0.5em, parsep=0pt]
+    \item Angrist, J. D., and Pischke, J. (2009). \textit{Mostly Harmless Econometrics: An Empiricist's Companion}. Princeton: Princeton University Press. \textbf{AP}   
+    \item Bernal, R., y Peña, X. (2017). \textit{Guía práctica para la evaluación de impacto}. Ediciones Uniandes, Bogotá, Colombia, Abril. \textbf{BP}     
+    \item Cunningham, S. (2021). \textit{Causal Inference: The Mixtape}. New Haven: Yale University Press. (\href{https://mixtape.scunning.com/}{Enlace}) \textbf{SC}    
+    \item Gertler, P. J., Martinez, S., Premand, P., Rawlings, L. B., and Vermeersch, C. M. J. (2016). \textit{Impact Evaluation in Practice}. Second Edition. Washington, DC: The World Bank. (\href{https://www.worldbank.org/en/programs/sief-trust-fund/publication/impact-evaluation-in-practice}{Enlace}) \textbf{Ge}
+    \item Imbens, G. W., \& Rubin, D. B. (2015). \textit{Causal Inference for Statistics, Social, and Biomedical Sciences: An Introduction}. New York: Cambridge University Press. \textbf{IR}    
+    \item Greene, W. H. (2012). \textit{Econometric Analysis}. 7th edition. Upper Saddle River, NJ: Pearson Education. \textbf{Gr}
+\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Bibliografía: libros de texto}
+ 	\fontvid
+\begin{itemize}[itemsep=0.5em, parsep=0pt]   
+    \item Hansen, B. E. (2021). \textit{Econometrics}. Lecture Notes (disponible en Bloque Neón). \textbf{BH}  
+    \item Maddala, G.S. (1994). \textit{Limited-Dependent and Qualitative Variables in Econometrics}. Cambridge University Press. \textbf{M}   
+    \item Train, K. E. (2009). \textit{Discrete Choice Methods with Simulation}. 2nd edition. New York: Cambridge University Press. (\href{https://eml.berkeley.edu/books/choice2.html}{Enlace}) \textbf{KT}      
+    \item Wooldridge, J. M. (2012). \textit{Introductory Econometrics: A Modern Approach} (5th ed.). South-Western.  \textbf{W1}
+    \item Wooldridge, J. M. (2010). \textit{Econometric Analysis of Cross Section and Panel Data} (2nd ed.). Cambridge, MA: The MIT Press. \textbf{W2}
+\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Lecturas obligatorias}
+\fontvic		
+\begin{itemize}
+    \item[{\color{blue} $\star$}] Angrist, J. D., \& Pischke, J.-S. (2010). The Credibility Revolution in Empirical Economics: How Better Research Design is Taking the Con out of Econometrics. \textit{Journal of Economic Perspectives}, 24(2), 3–30.
+    
+    \item[{\color{blue} $\star$}] Ziliak, S. T., \& McCloskey, D. N. (2008). A Significant Problem. In \textit{The Cult of Statistical Significance: How the Standard Error Costs Us Jobs, Justice, and Lives} (\textbf{pp. 1–22}). University of Michigan Press.
+    
+    \item[{\color{blue} $\star$}] Banerjee, A., Duflo, E., Glennerster, R., \& Kinnan, C. (2015). The Miracle of Microfinance? Evidence from a Randomized Evaluation. \textit{American Economic Journal: Applied Economics}, 7(1):22–53
+
+    \item[{\color{blue}$\star$}] Imbens, G. W. (2015). Matching Methods in Practice: Three Examples. \textit{Journal of Human Resources}, 50(2), 373–419.
+    
+    \item[{\color{blue}$\star$}] Dell, M. (2010). The Persistent Effects of Peru's Mining Mita. \textit{Econometrica}, 78(6), 1863-1903.   
+   
+    \item[{\color{blue}$\star$}] Londoño-Vélez, J \& Saravia, E. (2025) The impact of being denied a wanted abortion on women and their children. \textit{The Quarterly Journal of Economics} 140(2):1061–1110.
+\end{itemize}	
+\end{frame}
+
+\begin{frame}\frametitle{Lecturas obligatorias}
+\fontvic
+\begin{itemize}      
+    \item[{\color{blue}$\star$}] Britto, D. G. C., Pinotti, P., \& Sampaio, B. (2022). The Effect of Job Loss and Unemployment Insurance on Crime in Brazil. \textit{Econometrica}, 90(4), 1393–1423.
+    
+   \item[{\color{blue}$\star$}] Kleven, H., Landais, C. \& Sogaard, J. E. (2019). Children and Gender Inequality: Evidence from Denmark. \textit{American Economic Journal: Applied Economics} 11: 181-209.   
+
+    \item[{\color{blue}{\color{blue}}$\star$}] Funke, M., Schularick, M.,  \& Trebesch, C. (2023). Populist leaders and the economy. \textit{American Economic Review}, 113(12), 3249-3288.
+    
+    \item[{\color{blue}{\color{blue}}$\star$}] Maestas, N., Mullen, K. J., \& Powell, D. (2023). The Effect of Population Aging on Economic Growth, the Labor Force, and Productivity. \textit{American Economic Journal: Macroeconomics}, 15(2), 306-332.
+\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Probabilidad, estadística y álgebra matricial}
+\textbf{Probabilidad}\vspace{-0.2cm}	
+	\begin{itemize}
+	\fontvic
+    \item Greene, W. (2008). \textit{Econometric analysis}. Pearson Education. Sixth edition. (Apéndice B).
+    \item Wooldridge, J. (2012). \textit{Introductory econometrics, a modern approach}. Fifth Edition. Thomson Editors. (Apéndice B). \vspace{-0.1cm}
+	\end{itemize}		
+\textbf{Inferencia Estadística}\vspace{-0.2cm}
+	\begin{itemize}
+	\fontvic	
+    \item Greene, W. (2008). \textit{Econometric analysis}. Pearson Education. Sixth edition. (Apéndice C).
+    \item Wooldridge, J. (2012). \textit{Introductory econometrics, a modern approach}. Fifth Edition. Thomson Editors. (Apéndice C).\vspace{-0.1cm}
+	\end{itemize}
+\textbf{Álgebra Matricial}\vspace{-0.2cm}	
+	\begin{itemize}
+	\fontvic	
+    \item Greene, W. (2008). \textit{Econometric analysis}. Pearson Education. Sixth edition. (Apéndice A).
+    \item Hansen B. (2021). \textit{Econometrics}. Princeton University Press. (Apéndice A).
+    \item Wooldridge, J. (2012). \textit{Introductory econometrics, a modern approach}. Fifth Edition. Thomson Editors. (Apéndice D).		
+	\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%BIBLIOGRAPHY
+\nobibliography{references.bib}
+
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

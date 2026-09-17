@@ -1,0 +1,596 @@
+\documentclass[9pt, xcolor=dvipsnames]{beamer}
+\input{preambulo/preambulo-magistral}
+
+% Ajustes locales de esta clase (preservados del original):
+\setbeamercolor{button}{bg=black,fg=white}
+\setbeamercovered{invisible}
+\renewcommand{\Prob}[1]{\text{Pr}\left(#1\right)} % esta clase usaba paréntesis
+
+\subtitle{Modelo de regresión y estimación por MCO}
+
+\begin{document}
+	\beamertemplatenavigationsymbolsempty	
+\begin{frame}[plain]%Title Page%
+	\titlepage
+	\vspace{-0.4cm}
+\textbf{Temas de la Clase:} \\ \vspace{0.3cm}
+	\tableofcontents
+\end{frame}
+
+\begin{frame}\frametitle{Temas de la clase:}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Modelo de regresión}
+
+\begin{frame}{Función de esperanza condicional}
+    \begin{itemize}
+        \item El objetivo es modelar el \textcolor{blue}{valor esperado (promedio) condicional} de la \textbf{variable dependiente} \(Y_i\) como una función de las \textbf{variables explicativas} \(\XB_i\):
+        \begin{equation*}
+            \EX[Y_i \mid \XB_i] = m(\XB_i),
+        \end{equation*}        
+        donde \(m(\XB_i)\) es la \textbf{función de esperanza condicional (CEF)} y \(\XB_i = (x_{i1}, \ldots, x_{iK})'\) es un vector de dimensión \(K \times 1\).
+        %%\pause
+        \vspace{1em}
+        \item \textbf{Ejemplo}: si \(Y_i\) representa el logaritmo del ingreso y \(\XB_i\) es un escalar (\(K=1\)) que indica años de educación:
+        \begin{equation*}
+            \EX[Y_i \mid \XB_i = 12] = m(12),
+        \end{equation*}        
+        que se interpreta como el promedio poblacional del logaritmo del ingreso para las personas con 12 años de educación.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Ejemplo de una CEF}
+\vspace{-0em}
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=9.0cm]{Figuras/cef-ejemplo-angrist-pischke.png}	
+    \caption*{Nota: \scriptsize Tomado de \citet{Angrist2008}.}
+\end{figure}    
+\begin{itemize}
+    \item La distribución de (log) ingresos se muestra para algunos valores de escolaridad: 4, 8, 12 y 16 años.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{}
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=Teorema: Descomposición de la CEF, breakable]	
+    Para cualquier \((Y_i,\XB_i)\), se tiene la identidad
+    \vspace{-0.75em}
+    \begin{align*}
+        Y_i = m(\XB_i) + \epsilon_i,
+    \end{align*}
+    \vspace{-1.75em}
+    
+    y el residuo \(\epsilon_i \equiv Y_i - m(\XB_i)\) cumple: \(\EX\left[\epsilon_i \mid \XB_i \right] = 0\) y \(\EX\left[\epsilon_i\right] = 0\).
+    \vspace{0.5em}
+    
+    \textcolor{blue}{Interpretación:} \(Y_i\) se descompone en una parte ``explicada por \(\XB_i\)'' (la CEF) y un residuo no correlacionado con \emph{ninguna función} de \(\XB_i\).
+\end{tcolorbox}
+    %%\pause
+\begin{itemize}
+    \item \textbf{Demostración breve}:     \vspace{-0.75em}
+\begin{align*}
+    \EX\left[\epsilon_i \mid \XB_i \right] 
+        &= \EX\left[ Y_i - m(\XB_i) \mid \XB_i \right] \\
+        &= \EX[Y_i \mid \XB_i] - m(\XB_i) \\
+        &= m(\XB_i) - m(\XB_i) = 0. 
+\end{align*}    
+    %%\pause
+    \vspace{-0.0em}
+    Sea \(h(\XB_i)\) cualquier función de \(\XB_i\). Por la \textit{ley de esperanzas iteradas} (LEI): 
+    \[
+    \EX\left[\epsilon_i \right] = \EX\left[\EX\left[\epsilon_i \mid \XB_i \right] \right] = 0, \;\; \text{y}
+    \] 
+    %%\pause
+    \[
+    \EX\left[\epsilon_i h(\XB_i) \right] = \EX\left[\EX\left[\epsilon_i h(\XB_i) | \XB_i \right] \right] = \EX\left[h(\XB_i) \EX\left[\epsilon_i | \XB_i \right]\right] = 0. 
+    \] 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{}
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=Teorema: Propiedad de predicción de la CEF, breakable]	
+    Para cualquier función \(h(\XB_i)\), la CEF resuelve
+    \begin{equation*}
+        m(\XB_i) = \argmin_{h(\XB_i)} \EX[(Y_i - h(\XB_i))^2].    
+    \end{equation*}
+    \textcolor{blue}{Interpretación:} La CEF es el predictor que minimiza el error cuadrático medio de predicción (MSE) de \( Y_i \) dado \( \XB_i \).
+    \end{tcolorbox}
+    %%\pause
+    \textbf{Demostración breve.} Sea \(\epsilon_i = Y_i-m(\XB_i)\). Para cualquier \(h(\XB_i)\):
+    \begin{align*}
+        (Y_i-h(\XB_i))^2 &= \Big(\epsilon_i + m(\XB_i) - h(\XB_i)\Big)^2 \\
+        &= \epsilon_i^2 + 2 \epsilon_i\Big(m(\XB_i)-h(\XB_i)\Big) + \Big(m(\XB_i)-h(\XB_i)\Big)^2.
+    \end{align*}
+    %%\pause
+Tomando esperanza y usando \(\EX[\epsilon_i\mid \XB_i]=0\):
+\[
+\EX[(Y_i-h(\XB_i))^2] = \EX[\epsilon_i^2] + \EX[(m(\XB_i)-h(\XB_i))^2] \;\ge\; \EX[\epsilon_i^2],
+\]
+con igualdad si \(h(\XB_i)=m(\XB_i)\).
+\end{frame}
+
+
+\begin{frame}{¿Qué CEF debemos usar?}
+    \begin{itemize}
+        \item La CEF verdadera es desconocida, así que en la práctica la \textbf{aproximamos} con una forma funcional específica. Un caso común es asumir un modelo \textbf{lineal}:
+        \begin{align*}
+	\begin{split}
+	       m(\XB_i) &\approx x_{i1}\textcolor{brown}{\beta_1} + x_{i2}\textcolor{brown}{\beta_2} + \ldots + x_{iK}\textcolor{brown}{\beta_K} \\
+            &= \XB'_i \textcolor{brown}{\betaB}
+	\end{split}
+	\end{align*}
+        donde \(\textcolor{brown}{\betaB} = (\textcolor{brown}{\beta_1}, \ldots, \textcolor{brown}{\beta_K})'\) es un vector de parámetros \(K \times 1\) \textcolor{blue}{que desconocemos}. \\
+        %%\pause
+        \vspace{0.5em}
+        \textcolor{red}{\textbf{Nota 1}}: El modelo es lineal en los \textit{parámetros}, no necesariamente en las variables explicativas.
+        \vspace{0.5em}
+        %%\pause
+        \item El modelo que resulta es:
+        \begin{align*}
+	\begin{split}
+	       Y_i &= \XB'_i \textcolor{brown}{\betaB} + e_i.
+	\end{split}
+	\end{align*}
+        %%\pause
+        \textcolor{red}{\textbf{Nota 2}}: \(e_i \neq \epsilon_i\) a menos que la CEF esté correctamente especificada.
+    \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Coeficientes de regresión}
+    \begin{itemize}
+        \item Suponga que definimos \(\textcolor{brown}{\betaB}\) como
+        \begin{align}\label{EQ:REG-COEF-POP}
+            \textcolor{brown}{\betaB} = \argmin_{\textcolor{brown}{b}} \EX[(Y_i - \XB'_i\textcolor{brown}{b})^2].
+        \end{align}
+        %%\pause
+        La \textbf{condición de primer orden} evaluada en \(\textcolor{brown}{\betaB}\) es:
+        \begin{align*}
+            \EX[\XB_i (\underbrace{Y_i - \XB'_i \textcolor{brown}{\betaB}}_{e_i})] = \textbf{0}.
+        \end{align*}
+        %%\pause
+        \textcolor{red}{\textbf{Nota 3}}: Por construcción, \(\XB_i\) no está correlacionado con \(e_i\); esto \textbf{no es un supuesto}.
+        \vspace{0.5em}
+        %%\pause
+        \item Resolviendo:
+        \vspace{-1.0em}
+        \begin{align*}
+            \textcolor{brown}{\betaB} = \EX[\XB_i\XB'_i]^{-1} \EX[\XB_iY_i].
+        \end{align*}
+        %%\pause
+    \textcolor{red}{\textbf{Nota 4}}: Para invertir \(\EX[\XB_i\XB'_i]\) se requiere que \(\mathrm{rank}\left(\EX[\XB_i\XB'_i]\right) = K\).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{}
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=Justificación 1, breakable]	
+    Si la CEF verdadera es lineal: \(m(\XB_i) = \XB'_i \textcolor{brown}{\betaB^{*}}\), entonces \(\textcolor{brown}{\betaB} = \textcolor{brown}{\betaB^{*}}\).
+\end{tcolorbox}
+%%\pause
+\vspace{0.25em}
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=Justificación 2, breakable]	
+    Aun si la CEF verdadera no es lineal, la función \(\XB'_i \textcolor{brown}{\betaB}\) es el \textit{mejor predictor lineal} de \(Y_i\) dado \(\XB_i\) en el sentido de que minimiza el MSE.
+    \vspace{0.5em}
+    
+    \textcolor{blue}{Interpretación:} La regresión proporciona el mejor \textbf{predictor lineal} de la variable dependiente, de la misma forma en que la CEF es el mejor \textbf{predictor sin restricciones} de la variable dependiente.
+\end{tcolorbox}
+%%\pause
+\vspace{0.25em}
+\begin{tcolorbox}[colback=white, arc=0mm,boxrule=0.5pt, title=Justificación 3, breakable]	
+    La función \(\XB'_i \textcolor{brown}{\betaB}\) cumple
+    \vspace{-1em}
+    \begin{align*}
+        \textcolor{brown}{\betaB} = \argmin_{\textcolor{brown}{b}} \EX[(m(\XB_i) - \XB_i'\textcolor{brown}{b})^2].
+    \end{align*}
+    \vspace{-0.0em}
+    \textcolor{blue}{Interpretación:} \(\XB'_i \textcolor{brown}{\betaB}\) es el \textbf{mejor predictor lineal} de la CEF en el sentido de que minimiza el MSE.
+\end{tcolorbox}
+\end{frame}
+
+
+\begin{frame}{La regresión como aproximación lineal de la CEF}
+\vspace{-0em}
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=9.0cm]{Figuras/cef-lineal-angrist-pischke.png}	
+    \caption*{Nota: \scriptsize Tomado de \citet{Angrist2008}.}
+\end{figure}    
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Modelo de regresión y causalidad}
+
+\begin{frame}{Ejemplo usando resultados potenciales}
+\begin{itemize}
+    \item Un modelo de regresión puede o no tener una interpretación causal. %%\pause
+    \item \textbf{Ejemplo:} sea $Y_i$ el resultado \textbf{observado} (e.g., la nota del estudiante $i$), y $D_i \in \{0,1\}$ una variable indicadora de tratamiento (e.g., si $i$ lee la bibliografía). %%\pause
+    
+    \vspace{0.5em}
+    Los \textcolor{blue}{resultados potenciales} son: \(Y_i(1)\) y \(Y_i(0)\), y el \textcolor{blue}{efecto causal} es: 
+    \[ 
+        \textcolor{brown}{\tau_i} = Y_i(1) - Y_i(0).
+    \]
+    Para simplificar, vamos a asumir que \(\textcolor{brown}{\tau_i} = \textcolor{brown}{\tau}\) para todo \(i\). %%\pause
+    \vspace{0.5em}    
+    La variable observada se puede expresar como
+	\begin{align*}
+    \begin{split}
+        Y_i &= Y_i(0) + \textcolor{brown}{\tau} D_i.
+    \end{split}		
+    \end{align*}
+    %%\pause
+    \item Considere el \textbf{modelo lineal}:
+    \vspace{-0.5em}
+    \[
+        Y_i = \textcolor{brown}{\alpha} + \textcolor{brown}{\tau} D_i + e_i,
+    \]
+        donde \(\textcolor{brown}{\alpha} \equiv \EX[Y_i(0)]\) y \(e_i \equiv Y_i(0) - \EX[Y_i(0)]\). 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Ejemplo usando resultados potenciales (cont.)}
+\begin{itemize}
+     \item La \textbf{diferencia de medias condicionales} entre tratados y no tratados es
+    \begin{align*}
+   	\EX[Y_i|D_i=1]-\EX[Y_i|D_i=0] = \textcolor{brown}{\tau} + \underbrace{\EX[e_i|D_i=1]-  \EX[e_i|D_i=0]}_{\textcolor{blue}{\text{Sesgo de selección}}}
+    \end{align*}    
+        Necesitamos que $\EX[e_i|D_i]=0$ para recuperar \(\textcolor{brown}{\tau}\).
+        %%\pause
+        \vspace{1em}
+        \item \textcolor{blue}{Independencia}: si \(Y_i(0), Y_i(1) \indep D_i \),
+        \begin{align*}      
+        \begin{split}            
+            \EX[e_i|D_i] &= \EX\Big[Y_i(0) - \EX[Y_i(0)] \vert D_i \Big] \\
+                                &= \EX[Y_i(0)\vert D_i] - \EX[Y_i(0)] \\
+                                &= \EX[Y_i(0)] - \EX[Y_i(0)] \\ 
+                                &= 0.
+        \end{split}
+        \end{align*}
+        %%\pause
+        Si el tratamiento se asigna de forma \textit{independiente} de los resultados potenciales, no hay \textcolor{blue}{sesgo de selección}.
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Estimación por mínimos cuadrados ordinarios (MCO)}
+
+\begin{frame}{Estimación por mínimos cuadrados ordinarios (MCO)}
+
+\begin{itemize}
+    \item Hasta ahora la discusión se planteó en términos \textbf{poblacionales}, pero en la práctica trabajamos con una \textbf{muestra}. %%\pause
+    \item Suponga que tiene una muestra aleatoria $\{(Y_i, \XB_i): i=1, \ldots,N\}$. El objetivo es estimar el vector de \textbf{parámetros} $\textcolor{brown}{\betaB}$ del modelo:
+    \begin{align*}
+    \begin{split}
+        Y_i = \XB'_i \textcolor{brown}{\betaB} + e_i.
+    \end{split}
+    \end{align*}
+    %%\pause
+    \item Sea $\hat{Y}_i \equiv \XB'_{i} \textcolor{brown}{\betaBH}$ el \textbf{valor predicho} y $\hat{e}_i \equiv Y_i - \hat{Y}_i$ el \textbf{error de predicción (muestral)} para una unidad $i$. Definimos 
+    \begin{align*}
+    \begin{split}
+    S(\textcolor{brown}{\betaBH}) \equiv \sum_{i} \hat{e}^2_i &= \sum_{i} \left(Y_i - \hat{Y}_i\right)^2 \\ &=  \sum_{i} \left(Y_i - \XB'_{i} \textcolor{brown}{\betaBH}\right)^2 \\ &= (\YB - \XB \textcolor{brown}{\betaBH})'(\YB - \XB \textcolor{brown}{\betaBH}),
+    \end{split}
+    \end{align*} 
+    donde \(\YB\) es un vector \(N \times 1\) y \(\XB\) es una matriz \(N \times K\).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estimación MCO: Condiciones de primer orden}
+\begin{itemize}
+	\item \textcolor{blue}{Estimador MCO:}
+    \begin{align*}
+	\begin{split}
+		\textcolor{brown}{\betaBH_{mco}} = \argmin_{\betaBH \in \mathbb{R}^K} S(\textcolor{brown}{\betaBH})
+	\end{split}
+    \end{align*} 
+    %%\pause
+    Expandiendo $S(\textcolor{brown}{\betaBH})$,\vspace{0.0cm}
+    \begin{align*}
+    \begin{split}
+        S(\textcolor{brown}{\betaBH}) = \YB'\YB - 2 \YB'\XB \textcolor{brown}{\betaBH} + \textcolor{brown}{\betaBH}' \XB' \XB \textcolor{brown}{\betaBH}.
+    \end{split}
+    \end{align*}\vspace{0.0cm}
+    %%\pause
+    \item[1.] \textbf{Condiciones de primer orden:}\vspace{0.1cm}
+    \begin{align*}
+    \begin{split}
+        \pderiv{S(\textcolor{brown}{\betaBH})}{\textcolor{brown}{\betaBH}} = -2 \XB' \YB + 2 \XB' \XB \textcolor{brown}{\betaBH_{mco}} = \textbf{0},
+    \end{split}
+    \end{align*}
+    \begin{align*}
+    	\begin{split}
+    		\XB' \XB \textcolor{brown}{\betaBH_{mco}} = \XB' \YB.
+    	\end{split}
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estimación MCO: Condiciones de primer orden}
+\begin{itemize}
+    \item Resolviendo para $\textcolor{brown}{\betaBH_{mco}}$,	
+    \begin{align*}
+    \begin{split}
+    	\boxed{\textcolor{brown}{\betaBH_{mco}} = \left(\XB' \XB \right)^{-1} \XB' \YB}.
+    \end{split}
+    \end{align*}
+    %%\pause
+	De forma alternativa, \vspace{-0.2cm}
+		\begin{align*}
+		\begin{split}
+			\boxed{\textcolor{brown}{\betaBH_{mco}} = \left(\frac{1}{N}\sum_i \XB_i \XB'_i \right)^{-1} \left(\frac{1}{N} \sum_i  \XB_i Y_i\right)}
+		\end{split}
+		\end{align*}\vspace{0.0cm}
+        %%\pause
+        ¿Le resulta conocido?
+        \vspace{1.0em}
+        %%\pause       
+		\item $\textcolor{brown}{\betaBH_{mco}}$ es una función de la muestra $\implies$ es una \textcolor{blue}{variable aleatoria}. 
+	\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Estimación MCO: Condiciones de segundo orden}
+\begin{itemize}
+    \item[2.] \textbf{Condiciones de segundo orden:}
+    \begin{align*}
+    \begin{split}
+        \xderiv{S(\textcolor{brown}{\betaBH})}{\textcolor{brown}{\betaBH}}{\textcolor{brown}{\betaBH}'} = 2 \XB' \XB 
+    \end{split}
+    \end{align*}	
+    \item Si \(\mathrm{rank}(\XB) = K\) (no hay multicolinealidad perfecta), $\XB' \XB$ es una \textcolor{blue}{matriz definida positiva} $\implies$ la solución $\textcolor{brown}{\betaBH_{mco}}$ es un mínimo y es \textbf{único}. 
+    \item Análogo a que la segunda derivada sea estrictamente positiva en una función univariada.  
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Interpretación de coeficientes y el teorema de Frisch-Waugh-Lovell}
+
+\begin{frame}{Interpretación de coeficientes}
+\begin{itemize}
+    \item Suponga que quiere estimar el coeficiente \(\textcolor{brown}{\tau}\) en el siguiente modelo:
+    \begin{align}
+        Y_i &= \textcolor{brown}{\tau} D_i + \XB'_i\textcolor{brown}{\betaB} + e_i,
+    \end{align}
+    donde \(D_i\) es la variable explicativa de interés (binaria o no binaria) y \(\XB_i\) es un vector de controles que incluye una constante.
+    \vspace{1em}
+    \item \textcolor{blue}{¿Cuál es el papel de estos controles en la estimación de \(\textcolor{brown}{\tau}\)?}
+    %\pause
+    Para entenderlo, considere los siguientes modelos auxiliares:
+    \begin{align}
+        Y_i &= \XB'_i\textcolor{brown}{\gammaB} + \eta_i, \\
+        D_i &= \XB'_i\textcolor{brown}{\thetaB} + \mu_i,
+    \end{align}
+    %\pause
+    y las variables residuales correspondientes:
+    \begin{align*}
+        \hat{\eta}_i &= Y_i - \XB'_i \textcolor{brown}{\hat{\gammaB}_{mco}}, \\
+        \hat{\mu}_i &= D_i - \XB'_i \textcolor{brown}{\hat{\thetaB}_{mco}},
+    \end{align*}
+    donde \(\textcolor{brown}{\hat{\gammaB}_{mco}}\) y \(\textcolor{brown}{\hat{\thetaB}_{mco}}\) son los estimadores de MCO.
+\end{itemize}    
+\end{frame}
+
+
+\begin{frame}{Teorema de Frisch-Waugh-Lovell}\label{DIAP:FWL}
+\begin{itemize}
+    \item Considere ahora el siguiente modelo residual:
+    \begin{align}\label{EQ:modeloResidual}
+        \hat{\eta}_i &= \textcolor{brown}{\phi} \hat{\mu}_i + \nu_i,
+    \end{align}
+    que relaciona las partes de \(Y_i\) y \(D_i\) que no están explicadas por los controles \(\XB_i\).
+    %\pause
+    \item El \textcolor{blue}{Teorema de Frisch-Waugh-Lovell} establece que:
+    \begin{align*}
+        \textcolor{brown}{\hat{\tau}_{mco}} = \textcolor{brown}{\hat{\phi}_{mco}},
+    \end{align*}
+    es decir, el coeficiente estimado \(\textcolor{brown}{\hat{\tau}_{mco}}\) del modelo original es igual al coeficiente estimado \(\textcolor{brown}{\hat{\phi}_{mco}}\) obtenido del modelo residual \eqref{EQ:modeloResidual} \hyperlink{ANEX:FWL}{{\beamerreturnbutton{Demostración}}}. \textbf{¿Intuición?}
+    %\pause
+    \vspace{1em}
+    \item Este resultado es más general y se aplica a cualquier partición del vector de variables explicativas en un modelo de regresión.
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Sesgo de variable omitida}
+
+\begin{frame}{Sesgo de variable omitida}
+\begin{itemize}
+    \item El teorema FWL muestra qué hace \textbf{incluir} un control. La pregunta opuesta: \textcolor{blue}{¿qué pasa si \textbf{omitimos} una variable relevante?}
+    %\pause
+    \item Volvamos al ejemplo: \(Y_i\) es la nota del estudiante \(i\) y \(D_i\) indica si lee la bibliografía. Suponga que el modelo correcto (la \textcolor{blue}{regresión larga}) incluye la habilidad \(W_i\):
+    \begin{align}\label{EQ:regresionLarga}
+        Y_i = \textcolor{brown}{\alpha} + \textcolor{brown}{\tau} D_i + \textcolor{brown}{\lambda} W_i + e_i, \quad \text{con} \quad \EX[e_i \mid D_i, W_i] = 0;
+    \end{align}
+    es decir, una vez condicionamos en la habilidad, no hay sesgo de selección.
+    %\pause
+    \item La habilidad \textbf{no es observable}, así que trabajamos con la \textcolor{blue}{regresión corta}:
+    \begin{align}\label{EQ:regresionCorta}
+        Y_i = \textcolor{brown}{\alpha_c} + \textcolor{brown}{\tau_c} D_i + \tilde{e}_i,
+    \end{align}
+    donde \(\textcolor{brown}{\alpha_c}\) y \(\textcolor{brown}{\tau_c}\) son los coeficientes de la regresión de \(Y_i\) sobre \((1, D_i)\).
+    %\pause
+    \item \textcolor{blue}{¿Qué relación hay entre \(\textcolor{brown}{\tau_c}\) y el efecto causal \(\textcolor{brown}{\tau}\)?}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Sesgo de variable omitida}
+\begin{itemize}
+    \item La clave es la regresión de la variable \textbf{omitida} sobre la \textbf{incluida}:
+    \begin{align}\label{EQ:auxiliarOVB}
+        W_i = \textcolor{brown}{\delta_0} + \textcolor{brown}{\delta_1} D_i + u_i,
+    \end{align}
+    donde, por construcción, \(\EX[u_i] = 0\) y \(\EX[D_i u_i] = 0\).
+    %\pause
+    \item Sustituyendo \eqref{EQ:auxiliarOVB} en la regresión larga \eqref{EQ:regresionLarga}:
+    \begin{align*}
+    \begin{split}
+        Y_i &= \textcolor{brown}{\alpha} + \textcolor{brown}{\tau} D_i + \textcolor{brown}{\lambda} \left(\textcolor{brown}{\delta_0} + \textcolor{brown}{\delta_1} D_i + u_i\right) + e_i \\
+            &= \underbrace{\left(\textcolor{brown}{\alpha} + \textcolor{brown}{\lambda}\textcolor{brown}{\delta_0}\right)}_{=\, \textcolor{brown}{\alpha_c}} + \underbrace{\left(\textcolor{brown}{\tau} + \textcolor{brown}{\lambda}\textcolor{brown}{\delta_1}\right)}_{=\, \textcolor{brown}{\tau_c}} D_i + \underbrace{\left(e_i + \textcolor{brown}{\lambda} u_i\right)}_{=\, \tilde{e}_i}
+    \end{split}
+    \end{align*}
+    %\pause
+    \item El error \(\tilde{e}_i\) tiene media cero y es ortogonal a \(D_i\) (\(\EX[D_i e_i] = 0\) por \eqref{EQ:regresionLarga} y \(\EX[D_i u_i] = 0\) por construcción); por lo tanto, los coeficientes señalados son los de la regresión corta \eqref{EQ:regresionCorta}. En particular:
+    \begin{align*}
+        \textcolor{brown}{\tau_c} = \textcolor{brown}{\tau} + \underbrace{\textcolor{brown}{\lambda} \, \textcolor{brown}{\delta_1}}_{\textcolor{blue}{\text{Sesgo de variable omitida}}}
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Sesgo de variable omitida}
+\begin{itemize}
+    \item \textbf{Regla}: sesgo \(=\) (\textcolor{blue}{efecto de la omitida en la regresión larga}, \(\textcolor{brown}{\lambda}\)) \(\times\) (\textcolor{blue}{relación entre la omitida y la incluida}, \(\textcolor{brown}{\delta_1}\)).
+    %\pause
+    \item Dirección del sesgo:
+    \begin{center}
+    \begin{tabular}{lcc}
+        \toprule
+          & \(\textcolor{brown}{\delta_1} > 0\) & \(\textcolor{brown}{\delta_1} < 0\) \\
+        \midrule
+        \(\textcolor{brown}{\lambda} > 0\) & \(\textcolor{brown}{\tau_c} > \textcolor{brown}{\tau}\) & \(\textcolor{brown}{\tau_c} < \textcolor{brown}{\tau}\) \\
+        \(\textcolor{brown}{\lambda} < 0\) & \(\textcolor{brown}{\tau_c} < \textcolor{brown}{\tau}\) & \(\textcolor{brown}{\tau_c} > \textcolor{brown}{\tau}\) \\
+        \bottomrule
+    \end{tabular}
+    \end{center}
+    %\pause
+    \vspace{1em}
+    \item \textbf{En el ejemplo}: si la habilidad mejora la nota (\(\textcolor{brown}{\lambda} > 0\)) y los estudiantes más hábiles leen más la bibliografía (\(\textcolor{brown}{\delta_1} > 0\)), entonces \(\textcolor{brown}{\tau_c}\) \textbf{sobreestima} el efecto causal de leer la bibliografía.
+    %\pause
+    \item No hay sesgo si \(\textcolor{brown}{\lambda} = 0\) (la variable omitida no pertenece al modelo) o si \(\textcolor{brown}{\delta_1} = 0\) (la variable omitida no se relaciona con \(D_i\)).
+    %\pause
+    \item El sesgo es un problema de \textbf{identificación}, no de tamaño de muestra: no desaparece con más datos.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Sesgo de variable omitida y sesgo de selección}
+\begin{itemize}
+    \item El \textcolor{blue}{sesgo de variable omitida} es el \textcolor{blue}{sesgo de selección} expresado en el lenguaje de regresión: quienes leen la bibliografía difieren en habilidad de quienes no la leen. Al omitir \(W_i\), el término \(\textcolor{brown}{\lambda} W_i\) queda en el error, que ya no tiene media condicional cero dado \(D_i\).
+    %\pause
+    \vspace{1em}
+    \item Buena parte del curso consiste en \textbf{estrategias para eliminar este sesgo}:
+    \begin{itemize}
+        \item \textcolor{blue}{Aleatorización} (RCT): garantiza \(\textcolor{brown}{\delta_1} = 0\) por diseño.
+        \item \textcolor{blue}{Selección en observables} (regresión, matching, PSM): controlar por \(W_i\) cuando es observable.
+        \item \textcolor{blue}{RD, IV, DiD}: estrategias que no requieren observar \(W_i\).
+    \end{itemize}
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Anexos}
+
+\subsection{- Teorema de Frisch-Waugh-Lovell}
+
+\begin{frame}{Demostración del teorema de Frisch-Waugh-Lovell}\label{ANEX:FWL}
+\begin{itemize}
+    \item Los tres \textbf{modelos estimados} por MCO son:
+    \begin{align*}
+    \begin{split}
+        Y_i &= \textcolor{brown}{\hat{\tau}} D_i + \XB'_i\textcolor{brown}{\betaBH} + \hat{e}_i, \\
+        Y_i &= \XB'_i\textcolor{brown}{\hat{\gammaB}} + \hat{\eta}_i, \\
+        D_i &= \XB'_i\textcolor{brown}{\hat{\thetaB}} + \hat{\mu}_i.
+    \end{split}
+    \end{align*}
+    %%\pause
+    \item Las \textbf{condiciones de primer orden} de cada estimación implican que los residuos son \textcolor{blue}{ortogonales} a sus variables explicativas:
+    \begin{align*}
+    \begin{split}
+        \sum_i D_i \hat{e}_i = 0; \quad \sum_i \XB_i \hat{e}_i = \textbf{0}; \quad \sum_i \XB_i \hat{\eta}_i = \textbf{0}; \quad \sum_i \XB_i \hat{\mu}_i = \textbf{0}.
+    \end{split}
+    \end{align*}
+    %%\pause
+    \item El estimador MCO del modelo residual \eqref{EQ:modeloResidual}, que no incluye constante, es:
+    \begin{align*}
+    \begin{split}
+        \textcolor{brown}{\hat{\phi}} = \frac{\sum_i \hat{\mu}_i \hat{\eta}_i}{\sum_i \hat{\mu}^2_i}.
+    \end{split}
+    \end{align*}
+    %%\pause
+    \item \textbf{Objetivo}: demostrar que \(\textcolor{brown}{\hat{\phi}} = \textcolor{brown}{\hat{\tau}}\).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Demostración del teorema de Frisch-Waugh-Lovell}
+\begin{itemize}
+    \item \textbf{Paso 1}: expresar \(\hat{\eta}_i\) en términos de \(\hat{\mu}_i\). Sustituyendo el modelo original estimado en la definición de \(\hat{\eta}_i\):
+    \begin{align*}
+    \begin{split}
+        \hat{\eta}_i &= Y_i - \XB'_i \textcolor{brown}{\hat{\gammaB}} \\
+        &= \textcolor{brown}{\hat{\tau}} D_i + \XB'_i\textcolor{brown}{\betaBH} + \hat{e}_i - \XB'_i \textcolor{brown}{\hat{\gammaB}} \\
+        &= \textcolor{brown}{\hat{\tau}} \underbrace{\left(\hat{\mu}_i + \XB'_i\textcolor{brown}{\hat{\thetaB}}\right)}_{=\, D_i} + \XB'_i\left(\textcolor{brown}{\betaBH} - \textcolor{brown}{\hat{\gammaB}}\right) + \hat{e}_i \\
+        &= \textcolor{brown}{\hat{\tau}} \hat{\mu}_i + \XB'_i\left(\textcolor{brown}{\hat{\tau}}\textcolor{brown}{\hat{\thetaB}} + \textcolor{brown}{\betaBH} - \textcolor{brown}{\hat{\gammaB}}\right) + \hat{e}_i.
+    \end{split}
+    \end{align*}
+    %%\pause
+    \item El residuo \(\hat{\eta}_i\) tiene tres componentes: \(\textcolor{brown}{\hat{\tau}} \hat{\mu}_i\), una \textbf{combinación lineal de} \(\XB_i\) y el residuo \(\hat{e}_i\).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Demostración del teorema de Frisch-Waugh-Lovell}
+\begin{itemize}
+    \item \textbf{Paso 2}: multiplicar por \(\hat{\mu}_i\), sumar sobre \(i\) y usar la ortogonalidad:
+    \begin{align*}
+    \begin{split}
+        \sum_i \hat{\mu}_i \hat{\eta}_i = \textcolor{brown}{\hat{\tau}} \sum_i \hat{\mu}^2_i + \underbrace{\Big(\sum_i \hat{\mu}_i \XB'_i\Big)}_{=\, \textbf{0}'}\left(\textcolor{brown}{\hat{\tau}}\textcolor{brown}{\hat{\thetaB}} + \textcolor{brown}{\betaBH} - \textcolor{brown}{\hat{\gammaB}}\right) + \underbrace{\sum_i \hat{\mu}_i \hat{e}_i}_{=\, 0}.
+    \end{split}
+    \end{align*}
+    %%\pause
+    El último término es cero porque
+    \begin{align*}
+    \begin{split}
+        \sum_i \hat{\mu}_i \hat{e}_i = \sum_i \left(D_i - \XB'_i\textcolor{brown}{\hat{\thetaB}}\right) \hat{e}_i = \underbrace{\sum_i D_i \hat{e}_i}_{=\, 0} - \textcolor{brown}{\hat{\thetaB}}'\underbrace{\sum_i \XB_i \hat{e}_i}_{=\, \textbf{0}} = 0.
+    \end{split}
+    \end{align*}
+    %%\pause
+    \item \textbf{Paso 3}: como \(\sum_i \hat{\mu}_i \hat{\eta}_i = \textcolor{brown}{\hat{\tau}} \sum_i \hat{\mu}^2_i\),
+    \begin{align*}
+    \begin{split}
+        \textcolor{brown}{\hat{\phi}} = \frac{\sum_i \hat{\mu}_i \hat{\eta}_i}{\sum_i \hat{\mu}^2_i} = \textcolor{brown}{\hat{\tau}}.
+    \end{split}
+    \end{align*}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Demostración del teorema de Frisch-Waugh-Lovell}
+\begin{itemize}
+    \item \textbf{Observación 1}: el resultado requiere \(\sum_i \hat{\mu}^2_i > 0\); es decir, que \(D_i\) no sea una combinación lineal exacta de los controles \(\XB_i\) (no multicolinealidad perfecta).
+    \vspace{0.5em}
+    %%\pause
+    \item \textbf{Observación 2}: el modelo residual \eqref{EQ:modeloResidual} no necesita constante: como \(\XB_i\) incluye una constante, \(\sum_i \hat{\eta}_i = 0\) y \(\sum_i \hat{\mu}_i = 0\), así que una constante adicional tendría coeficiente estimado igual a cero.
+    \vspace{0.5em}
+    %%\pause
+    \item \textbf{Observación 3}: el mismo argumento, con \(D_i\) (y por tanto \(\hat{\mu}_i\)) vectorial, demuestra la versión general del teorema para cualquier partición del vector de variables explicativas.
+\end{itemize}
+\vspace{0.5em}
+\hyperlink{DIAP:FWL}{{\beamerreturnbutton{Regresar}}}
+\end{frame}
+
+\nobibliography{references}
+
+\end{document}
